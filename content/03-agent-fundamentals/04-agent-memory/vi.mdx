@@ -1,0 +1,61 @@
+---
+id: agent-memory
+title: "Agent memory và state: lưu đúng thứ cần khôi phục"
+description: "Phân biệt conversation history, working state và memory bền vững."
+language: vi
+level: intermediate
+durationMinutes: 45
+order: 4
+prerequisites:
+  - context-engineering
+tags:
+  - memory
+  - state
+  - agents
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Chọn state theo vòng đời và retention.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [context-engineering](/learn/context-engineering). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+Conversation history giữ mạch chat; working state giữ tiến trình một workflow; long-term memory cần consent, retention và quyền sửa/xóa. Chỉ ghi fact có nguồn, không biến mọi output model thành dữ kiện.
+
+## Kiến trúc
+
+Message → state schema có version → checkpoint → selector lấy fact liên quan → lọc theo tenant/user → response.
+
+## Ví dụ TypeScript
+
+```ts
+type State = { version: 1; goal: string; awaitingApproval: boolean };
+const state: State = { version: 1, goal: "track delivery", awaitingApproval: false };
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Thiết kế state theo dõi đơn qua reload; nêu dữ liệu cần giữ, retention và xóa.
+
+## Lỗi thường gặp
+
+Ghi raw reasoning; trộn tenant; lưu PII vô hạn; không version checkpoint.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://platform.openai.com/docs/guides/agents>)
+
+## Quiz nhanh
+
+Conversation history khác long-term memory thế nào?
+
+## Tiêu chí hoàn thành
+
+Schema tối thiểu có owner và retention rõ ràng.

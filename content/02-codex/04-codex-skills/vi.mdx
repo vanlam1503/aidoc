@@ -1,0 +1,61 @@
+---
+id: codex-skills
+title: "Codex Skills: đóng gói quy trình chuyên môn"
+description: "Tạo skill có trigger rõ, tài liệu quy trình và tài nguyên liên quan."
+language: vi
+level: intermediate
+durationMinutes: 45
+order: 4
+prerequisites:
+  - agents-md
+tags:
+  - codex
+  - skills
+  - automation
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Giải thích skill discovery; viết description phù hợp; xác định khi nào cần script hay reference.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [agents-md](/learn/agents-md). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+Skill đóng gói quy trình tái sử dụng để agent áp dụng khi tác vụ phù hợp. Description cần nói rõ tình huống kích hoạt và giới hạn. Chỉ dẫn chi tiết được nạp khi cần; tài nguyên hoặc script nên tách riêng để không làm mọi tác vụ tốn context. Skill không phải cách cấp quyền bí mật hay lách chính sách.
+
+## Kiến trúc
+
+User request → skill metadata match → load instructions/resources → thực hiện quy trình → kiểm tra đầu ra theo acceptance criteria của skill.
+
+## Ví dụ TypeScript
+
+```ts
+type SkillManifest = { name: string; description: string; entrypoint: string };
+const skill: SkillManifest = { name: "release-notes", description: "Use when preparing a release summary from merged changes", entrypoint: "SKILL.md" };
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Chọn quy trình lặp lại trong team và viết description trigger/anti-trigger, đầu vào, bước làm, đầu ra, kiểm tra. Thử với request liên quan và không liên quan.
+
+## Lỗi thường gặp
+
+Description quá rộng khiến skill bị gọi sai; lặp toàn bộ handbook; script không được kiểm tra hoặc có side effect ẩn.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://github.com/openai/codex>)
+
+## Quiz nhanh
+
+Skill khác một prompt đơn lẻ ở điểm nào? Cần nêu gì để trigger đúng?
+
+## Tiêu chí hoàn thành
+
+Một người khác có thể dự đoán lúc nào skill chạy và xác minh đầu ra của nó.

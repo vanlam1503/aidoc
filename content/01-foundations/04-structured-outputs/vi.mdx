@@ -1,0 +1,84 @@
+---
+id: structured-outputs
+title: Structured Outputs và hợp đồng dữ liệu
+description: Biến phản hồi của model thành dữ liệu có schema để ứng dụng kiểm tra và xử lý an toàn.
+language: vi
+level: basic
+durationMinutes: 35
+order: 4
+prerequisites:
+  - prompt-engineering-basics
+tags:
+  - structured-outputs
+  - json-schema
+  - validation
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Phân biệt JSON mode với schema-constrained output, thiết kế schema có giới hạn, và validate dữ liệu trước khi ứng dụng sử dụng.
+
+## Điều kiện tiên quyết
+
+Biết TypeScript cơ bản và đã học cách mô tả output mong muốn trong prompt.
+
+## Lý thuyết
+
+Nhiều ứng dụng cần output máy đọc được: nhãn phân loại, thuộc tính sản phẩm, hoặc kế hoạch thao tác. Chỉ yêu cầu “trả JSON” trong prompt không bảo đảm JSON hợp lệ hoặc đúng cấu trúc.
+
+**Structured Outputs** là cơ chế hướng model tạo output tuân theo một JSON Schema được hỗ trợ. Điều này giúp ràng buộc cấu trúc và kiểu dữ liệu; nó không xác minh sự thật, tính nhất quán nghiệp vụ hay quyền truy cập. Ứng dụng vẫn phải kiểm tra các điều kiện đó trước khi dùng output để tạo tác động. [OpenAI: Structured Outputs](https://platform.openai.com/docs/guides/structured-outputs)
+
+## Kiến trúc
+
+```text
+Input → model với output schema → parse/validate → business rules → side effect
+                                         └→ lỗi có kiểm soát / retry policy
+```
+
+Tách lỗi định dạng, refusal, lỗi nghiệp vụ và lỗi transport. Không tự động thực thi một hành động nhạy cảm chỉ vì JSON parse thành công.
+
+## Ví dụ TypeScript với Zod
+
+```ts
+import { z } from "zod";
+
+const Triage = z.object({
+  category: z.enum(["billing", "technical", "other"]),
+  urgency: z.enum(["low", "normal", "high"]),
+  rationale: z.string().max(500),
+});
+
+const result = Triage.safeParse(JSON.parse(modelText));
+if (!result.success) throw new Error("Model output did not match triage schema");
+```
+
+Trong Responses API, truyền JSON Schema theo cơ chế Structured Outputs chính thức; ví dụ trên minh họa lớp validation ứng dụng sau phản hồi.
+
+## Thực hành
+
+1. Thiết kế schema cho yêu cầu xin nghỉ phép gồm ngày, số ngày và lý do.
+2. Thêm giới hạn ngày hợp lệ ở lớp nghiệp vụ.
+3. Viết test cho trường thiếu, enum sai, và câu trả lời hợp lệ nhưng không đủ quyền để thực thi.
+
+## Lỗi thường gặp
+
+- Nhầm JSON hợp lệ với dữ liệu đúng.
+- Định nghĩa schema quá tự do bằng nhiều trường tùy chọn.
+- Tự động retry vô hạn khi schema mismatch.
+- Dùng kết quả model trực tiếp cho SQL, shell hoặc quyền truy cập.
+
+## Đọc thêm
+
+- [OpenAI: Structured Outputs](https://platform.openai.com/docs/guides/structured-outputs)
+- [Zod documentation](https://zod.dev/)
+
+## Quiz nhanh
+
+1. Schema giải quyết loại lỗi nào, và không giải quyết loại lỗi nào?
+2. Vì sao cần business validation sau khi parse thành công?
+3. Khi nào nên yêu cầu sửa output và khi nào nên trả lỗi?
+
+## Tiêu chí hoàn thành
+
+Bạn hoàn thành khi định nghĩa schema chặt chẽ, validate output tại server, và có test cho cả lỗi định dạng lẫn lỗi nghiệp vụ.

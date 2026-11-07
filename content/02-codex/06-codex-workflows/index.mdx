@@ -1,0 +1,61 @@
+---
+id: codex-workflows
+title: "Codex workflows: reviewing, fixing, and handing off patches"
+description: "Use an agent for code review and bug fixes with clear inputs, evidence, and boundaries."
+language: en
+level: intermediate
+durationMinutes: 45
+order: 6
+prerequisites:
+  - agents-md
+tags:
+  - codex
+  - code-review
+  - workflow
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Organize a review workflow, classify findings by evidence and severity, and prevent out-of-scope edits.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [agents-md](/learn/agents-md). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+Agent code review should find incorrect behavior, vulnerabilities, and regressions. Each finding needs a location, reproduction conditions, and impact. Human reviewers validate findings because models can miss issues or report false positives. Preserve a reproduction test when fixing a bug to prevent recurrence.
+
+## Architecture
+
+Diff, requirements, and test context → agent findings with severity and evidence → maintainer triage → targeted fix → regression test → review again.
+
+## TypeScript example
+
+```ts
+type Finding = { file: string; line: number; impact: string; evidence: string; confidence: number };
+function actionable(f: Finding): boolean { return f.evidence.length > 0 && f.impact.length > 0; }
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Review a small diff for correctness and security. Record findings, verify them manually, add a test for a confirmed bug, and repeat the review.
+
+## Common mistakes
+
+Requesting a whole-repository review without defining scope; accepting findings without evidence; allowing an agent to merge or deploy independently.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://github.com/openai/codex>)
+
+## Quick quiz
+
+What fields make a review finding actionable? Why should false positives be recorded?
+
+## Completion criteria
+
+You can substantiate a finding with a test or code path and trace it through to the fix.

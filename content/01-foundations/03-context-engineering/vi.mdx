@@ -1,0 +1,87 @@
+---
+id: context-engineering
+title: "Context Engineering: chọn đúng thông tin cho model"
+description: Thiết kế context gồm chỉ dẫn, lịch sử, công cụ và dữ liệu truy xuất theo ngân sách.
+language: vi
+level: basic
+durationMinutes: 40
+order: 3
+prerequisites:
+  - llm-fundamentals
+tags:
+  - context-engineering
+  - retrieval
+  - context-window
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Hiểu context engineering là chọn và sắp xếp thông tin cần thiết quanh lời gọi model; biết cân đối chỉ dẫn, history, retrieved data và output budget.
+
+## Điều kiện tiên quyết
+
+Hiểu token và context window. Bài này dùng khái niệm prompt từ bài trước.
+
+## Lý thuyết
+
+Prompt engineering tập trung vào chỉ dẫn; **context engineering** xem toàn bộ trạng thái mà model nhìn thấy: system/developer instructions, câu hỏi hiện tại, lịch sử, kết quả công cụ, hồ sơ liên quan, và tài liệu truy xuất. Công việc là đưa đúng thông tin, đúng thời điểm, với cấu trúc dễ phân biệt.
+
+Một pipeline thường gồm: xác định tác vụ → chọn nguồn → lọc/rank → nén hoặc tóm tắt có kiểm soát → dựng context có giới hạn → ghi lại nguồn để kiểm chứng. Giữ dữ liệu có nguồn gốc và thời điểm cập nhật. Tóm tắt history có thể mất chi tiết, nên giữ trạng thái có cấu trúc cho dữ kiện quan trọng.
+
+## Kiến trúc
+
+```text
+Request → intent/task → history selector ─┐
+                 → retrieval ─────────────┼→ budget + ordering → model
+                 → tool results ──────────┘                      → citations
+```
+
+Tránh để truy xuất trả về đoạn trùng, lỗi thời, hoặc vượt ngân sách. Context nên gắn nhãn nguồn và phân biệt dữ liệu trích dẫn với chỉ dẫn của ứng dụng.
+
+## Ví dụ TypeScript: dựng context theo budget
+
+```ts
+type Chunk = { text: string; tokenEstimate: number; source: string };
+
+function fitChunks(chunks: Chunk[], tokenLimit: number): Chunk[] {
+  const selected: Chunk[] = [];
+  let used = 0;
+  for (const chunk of chunks) {
+    if (used + chunk.tokenEstimate > tokenLimit) continue;
+    selected.push(chunk);
+    used += chunk.tokenEstimate;
+  }
+  return selected;
+}
+```
+
+Ví dụ đơn giản này giả định danh sách đã được xếp hạng. Hệ thống production cần tokenizer đúng model, chính sách ưu tiên và kiểm tra cắt cụt.
+
+## Thực hành
+
+1. Với câu hỏi “chính sách hoàn tiền của đơn hàng này?”, xác định dữ liệu cần truy xuất và dữ liệu không cần gửi.
+2. Thiết kế budget 6.000 token gồm instructions, history, tài liệu và output.
+3. Xác định cách xử lý hai tài liệu mâu thuẫn ngày cập nhật.
+
+## Lỗi thường gặp
+
+- Coi context window lớn là lý do gửi mọi dữ liệu.
+- Cắt văn bản giữa một ý hoặc bỏ mất thông tin nguồn.
+- Đưa lịch sử cũ không liên quan vào mọi lượt.
+- Trộn chỉ dẫn đáng tin với nội dung tài liệu chưa kiểm duyệt.
+
+## Đọc thêm
+
+- [OpenAI: Retrieval](https://platform.openai.com/docs/guides/retrieval)
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook)
+
+## Quiz nhanh
+
+1. Context engineering bao gồm những thành phần nào ngoài prompt?
+2. Vì sao mỗi đoạn truy xuất nên có source identifier?
+3. Khi nào nên tóm tắt history, và rủi ro là gì?
+
+## Tiêu chí hoàn thành
+
+Bạn hoàn thành khi vẽ được pipeline lấy context cho một tác vụ, đặt ngân sách rõ ràng, và giải thích cách hệ thống giữ được nguồn gốc dữ liệu.

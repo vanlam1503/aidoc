@@ -1,0 +1,61 @@
+---
+id: multi-agent-architectures
+title: "Multi-agent architectures: phân vai khi có lý do"
+description: "Đánh giá chi phí và lợi ích của chia agent theo chuyên môn hoặc quyền."
+language: vi
+level: advanced
+durationMinutes: 45
+order: 7
+prerequisites:
+  - agents-sdk-typescript
+tags:
+  - multi-agent
+  - architecture
+  - agents
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+So sánh single-agent và multi-agent; định nghĩa contract handoff; giới hạn fan-out và tổng cost.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [agents-sdk-typescript](/learn/agents-sdk-typescript). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+Multi-agent hữu ích khi nhiệm vụ có miền chuyên môn hoặc quyền tách biệt, có thể chạy song song, hay cần kiểm tra độc lập. Nó tăng latency, token, lỗi phối hợp và bề mặt bảo mật. Bắt đầu bằng baseline single-agent; thêm agent chỉ khi eval cho thấy lợi ích cụ thể.
+
+## Kiến trúc
+
+Orchestrator phân rã task → specialist với input/output schema và quyền tối thiểu → verifier hợp nhất evidence → human escalation nếu bất đồng.
+
+## Ví dụ TypeScript
+
+```ts
+type Subtask = { owner: "docs" | "code"; question: string; budget: number };
+const tasks: Subtask[] = [{ owner: "docs", question: "Find API contract", budget: 2 }];
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Với yêu cầu sửa bug có docs và code, soạn single-agent baseline rồi đề xuất lúc nào tách reviewer độc lập; đặt giới hạn fan-out và retry.
+
+## Lỗi thường gặp
+
+Dùng agent vì trào lưu; cho mọi agent cùng quyền; không kiểm tra câu trả lời xung đột hoặc tính tổng budget.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://github.com/openai/openai-agents-js>)
+
+## Quiz nhanh
+
+Nêu một lý do tốt để tách agent và một lý do không đủ. Handoff contract nên chứa gì?
+
+## Tiêu chí hoàn thành
+
+Bạn chứng minh multi-agent cải thiện metric định trước và đặt trần chi phí/độ sâu.

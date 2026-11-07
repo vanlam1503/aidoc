@@ -1,0 +1,61 @@
+---
+id: token-cost-optimization
+title: "Token và cost optimization cho AI systems"
+description: "Đo cost theo task rồi giảm context dư, retries và model spend có kiểm chứng."
+language: vi
+level: advanced
+durationMinutes: 45
+order: 5
+prerequisites:
+  - rag-embeddings
+tags:
+  - cost
+  - token
+  - optimization
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Phân rã chi phí và giữ quality guard.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [rag-embeddings](/learn/rag-embeddings). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+Chi phí phụ thuộc model, token, tool và retries. Đo theo cohort trước; giảm context trùng, giới hạn output, cache nội dung ổn định hoặc route tác vụ đơn giản. Mọi tối ưu cần eval để tránh tiết kiệm bằng cách giảm chất lượng.
+
+## Kiến trúc
+
+Usage telemetry → phân rã cost → phát hiện lặp → cache/budget/routing → eval quality/cost → rollout.
+
+## Ví dụ TypeScript
+
+```ts
+type Budget = { maxInput: number; maxOutput: number; retries: number };
+const budget: Budget = { maxInput: 8000, maxOutput: 700, retries: 1 };
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Chọn một tối ưu sau khi phân tích 100 requests; định metric chất lượng không được giảm.
+
+## Lỗi thường gặp
+
+Cắt context tùy tiện; cache cá nhân sai quyền; quên retry cost.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://platform.openai.com/docs/guides/prompt-caching>)
+
+## Quiz nhanh
+
+Ngoài prompt token, điều gì tăng cost?
+
+## Tiêu chí hoàn thành
+
+Có baseline cost và eval guard.

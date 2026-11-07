@@ -1,0 +1,61 @@
+---
+id: codex-cli
+title: "Codex CLI: làm việc an toàn trong terminal"
+description: "Thiết lập vòng lặp terminal-first để agent đọc, sửa và xác minh repository."
+language: vi
+level: intermediate
+durationMinutes: 45
+order: 2
+prerequisites:
+  - codex-introduction
+tags:
+  - codex
+  - cli
+  - terminal
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Mô tả vòng lặp CLI; chọn quyền phù hợp; biết kiểm tra lệnh và diff trước khi tiếp tục.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [codex-introduction](/learn/codex-introduction). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+CLI phù hợp khi tác vụ gắn với repository và các lệnh kiểm tra sẵn có. Agent cần hiểu working directory, file hướng dẫn và trạng thái git. Quyền đọc, sửa file và chạy lệnh cần được cân theo tác động; lệnh tải hoặc xóa dữ liệu cần review kỹ.
+
+## Kiến trúc
+
+Terminal session → kiểm tra repository state → agent plan/edit → lệnh kiểm tra → review diff → commit do người dùng quyết định.
+
+## Ví dụ TypeScript
+
+```ts
+type CommandPlan = { command: string; purpose: string; sideEffect: "read" | "write" | "external" };
+const plan: CommandPlan = { command: "npm run typecheck", purpose: "check types", sideEffect: "read" };
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Chạy một thay đổi nhỏ trong branch thử nghiệm; ghi lại trạng thái git trước/sau, lệnh nào đã chạy, và cách hoàn tác patch.
+
+## Lỗi thường gặp
+
+Cho phép mọi lệnh tự động mà không cân nhắc side effect; bỏ qua thay đổi có sẵn của người dùng; để secret trong log terminal.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://github.com/openai/codex>)
+
+## Quiz nhanh
+
+CLI cần kiểm tra state nào trước khi sửa? Nêu cách phân biệt lệnh chỉ đọc với side effect bên ngoài.
+
+## Tiêu chí hoàn thành
+
+Bạn giải thích được quyền đã cấp và kiểm tra diff sạch trước khi chấp nhận thay đổi.

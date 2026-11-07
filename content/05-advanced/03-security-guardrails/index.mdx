@@ -1,0 +1,65 @@
+---
+id: security-guardrails
+title: "Security and guardrails for AI applications"
+description: "Apply defense in depth to prompt injection, sensitive data, and tool permissions."
+language: en
+level: advanced
+durationMinutes: 45
+order: 3
+prerequisites:
+  - prompt-injection-fundamentals
+tags:
+  - security
+  - guardrails
+  - privacy
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Draw a threat model, distinguish input/output checks from access control, and define fail-closed behavior.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [prompt-injection-fundamentals](/learn/prompt-injection-fundamentals). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+Guardrails span authentication, authorization, input/output validation, tool allowlists, data minimization, human review, and monitoring. Model moderation and classification are supplementary signals. Threat models must consider users, RAG content, tool output, tenant boundaries, and consequential actions.
+
+## Architecture
+
+Untrusted input → validation and classification → least-privilege tools → policy check per call → output filtering → audit and incident response.
+
+## TypeScript example
+
+```ts
+type PolicyDecision = "allow" | "deny" | "review";
+function decide(action: string, amount: number): PolicyDecision {
+  if (action === "refund" && amount > 0) return "review";
+  if (!["lookup", "draft", "refund"].includes(action)) return "deny";
+  return "allow";
+}
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Threat-model an agent that reads orders and creates refunds. Draw trust boundaries, user permissions, approval thresholds, and an incident scenario.
+
+## Common mistakes
+
+Treating a system prompt as a sandbox; trusting model-supplied user IDs; filtering output while omitting server authorization.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://owasp.org/www-project-top-10-for-large-language-model-applications/>)
+
+## Quick quiz
+
+Which guardrails must operate outside the model? Why should risky actions receive human review?
+
+## Completion criteria
+
+You have a threat model and model-independent controls for every side effect.

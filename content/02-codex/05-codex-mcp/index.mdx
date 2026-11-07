@@ -1,0 +1,61 @@
+---
+id: codex-mcp
+title: "MCP fundamentals: connecting models to tools and context"
+description: "Understand MCP hosts, clients, servers, tools, resources, and permission boundaries."
+language: en
+level: intermediate
+durationMinutes: 45
+order: 5
+prerequisites:
+  - codex-cli
+tags:
+  - mcp
+  - protocol
+  - tools
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Draw an MCP flow, distinguish tools from resources, and identify authorization checks.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [codex-cli](/learn/codex-cli). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+**Model Context Protocol (MCP)** is an open protocol for applications to connect to external systems through servers. A host coordinates the application and creates client connections; a client maintains a protocol connection to a server; a server exposes tools, resources, or prompts. MCP standardizes communication, but does not establish business authorization or make a server trustworthy. Check server identity, data scope, arguments, and write actions. [MCP: Architecture](https://modelcontextprotocol.io/docs/learn/architecture)
+
+## Architecture
+
+Host client initializes a connection → discovery returns capabilities → user or agent selects a tool → server handles the request → host displays attributed results.
+
+## TypeScript example
+
+```ts
+type ToolCall = { name: "search_docs" | "create_issue"; input: Record<string, string> };
+function needsApproval(call: ToolCall): boolean { return call.name === "create_issue"; }
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Draw flows for a documentation reader and an issue-creation server. Mark data leaving the host and actions requiring human approval.
+
+## Common mistakes
+
+Trusting every MCP server by default; enabling write tools when read access suffices; assuming the protocol enforces business authorization.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://modelcontextprotocol.io/introduction>)
+
+## Quick quiz
+
+What is the host responsible for? Why do server tools still need application policy checks?
+
+## Completion criteria
+
+You can describe tool discovery, invocation, and trust boundaries in an MCP connection.

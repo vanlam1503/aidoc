@@ -1,0 +1,61 @@
+---
+id: codex-cli
+title: "Codex CLI: working safely in the terminal"
+description: "Set up a terminal-first loop for an agent to read, edit, and verify a repository."
+language: en
+level: intermediate
+durationMinutes: 45
+order: 2
+prerequisites:
+  - codex-introduction
+tags:
+  - codex
+  - cli
+  - terminal
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Describe the CLI workflow, choose appropriate permissions, and inspect commands and diffs before proceeding.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [codex-introduction](/learn/codex-introduction). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+A CLI suits tasks tied to a repository and its existing verification commands. The agent needs the working directory, guidance files, and Git state. Balance read, file-write, and command permissions against their impact; review commands that transfer or delete data carefully.
+
+## Architecture
+
+Terminal session → inspect repository state → agent planning and edits → verification commands → diff review → user decides whether to commit.
+
+## TypeScript example
+
+```ts
+type CommandPlan = { command: string; purpose: string; sideEffect: "read" | "write" | "external" };
+const plan: CommandPlan = { command: "npm run typecheck", purpose: "check types", sideEffect: "read" };
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Make a small change on a disposable branch. Record Git state before and after, executed commands, and how to reverse the patch.
+
+## Common mistakes
+
+Allowing all commands without considering side effects; overwriting existing user changes; exposing secrets in terminal logs.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://github.com/openai/codex>)
+
+## Quick quiz
+
+What state should the CLI inspect before editing? How do you distinguish a read-only command from one with external side effects?
+
+## Completion criteria
+
+You can explain the granted permissions and inspect the final diff before accepting a change.

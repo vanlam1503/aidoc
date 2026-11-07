@@ -1,0 +1,61 @@
+---
+id: code-review-agent-project
+title: "Project: code review agent có findings kiểm chứng được"
+description: "Thiết kế agent review diff cục bộ chỉ đọc và xuất findings có evidence."
+language: vi
+level: advanced
+durationMinutes: 45
+order: 1
+prerequisites:
+  - codex-workflows
+tags:
+  - project
+  - code-review
+  - agent
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Xây review pipeline read-only; trích dẫn file/line; đánh giá precision trên diff mẫu.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [codex-workflows](/learn/codex-workflows). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+Code review agent cần giới hạn scope vào diff, hướng dẫn repository và test liên quan. Finding phải có severity, vị trí, điều kiện tái hiện và evidence. Không để agent tự sửa hoặc merge trong project đầu tiên: mục tiêu là hỗ trợ triage, đo false positives và tạo audit trail.
+
+## Kiến trúc
+
+Git diff → context pack (changed files + nearby code + rules) → model analysis → schema validation → path/line verification → report → human triage.
+
+## Ví dụ TypeScript
+
+```ts
+type ReviewFinding = { severity: "high" | "medium" | "low"; file: string; line: number; evidence: string; suggestion: string };
+function inChangedFile(f: ReviewFinding, changed: Set<string>) { return changed.has(f.file); }
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Tạo fixture có một bug thật và hai lỗi giả; chấm finding precision, path validity, severity và khả năng tái hiện. Giữ agent read-only.
+
+## Lỗi thường gặp
+
+Gửi toàn bộ repo; để finding trích dẫn line không tồn tại; cho agent tự commit fix không có review.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://github.com/openai/openai-cookbook>)
+
+## Quiz nhanh
+
+Report cần field nào để developer kiểm chứng? Metric nào phản ánh false alarms?
+
+## Tiêu chí hoàn thành
+
+Agent chỉ trả finding trỏ tới changed file/line hợp lệ và precision đạt ngưỡng đặt trước.

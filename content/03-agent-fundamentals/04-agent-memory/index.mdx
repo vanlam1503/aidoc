@@ -1,0 +1,61 @@
+---
+id: agent-memory
+title: "Agent memory and state: retaining what recovery needs"
+description: "Distinguish conversation history, working state, and durable memory."
+language: en
+level: intermediate
+durationMinutes: 45
+order: 4
+prerequisites:
+  - context-engineering
+tags:
+  - memory
+  - state
+  - agents
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Choose state based on its lifecycle and retention requirements.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [context-engineering](/learn/context-engineering). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+Conversation history preserves chat continuity; working state tracks workflow progress. Long-term memory needs consent, retention limits, and edit/delete controls. Store sourced facts rather than treating every model output as established information.
+
+## Architecture
+
+Message → versioned state schema → checkpoint → select relevant facts → filter by tenant and user → response.
+
+## TypeScript example
+
+```ts
+type State = { version: 1; goal: string; awaitingApproval: boolean };
+const state: State = { version: 1, goal: "track delivery", awaitingApproval: false };
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Design order-tracking state that survives a reload. Specify retained data, retention periods, and deletion behavior.
+
+## Common mistakes
+
+Storing private model reasoning; mixing tenants; retaining personal data indefinitely; omitting checkpoint versions.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://platform.openai.com/docs/guides/agents>)
+
+## Quick quiz
+
+How does conversation history differ from long-term memory?
+
+## Completion criteria
+
+The minimal schema includes clear ownership and retention rules.

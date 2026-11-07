@@ -1,0 +1,61 @@
+---
+id: production-ai
+title: "Production deployment và CI/CD cho AI applications"
+description: "Triển khai an toàn với secret management, staged rollout, migrations và rollback."
+language: vi
+level: advanced
+durationMinutes: 45
+order: 6
+prerequisites:
+  - observability
+tags:
+  - production
+  - ci-cd
+  - deployment
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Thiết kế pipeline; kiểm tra secret và migration; xác định rollback khi model behavior thay đổi.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [observability](/learn/observability). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+AI deployment gồm code, prompt, model config, retrieval index và evaluator versions. CI nên chạy typecheck, unit/integration tests, content/eval gates và secret scan. Staged rollout theo traffic nhỏ cho phép quan sát cost, latency, refusal và quality trước khi mở rộng. Database migration cần backward-compatible để rollback ứng dụng.
+
+## Kiến trúc
+
+Commit → CI checks/evals → build artifact → staging smoke + canary → approve promotion → monitor SLO/quality → rollback version/config/index.
+
+## Ví dụ TypeScript
+
+```ts
+type Release = { app: string; promptVersion: string; model: string; indexVersion: string };
+const release: Release = { app: "1.8.0", promptVersion: "support-v12", model: "configured-model", indexVersion: "kb-2026-10-31" };
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Viết release checklist cho thay đổi prompt cùng schema DB. Chọn canary metric, rollback trigger và cách giữ tương thích giữa app với index cũ.
+
+## Lỗi thường gặp
+
+Deploy prompt đổi mà không version; bỏ qua API key rotation; migration destructive không có path rollback.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://12factoragents.com/>)
+
+## Quiz nhanh
+
+AI release artifact cần version những gì? Nêu một rollback trigger về quality và một về vận hành.
+
+## Tiêu chí hoàn thành
+
+Bạn trình bày được pipeline từ commit tới canary với rollback có thể thực hiện.

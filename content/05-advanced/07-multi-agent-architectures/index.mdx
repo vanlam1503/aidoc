@@ -1,0 +1,61 @@
+---
+id: multi-agent-architectures
+title: "Multi-agent architectures: splitting roles for a reason"
+description: "Evaluate the costs and benefits of dividing agents by expertise or permissions."
+language: en
+level: advanced
+durationMinutes: 45
+order: 7
+prerequisites:
+  - agents-sdk-typescript
+tags:
+  - multi-agent
+  - architecture
+  - agents
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Compare single-agent and multi-agent approaches, define handoff contracts, and bound fan-out and total cost.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [agents-sdk-typescript](/learn/agents-sdk-typescript). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+Multiple agents can help when tasks have separate expertise or permissions, independent parallel work, or a need for independent verification. They add latency, token use, coordination failures, and security surface. Start with a single-agent baseline and add agents only when evaluations show a specific benefit.
+
+## Architecture
+
+Orchestrator decomposes task → specialists with input/output schemas and least privilege → verifier combines evidence → escalate disagreements to a person.
+
+## TypeScript example
+
+```ts
+type Subtask = { owner: "docs" | "code"; question: string; budget: number };
+const tasks: Subtask[] = [{ owner: "docs", question: "Find API contract", budget: 2 }];
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+For a bug involving documentation and code, define a single-agent baseline and when an independent reviewer would help. Set fan-out and retry limits.
+
+## Common mistakes
+
+Adding agents because they are fashionable; giving every agent identical privileges; failing to reconcile conflicting answers or total budgets.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://github.com/openai/openai-agents-js>)
+
+## Quick quiz
+
+Name a sound reason and an insufficient reason to split agents. What belongs in a handoff contract?
+
+## Completion criteria
+
+You can show that multiple agents improve a predetermined metric and enforce cost and depth limits.

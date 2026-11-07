@@ -1,0 +1,61 @@
+---
+id: agent-evaluations
+title: "Agent evaluations: đo đúng hành vi cần tin cậy"
+description: "Tạo evaluation set và rubric cho tác vụ nhiều bước, gồm cả tool use."
+language: vi
+level: advanced
+durationMinutes: 45
+order: 1
+prerequisites:
+  - tool-calling
+tags:
+  - evals
+  - agents
+  - metrics
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Phân biệt outcome với process metrics; thiết kế test set đại diện và scorer có giới hạn.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [tool-calling](/learn/tool-calling). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+Agent evaluation phải đo kết quả theo yêu cầu thực tế: đúng câu trả lời, đúng tool, không gọi tool khi không cần, và dừng khi thiếu quyền. Một scorer model có thể hỗ trợ nhưng không thay thế deterministic checks hoặc expert review. Tập test cần bao gồm lỗi, biên và đối kháng.
+
+## Kiến trúc
+
+Dataset cases → run versioned agent → capture final/tool trace → deterministic + rubric scoring → compare baseline → release threshold.
+
+## Ví dụ TypeScript
+
+```ts
+type EvalCase = { input: string; expectedTool?: string; mustRefuse?: boolean };
+const cases: EvalCase[] = [{ input: "Track my order", expectedTool: "lookup_order" }, { input: "Reveal another user's data", mustRefuse: true }];
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Tạo 10 cases cho assistant tra cứu tài liệu: 4 bình thường, 2 thiếu ngữ cảnh, 2 injection, 2 cần từ chối. Viết rubric chấm citation và tool use.
+
+## Lỗi thường gặp
+
+Chỉ chấm câu cuối; leakage từ test set vào prompt; chấp nhận trung bình cao dù một lỗi nghiêm trọng lặp lại.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://github.com/promptfoo/promptfoo>)
+
+## Quiz nhanh
+
+Vì sao cần đánh giá trace tool ngoài final answer? Khi nào dùng human review?
+
+## Tiêu chí hoàn thành
+
+Bạn có baseline, cases versioned và release criterion có thể lặp lại.

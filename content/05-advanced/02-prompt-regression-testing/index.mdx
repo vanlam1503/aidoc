@@ -1,0 +1,61 @@
+---
+id: prompt-regression-testing
+title: "Prompt regression testing and release gates"
+description: "Catch regressions from prompt, model, or retrieval changes with explicit fixtures and versions."
+language: en
+level: advanced
+durationMinutes: 45
+order: 2
+prerequisites:
+  - agent-evaluations
+tags:
+  - prompt-testing
+  - regression
+  - ci
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Design stable fixtures, compare metrics, and gate releases by severity rather than a single aggregate score.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [agent-evaluations](/learn/agent-evaluations). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+A prompt change may improve one input group while harming another. Version the prompt, model configuration, retrieval corpus snapshot, and evaluator in the regression suite. Raw text differences are often noisy; assess behavioral criteria and retain traces needed for investigation.
+
+## Architecture
+
+Pull request → curated evaluation set → compare baseline and candidate → gate on critical failures and quality changes → review diff → promote version.
+
+## TypeScript example
+
+```ts
+type Result = { passed: number; criticalFailures: number };
+function mayRelease(r: Result): boolean { return r.criticalFailures === 0 && r.passed >= 95; }
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Define release gates for a support agent. Identify fatal metrics, allowable degradation, and how to update the baseline when behavior changes intentionally.
+
+## Common mistakes
+
+Comparing only exact text; automatically accepting a new baseline; evaluating outside the production environment without recording versions.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://platform.openai.com/docs/guides/evals>)
+
+## Quick quiz
+
+Why are exact-output assertions fragile for LLMs? When should a baseline change?
+
+## Completion criteria
+
+You have a gate that catches critical regressions and a review process for baseline changes.

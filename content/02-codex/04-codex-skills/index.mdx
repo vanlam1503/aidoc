@@ -1,0 +1,61 @@
+---
+id: codex-skills
+title: "Codex Skills: packaging specialist workflows"
+description: "Create a skill with a clear trigger, workflow instructions, and supporting resources."
+language: en
+level: intermediate
+durationMinutes: 45
+order: 4
+prerequisites:
+  - agents-md
+tags:
+  - codex
+  - skills
+  - automation
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Explain skill discovery, write a suitable description, and decide when scripts or references are needed.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [agents-md](/learn/agents-md). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+A skill packages a reusable workflow for tasks that match its purpose. Its description should state triggers and boundaries. Detailed instructions load when needed; keep resources and scripts separate so unrelated tasks do not pay the context cost. A skill does not grant hidden permissions or bypass policy.
+
+## Architecture
+
+User request → match skill metadata → load instructions and resources → execute workflow → verify output against skill acceptance criteria.
+
+## TypeScript example
+
+```ts
+type SkillManifest = { name: string; description: string; entrypoint: string };
+const skill: SkillManifest = { name: "release-notes", description: "Use when preparing a release summary from merged changes", entrypoint: "SKILL.md" };
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Choose a recurring team workflow. Define triggers and non-triggers, inputs, steps, outputs, and checks. Try both relevant and unrelated requests.
+
+## Common mistakes
+
+Overly broad descriptions that trigger incorrectly; duplicating the entire handbook; untested scripts or hidden side effects.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://github.com/openai/codex>)
+
+## Quick quiz
+
+How does a skill differ from a single prompt? What information makes its trigger predictable?
+
+## Completion criteria
+
+Another person can predict when the skill applies and verify its output.

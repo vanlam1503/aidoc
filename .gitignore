@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+
+# Next.js and build output
+/.next/
+/out/
+/build/
+/dist/
+next-env.d.ts
+*.tsbuildinfo
+
+# Generated files (rebuilt by npm install, dev, or build)
+/src/generated/prisma/
+/public/search-index.json
+
+# Test reports and coverage
+/coverage/
+/test-results/
+/playwright-report/
+/playwright/.cache/
+/blob-report/
+
+# Local caches and deployment state
+.cache/
+.turbo/
+.vercel/
+.npm/
+
+# Local environment and secrets; keep example configuration versioned
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Logs
+*.log
+
+# Python cache and virtual environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Operating system and editor temporary files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo

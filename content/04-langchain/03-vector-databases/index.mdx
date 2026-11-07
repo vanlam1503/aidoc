@@ -1,0 +1,61 @@
+---
+id: vector-databases
+title: "Vector databases and hybrid search"
+description: "Choose an index based on metadata, filtering, update patterns, and operational requirements."
+language: en
+level: intermediate
+durationMinutes: 45
+order: 3
+prerequisites:
+  - rag-embeddings
+tags:
+  - vector-database
+  - search
+  - rag
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Compare vector, keyword, and hybrid search, and specify dimensions, indexes, and tenant filters.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [rag-embeddings](/learn/rag-embeddings). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+Vector databases store embeddings and support nearest-neighbor queries. Keyword search helps with identifiers and rare terms, while vectors help with different phrasings; hybrid search combines both signals. Choose using data, latency, filtering, backups, cost, and operational capability rather than a generic ranking.
+
+## Architecture
+
+Ingest documents, chunks, vectors, and metadata → query embedding plus lexical query → access filters → fusion and reranking → context with provenance.
+
+## TypeScript example
+
+```ts
+type SearchPlan = { vectorK: number; keywordK: number; tenantId: string };
+const plan: SearchPlan = { vectorK: 20, keywordK: 20, tenantId: session.tenantId };
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Design retrieval for a knowledge base with product SKUs and free-form questions. Explain why hybrid search may outperform vector-only retrieval and how to test tenant isolation.
+
+## Common mistakes
+
+Forgetting access filters before retrieval; retaining embeddings for deleted documents; evaluating with only one question.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://docs.langchain.com/oss/javascript/integrations/vectorstores/>)
+
+## Quick quiz
+
+Which queries often need exact keyword matching? When should tenant filters apply?
+
+## Completion criteria
+
+You can choose a search strategy and test recall, latency, and data isolation.

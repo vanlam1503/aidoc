@@ -1,0 +1,61 @@
+---
+id: observability
+title: "Observability: tracing, metrics, and alerts"
+description: "Measure latency, errors, quality, and cost to diagnose agent systems."
+language: en
+level: advanced
+durationMinutes: 45
+order: 4
+prerequisites:
+  - agent-evaluations
+tags:
+  - observability
+  - metrics
+  - tracing
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Choose actionable metrics, attach correlation IDs, and design redaction and retention rules.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [agent-evaluations](/learn/agent-evaluations). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+Logs explain events, metrics reveal trends, and traces connect request steps. AI systems also need signals for tool-call rate, retrieval hits, refusals, tokens, and quality evaluations. Segment metrics by version and use case; avoid logging raw prompts by default when they contain personal data.
+
+## Architecture
+
+Request ID → structured logs and spans → aggregate latency, errors, and usage → alert thresholds → sampled traces and redacted debugging.
+
+## TypeScript example
+
+```ts
+type Usage = { inputTokens: number; outputTokens: number; durationMs: number; failed: boolean };
+function estimatedCost(u: Usage, inRate: number, outRate: number) { return u.inputTokens * inRate + u.outputTokens * outRate; }
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Propose five dashboard charts for a RAG agent and one alert for increasing citation errors. Specify data that must stay out of logs.
+
+## Common mistakes
+
+Collecting metrics without an owner or response; logging personal data; averaging away failures affecting a smaller group.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://docs.langchain.com/langsmith/observability>)
+
+## Quick quiz
+
+How do logs, metrics, and traces differ? Name a RAG-specific metric.
+
+## Completion criteria
+
+You can connect a symptom to a safe trace and identify the operational action triggered by an alert.

@@ -1,0 +1,61 @@
+---
+id: codex-configuration
+title: "Codex configuration and permission boundaries"
+description: "Customize project configuration while keeping permissions transparent and reviewable."
+language: en
+level: intermediate
+durationMinutes: 45
+order: 7
+prerequisites:
+  - agents-md
+tags:
+  - codex
+  - configuration
+  - permissions
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Identify configuration scope, constrain tools, and explain how configuration affects agent behavior.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [agents-md](/learn/agents-md). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+Configuration may select a model, guidance, environment, and permissions. Prefer project settings that can be reviewed alongside code; avoid machine-wide changes for a local project need. Network, shell, and file-write permissions can have side effects, so document their purpose and verification.
+
+## Architecture
+
+Defaults → user configuration → project configuration → session constraints; effective permissions are bounded by policy, the runtime sandbox, and approvals.
+
+## TypeScript example
+
+```ts
+type Permissions = { read: boolean; writePaths: string[]; network: "deny" | "allow" };
+const projectPolicy: Permissions = { read: true, writePaths: ["src", "tests"], network: "deny" };
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Design configuration for a docs-only repository and an application with tests. Compare permissions, scope, and risks of committing the configuration.
+
+## Common mistakes
+
+Copying configuration without understanding permissions; requesting broader project access than necessary; committing credentials.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://developers.openai.com/codex/>)
+
+## Quick quiz
+
+How does project configuration differ from user configuration? Name two permissions that can cause side effects.
+
+## Completion criteria
+
+You can review effective permissions and explain every configuration exception.

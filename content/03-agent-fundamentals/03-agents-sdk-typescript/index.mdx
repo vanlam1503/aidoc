@@ -1,0 +1,64 @@
+---
+id: agents-sdk-typescript
+title: "OpenAI Agents SDK with TypeScript"
+description: "Organize agents, tools, handoffs, and traces with the official SDK."
+language: en
+level: intermediate
+durationMinutes: 45
+order: 3
+prerequisites:
+  - tool-calling
+tags:
+  - openai
+  - agents-sdk
+  - typescript
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Identify agent, tool, and handoff objects and decide when the SDK is simpler than custom orchestration.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [tool-calling](/learn/tool-calling). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+In the Agents SDK, an **agent** is a workflow unit combining a model and instructions with optional runtime behavior such as tools, guardrails, MCP servers, handoffs, and structured outputs. The SDK abstracts the agent loop, tools, handoffs, and tracing. Adopt it when those features solve a real need, while understanding the loop and its limits. Keep instructions, tool contracts, and output validation near the agent definition for review. [OpenAI: Agent definitions](https://developers.openai.com/api/docs/guides/agents/define-agents)
+
+## Architecture
+
+Request → triage agent → conditional handoff to a specialist → policy-controlled tool execution → final response and trace.
+
+## TypeScript example
+
+```ts
+const supportAgent = new Agent({
+  name: "Support",
+  instructions: "Answer from approved support sources.",
+  tools: [lookupOrder],
+});
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Design a support agent with one read-only tool. Add a handoff to a person when evidence is insufficient or a transaction must be changed.
+
+## Common mistakes
+
+Adding agents when one suffices; losing necessary context during handoff; treating SDK tracing as a security control.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://github.com/openai/openai-agents-js>)
+
+## Quick quiz
+
+How does a handoff differ in purpose from a tool call? What must the application still authorize?
+
+## Completion criteria
+
+You can explain the agent loop and the boundary between SDK orchestration and application policy.

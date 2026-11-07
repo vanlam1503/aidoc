@@ -1,0 +1,61 @@
+---
+id: vector-databases
+title: "Vector databases và tìm kiếm lai"
+description: "Chọn index theo metadata, filter, update pattern và yêu cầu vận hành."
+language: vi
+level: intermediate
+durationMinutes: 45
+order: 3
+prerequisites:
+  - rag-embeddings
+tags:
+  - vector-database
+  - search
+  - rag
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+So sánh vector, keyword và hybrid search; xác định dimension/index và tenant filter.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [rag-embeddings](/learn/rag-embeddings). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+Vector database lưu embeddings và hỗ trợ nearest-neighbor queries. Keyword search tốt với mã định danh, thuật ngữ hiếm; vector tốt với diễn đạt khác nhau; hybrid kết hợp hai tín hiệu. Lựa chọn dựa trên dữ liệu, latency, filter, backup, chi phí và năng lực vận hành chứ không theo bảng xếp hạng chung.
+
+## Kiến trúc
+
+Ingestion ghi document/chunk/vector/metadata → query embedding + lexical query → filters theo quyền → fusion/rerank → context có provenance.
+
+## Ví dụ TypeScript
+
+```ts
+type SearchPlan = { vectorK: number; keywordK: number; tenantId: string };
+const plan: SearchPlan = { vectorK: 20, keywordK: 20, tenantId: session.tenantId };
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Thiết kế retrieval cho knowledge base có product SKU và câu hỏi diễn đạt tự do. Chỉ ra lý do hybrid search có thể vượt vector-only và cách test tenant isolation.
+
+## Lỗi thường gặp
+
+Quên metadata filter trước khi retrieval; không xóa embedding cũ khi tài liệu bị gỡ; đánh giá bằng một câu hỏi duy nhất.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://docs.langchain.com/oss/javascript/integrations/vectorstores/>)
+
+## Quiz nhanh
+
+Loại truy vấn nào thường cần keyword exact-match? Khi nào áp tenant filter?
+
+## Tiêu chí hoàn thành
+
+Bạn chọn được chiến lược search và có test recall, latency và phân tách dữ liệu.

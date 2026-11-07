@@ -1,0 +1,61 @@
+---
+id: checkpointing-recovery
+title: "Checkpointing, retry và recovery"
+description: "Lưu trạng thái workflow để resume an toàn sau lỗi hoặc chờ người."
+language: vi
+level: advanced
+durationMinutes: 45
+order: 9
+prerequisites:
+  - langgraph-state-machines
+tags:
+  - checkpointing
+  - recovery
+  - resilience
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Xác định checkpoint boundary; dùng idempotency; phân loại lỗi retryable và permanent.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [langgraph-state-machines](/learn/langgraph-state-machines). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+Checkpoint ghi trạng thái workflow tại ranh giới có thể resume. Không nên lưu secret hay dữ liệu quá mức. Retry chỉ dành cho lỗi tạm thời và cần backoff cùng giới hạn; side effect phải idempotent hoặc có reconciliation. Checkpoint schema cần version để ứng dụng mới đọc trạng thái cũ có kế hoạch.
+
+## Kiến trúc
+
+Node hoàn thành → serialize minimal versioned state → durable checkpoint → restart/resume → dedupe tool side effect → record attempt/error.
+
+## Ví dụ TypeScript
+
+```ts
+type Checkpoint = { schemaVersion: 2; step: string; attempts: number; idempotencyKey: string };
+function retryable(status: number) { return status === 429 || status >= 500; }
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Mô phỏng timeout sau khi payment provider nhận yêu cầu nhưng trước response. Thiết kế cách tránh charge hai lần khi resume.
+
+## Lỗi thường gặp
+
+Retry lỗi validation; tăng retry không giới hạn; checkpoint state thiếu version hoặc chứa thông tin nhạy cảm.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://docs.langchain.com/oss/javascript/langgraph/persistence>)
+
+## Quiz nhanh
+
+Khi nào lỗi retryable? Vì sao idempotency quan trọng nếu timeout không rõ kết quả?
+
+## Tiêu chí hoàn thành
+
+Bạn có resume path xử lý được ambiguous outcome mà không lặp side effect.

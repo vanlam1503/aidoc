@@ -1,0 +1,61 @@
+---
+id: token-cost-optimization
+title: "Token and cost optimization for AI systems"
+description: "Measure cost per task, then reduce redundant context, retries, and model spend with evidence."
+language: en
+level: advanced
+durationMinutes: 45
+order: 5
+prerequisites:
+  - rag-embeddings
+tags:
+  - cost
+  - token
+  - optimization
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Break down costs while preserving quality safeguards.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [rag-embeddings](/learn/rag-embeddings). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+Cost depends on models, tokens, tools, and retries. Measure by cohort first, then reduce repeated context, limit output, cache stable content, or route simpler tasks. Evaluate every optimization so lower spending does not silently reduce quality.
+
+## Architecture
+
+Usage telemetry → cost breakdown → identify repetition → caching, budgets, and routing → quality/cost evaluation → rollout.
+
+## TypeScript example
+
+```ts
+type Budget = { maxInput: number; maxOutput: number; retries: number };
+const budget: Budget = { maxInput: 8000, maxOutput: 700, retries: 1 };
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Analyze 100 requests and choose one optimization. Define a quality metric that must not degrade.
+
+## Common mistakes
+
+Cutting context arbitrarily; sharing private caches across authorization boundaries; overlooking retry costs.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://platform.openai.com/docs/guides/prompt-caching>)
+
+## Quick quiz
+
+What increases cost beyond prompt tokens?
+
+## Completion criteria
+
+You have a cost baseline and an evaluation safeguard.

@@ -1,0 +1,61 @@
+---
+id: langsmith
+title: "LangSmith: tracing và dataset-driven iteration"
+description: "Dùng tracing để chẩn đoán pipeline và datasets để so sánh thay đổi."
+language: vi
+level: advanced
+durationMinutes: 45
+order: 5
+prerequisites:
+  - langchain-js
+tags:
+  - langsmith
+  - tracing
+  - evaluation
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Đọc trace nhiều bước; xử lý dữ liệu nhạy cảm; kết hợp trace debugging với eval dataset.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [langchain-js](/learn/langchain-js). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+Tracing ghi lại span của prompt, model, retriever và tool để tìm nơi latency hoặc lỗi phát sinh. Dataset-driven evaluation giúp so sánh thay đổi có hệ thống. Trace có thể chứa input/output nhạy cảm; cần redact, giới hạn retention và quyền truy cập trước khi bật trong production.
+
+## Kiến trúc
+
+Request ID → spans cho retrieve/model/tool → redaction → trace store → dataset cases → scorer/review → release decision.
+
+## Ví dụ TypeScript
+
+```ts
+type SpanSummary = { name: string; durationMs: number; error?: string };
+function slow(span: SpanSummary): boolean { return span.durationMs > 1200; }
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Tạo schema trace tối thiểu cho RAG. Đánh dấu field được lưu, redact field riêng tư, và chọn metric để phát hiện retrieval chậm.
+
+## Lỗi thường gặp
+
+Ghi toàn bộ PII vào trace; tối ưu theo một trace; nhầm log quan sát với metric đánh giá chất lượng.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://docs.langchain.com/langsmith/observability>)
+
+## Quiz nhanh
+
+Trace giúp chẩn đoán điều gì? Vì sao observability cần redaction policy?
+
+## Tiêu chí hoàn thành
+
+Bạn tìm được bước chậm từ trace mẫu mà không lưu dữ liệu nhạy cảm ngoài mục đích.

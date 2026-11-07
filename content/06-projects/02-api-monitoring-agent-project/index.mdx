@@ -1,0 +1,61 @@
+---
+id: api-monitoring-agent-project
+title: "Project: an API monitoring agent with controlled escalation"
+description: "Monitor API health, classify incidents, and prepare summaries for the on-call engineer."
+language: en
+level: advanced
+durationMinutes: 45
+order: 2
+prerequisites:
+  - agent-orchestration
+tags:
+  - project
+  - monitoring
+  - incident-response
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Separate detection rules from LLM summaries, constrain tools, and define deduplication and escalation policy.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [agent-orchestration](/learn/agent-orchestration). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+A monitoring agent should detect availability and latency thresholds with deterministic checks. An LLM can summarize filtered logs, suggest runbooks, and draft incident updates; restarting systems or rerouting traffic requires explicit policy and approval. Deduplicate alerts to prevent spam and preserve incident traces.
+
+## Architecture
+
+Metric alert → incident state and deduplication → retrieve runbook → summarize timestamped evidence → propose action → human approval → audit and close.
+
+## TypeScript example
+
+```ts
+type Incident = { key: string; severity: "warning" | "critical"; observedAt: string; evidence: string[] };
+function dedupeKey(i: Incident) { return `${i.key}:${i.severity}`; }
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Run a tabletop exercise for increased latency and 5xx errors. Define deterministic triggers, model input, on-call messages, and actions forbidden from automatic execution.
+
+## Common mistakes
+
+Expecting a model to detect every outage; logging secret headers; allowing alert storms or using stale evidence.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://github.com/humanlayer/12-factor-agents>)
+
+## Quick quiz
+
+Which parts should be deterministic? What enables incident deduplication and prevents dangerous actions?
+
+## Completion criteria
+
+The agent produces timestamped, evidence-backed summaries, deduplicates correctly, and stays within remediation permissions.

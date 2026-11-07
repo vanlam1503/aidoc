@@ -1,0 +1,61 @@
+---
+id: langsmith
+title: "LangSmith: tracing and dataset-driven iteration"
+description: "Use tracing to diagnose pipelines and datasets to compare changes."
+language: en
+level: advanced
+durationMinutes: 45
+order: 5
+prerequisites:
+  - langchain-js
+tags:
+  - langsmith
+  - tracing
+  - evaluation
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Read multistep traces, protect sensitive data, and combine trace debugging with evaluation datasets.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [langchain-js](/learn/langchain-js). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+Tracing records spans for prompts, models, retrievers, and tools to locate latency and failures. Dataset-driven evaluation compares changes systematically. Traces may contain sensitive inputs and outputs; establish redaction, retention, and access control before enabling production tracing.
+
+## Architecture
+
+Request ID → retrieval, model, and tool spans → redaction → trace store → dataset cases → scoring and review → release decision.
+
+## TypeScript example
+
+```ts
+type SpanSummary = { name: string; durationMs: number; error?: string };
+function slow(span: SpanSummary): boolean { return span.durationMs > 1200; }
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Define a minimal trace schema for RAG. Mark retained fields, redact private fields, and choose a metric that detects slow retrieval.
+
+## Common mistakes
+
+Logging personal data in traces; optimizing around one trace; confusing observational logs with quality evaluation metrics.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://docs.langchain.com/langsmith/observability>)
+
+## Quick quiz
+
+What can a trace help diagnose? Why does observability require a redaction policy?
+
+## Completion criteria
+
+You can locate a slow step in a sample trace without retaining sensitive data beyond its purpose.

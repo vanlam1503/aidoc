@@ -1,0 +1,87 @@
+---
+id: context-engineering
+title: "Context Engineering: choosing the right information for a model"
+description: "Budget instructions, history, tools, and retrieved information when building context."
+language: en
+level: basic
+durationMinutes: 40
+order: 3
+prerequisites:
+  - llm-fundamentals
+tags:
+  - context-engineering
+  - retrieval
+  - context-window
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Understand context engineering as selecting and arranging information around a model call. Balance instructions, history, retrieved data, and output budget.
+
+## Prerequisites
+
+Understand tokens and context windows. This lesson uses prompting concepts introduced earlier.
+
+## Theory
+
+Prompt engineering focuses on instructions; **context engineering** considers the full state visible to the model: system/developer instructions, the current question, history, tool results, relevant records, and retrieved documents. Supply the right information at the right time in a clearly organized structure.
+
+A typical pipeline identifies the task, selects sources, filters and ranks information, compresses or summarizes with safeguards, constructs bounded context, and records sources for verification. Preserve provenance and update times. History summaries may lose details, so retain structured state for important facts.
+
+## Architecture
+
+```text
+Request → intent/task → history selector ─┐
+                 → retrieval ─────────────┼→ budget + ordering → model
+                 → tool results ──────────┘                      → citations
+```
+
+Avoid duplicate, stale, or over-budget retrieval results. Label sources and distinguish quoted data from application instructions.
+
+## TypeScript example: fitting context into a budget
+
+```ts
+type Chunk = { text: string; tokenEstimate: number; source: string };
+
+function fitChunks(chunks: Chunk[], tokenLimit: number): Chunk[] {
+  const selected: Chunk[] = [];
+  let used = 0;
+  for (const chunk of chunks) {
+    if (used + chunk.tokenEstimate > tokenLimit) continue;
+    selected.push(chunk);
+    used += chunk.tokenEstimate;
+  }
+  return selected;
+}
+```
+
+This simple example assumes chunks are already ranked. Production systems need a model-compatible tokenizer, prioritization policy, and truncation checks.
+
+## Practice
+
+1. For “What is the refund policy for this order?”, identify data to retrieve and data that should not be sent.
+2. Design a 6,000-token budget for instructions, history, documents, and output.
+3. Decide how to handle two conflicting documents with different update dates.
+
+## Common mistakes
+
+- Treating a large context window as a reason to send all available data.
+- Cutting text mid-idea or discarding provenance.
+- Including irrelevant old history on every turn.
+- Mixing trusted instructions with unreviewed document content.
+
+## Further reading
+
+- \* Essential — [OpenAI: Retrieval](https://platform.openai.com/docs/guides/retrieval)
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook)
+
+## Quick quiz
+
+1. What does context engineering include beyond the prompt?
+2. Why should each retrieved chunk have a source identifier?
+3. When should history be summarized, and what risks does that create?
+
+## Completion criteria
+
+Draw a context pipeline for a task, set an explicit budget, and explain how the system preserves provenance.

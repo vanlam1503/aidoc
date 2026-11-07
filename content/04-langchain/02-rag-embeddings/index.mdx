@@ -1,0 +1,61 @@
+---
+id: rag-embeddings
+title: "RAG and embeddings: retrieve before generating"
+description: "Design ingestion and retrieval pipelines with source citations."
+language: en
+level: intermediate
+durationMinutes: 45
+order: 2
+prerequisites:
+  - context-engineering
+tags:
+  - rag
+  - embeddings
+  - retrieval
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Distinguish embeddings from generation, describe chunking and retrieval, and preserve citation provenance.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [context-engineering](/learn/context-engineering). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+**Retrieval-Augmented Generation (RAG)** combines retrieval from external knowledge sources with generation: the application retrieves relevant information and places it in context so a model can ground its response in those sources. An **embedding** is a numeric vector representation whose geometry can be useful for tasks such as similarity search. Vector distance is a signal, not proof of truth or relevance for every query. Chunk boundaries, metadata, freshness, and access control affect quality before prompting begins. [OpenAI: Retrieval](https://platform.openai.com/docs/guides/retrieval) · [OpenAI: Embeddings](https://platform.openai.com/docs/guides/embeddings)
+
+## Architecture
+
+Sources → parse and normalize → chunks with document IDs and versions → embeddings and index → query rewriting and filtering → retrieve and rerank → attributed context → answer and citations.
+
+## TypeScript example
+
+```ts
+type RetrievedChunk = { id: string; text: string; source: string; updatedAt: string };
+function cite(chunk: RetrievedChunk): string { return `[${chunk.id}] ${chunk.source}`; }
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Take five small documents. Choose chunk boundaries and metadata, write five questions, and check whether the expected passage appears in the top three results.
+
+## Common mistakes
+
+Confusing vector similarity with verification; using oversized chunks or losing headings; omitting access controls or source versions.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://platform.openai.com/docs/guides/embeddings>)
+
+## Quick quiz
+
+Where are embeddings used in the pipeline? What metadata is needed for citations?
+
+## Completion criteria
+
+You can measure retrieval recall on sample questions and trace citations to the correct document and passage.

@@ -1,0 +1,61 @@
+---
+id: codex-introduction
+title: "OpenAI Codex: coding agents in the development workflow"
+description: "Understand where Codex fits in software development and define tasks with verifiable outcomes."
+language: en
+level: intermediate
+durationMinutes: 45
+order: 1
+prerequisites:
+  - prompt-engineering-basics
+tags:
+  - codex
+  - agents
+  - software-engineering
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Distinguish a coding agent from autocomplete and write requests with a clear scope and acceptance criteria.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [prompt-engineering-basics](/learn/prompt-engineering-basics). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+Codex receives a goal, explores a repository, proposes or edits code, and reports the result. Quality depends on repository context, tool permissions, and review criteria. Assign observable outcomes, such as “add validation and tests for this input,” rather than vague requests.
+
+## Architecture
+
+Request → agent reads guidance and relevant code → bounded changes → diff and tests → developer review and merge decision.
+
+## TypeScript example
+
+```ts
+type Task = { goal: string; checks: string[] };
+const task: Task = { goal: "Validate request payloads", checks: ["reject invalid data", "add focused tests", "summarize changed files"] };
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Choose a small project bug. Write a task describing its goal, scope, constraints, and verification steps. Review the diff as a pull request.
+
+## Common mistakes
+
+Assigning tasks that are too broad; accepting a patch because the explanation sounds confident; forgetting appropriate verification.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://developers.openai.com/codex/>)
+
+## Quick quiz
+
+What should an agent task describe beyond its goal? Name two risks when reviewing an agent-generated patch.
+
+## Completion criteria
+
+You can assign a task with clear checks and point to evidence in the diff that its acceptance criteria are met.

@@ -1,0 +1,61 @@
+---
+id: agent-orchestration
+title: "Orchestration and human-in-the-loop"
+description: "Coordinate tasks, retries, approvals, and resumption while preserving accountability."
+language: en
+level: advanced
+durationMinutes: 45
+order: 8
+prerequisites:
+  - langgraph-state-machines
+tags:
+  - orchestration
+  - human-in-the-loop
+  - recovery
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Design human-waiting states and approval payloads, and reauthorize when execution resumes.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [langgraph-state-machines](/learn/langgraph-state-machines). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+Human-in-the-loop workflows suit permission approvals, financial effects, and uncertain information. Persist state, explain the pause, provide sufficient review context, and recheck authorization on resume. Bind approval to a specific action, data/version, and expiry to prevent time-of-check/time-of-use issues.
+
+## Architecture
+
+Plan → risk policy → wait_for_approval(action hash, actor, expiry) → human decision → reauthorize → execute idempotently → audit.
+
+## TypeScript example
+
+```ts
+type Approval = { actionId: string; payloadHash: string; approvedBy?: string; expiresAt: string };
+function isCurrent(a: Approval, hash: string, now: Date) { return a.payloadHash === hash && new Date(a.expiresAt) > now; }
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Design refund approval showing the amount, order, and reason. Changing the payload after approval must invalidate that approval.
+
+## Common mistakes
+
+Using a single global approval boolean; omitting expiry; failing to recheck the approver role or changed data.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://docs.langchain.com/oss/javascript/langgraph/interrupts>)
+
+## Quick quiz
+
+Which data should approval bind to? Why reauthorize when execution resumes?
+
+## Completion criteria
+
+You can show that an action runs only while its payload is unchanged, approval is current, and the approver remains authorized.

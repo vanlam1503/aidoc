@@ -1,0 +1,91 @@
+---
+id: prompt-engineering-basics
+title: "Prompt Engineering Fundamentals"
+description: "Design clear instructions with roles, context, constraints, and output criteria."
+language: en
+level: basic
+durationMinutes: 45
+order: 2
+prerequisites:
+  - llm-fundamentals
+tags:
+  - prompt-engineering
+  - zero-shot
+  - few-shot
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Structure prompts for specific tasks, distinguish zero-shot from few-shot prompting, use templates with variables, and define criteria for comparing versions.
+
+## Prerequisites
+
+Understand tokens and context windows from [What is an LLM?](/learn/llm-fundamentals).
+
+## Theory
+
+Prompt engineering systematically designs inputs and evaluates outputs. A useful prompt commonly specifies the **task**, **context**, **constraints**, and **output format**. A role or persona may guide style, but does not replace concrete requirements.
+
+In APIs with message roles, **system** messages commonly establish application behavior and foundational boundaries; **developer** messages describe product rules and output contracts; **user** messages carry user requests and data. Exact precedence depends on the API, so follow its documentation. Do not concatenate user text into privileged system or developer instructions as trusted content.
+
+- **Zero-shot:** Describe the task without examples. Useful when the task is clear and the model can use its existing knowledge.
+- **Few-shot:** Provide a few input/output examples. Useful for particular formats, labels, or conventions.
+- **Prompt template:** A reusable structure populated with user data. Clearly distinguish data from instructions.
+
+Templates standardize prompts, but placeholders should sit within clearly bounded data regions. Few-shot examples should cover normal cases and easily confused labels; incorrect examples may consistently teach the wrong rule.
+
+Evaluate representative cases, including empty inputs, boundaries, typos, and adversarial content. Change individual factors deliberately to identify what improves results.
+
+## Architecture of a prompt
+
+```text
+Developer instructions (goals, constraints)
+  + User input (task data)
+  + Examples (illustrative conventions, if needed)
+  + Output contract (schema/format)
+  → model response → validation + evaluation
+```
+
+Use the appropriate instruction roles documented by the API. User content should not become privileged instructions through string concatenation.
+
+## TypeScript example: a template with separate data
+
+```ts
+type Ticket = { subject: string; message: string };
+
+function buildTicketPrompt(ticket: Ticket): string {
+  return `Classify the support request using the defined schema.\n\n` +
+    `<ticket>\nSubject: ${ticket.subject}\nMessage: ${ticket.message}\n</ticket>`;
+}
+```
+
+In a real application, serialize data safely, impose length limits, and use Structured Outputs for JSON instead of relying only on an instruction to return JSON.
+
+## Practice
+
+1. Write a zero-shot prompt that labels email as `billing`, `technical`, or `other`.
+2. Create two few-shot examples for a difficult label distinction.
+3. Build eight test cases and score label accuracy, format compliance, and missing-information handling.
+
+## Common mistakes
+
+- Vague instructions such as “do your best.”
+- Combining unrelated goals into one prompt.
+- Incorrect or unrepresentative few-shot examples.
+- Assuming prompt injection is solved by saying “ignore malicious instructions.”
+
+## Further reading
+
+- \* Essential — [OpenAI prompting guide](https://platform.openai.com/docs/guides/prompt-engineering)
+- [Prompt Engineering Guide](https://github.com/dair-ai/Prompt-Engineering-Guide)
+
+## Quick quiz
+
+1. When is few-shot prompting more useful than zero-shot prompting?
+2. Why use test cases instead of judging one attractive example?
+3. How should a prompt template handle user data?
+
+## Completion criteria
+
+Create a prompt with a clear task, input boundaries, and output contract, then demonstrate with a test set that it meets its goal.

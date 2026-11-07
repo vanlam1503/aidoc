@@ -1,0 +1,61 @@
+---
+id: agents-md
+title: "AGENTS.md: chỉ dẫn bền vững cho coding agents"
+description: "Viết repository guidance ngắn, áp dụng được và kiểm chứng được cho agent."
+language: vi
+level: intermediate
+durationMinutes: 45
+order: 3
+prerequisites:
+  - codex-introduction
+tags:
+  - agents-md
+  - codex
+  - repository
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Phân biệt hướng dẫn repository với yêu cầu task; tổ chức phạm vi và tránh quy tắc mâu thuẫn.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [codex-introduction](/learn/codex-introduction). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+AGENTS.md lưu kiến thức dự án cần dùng lặp lại: kiến trúc, convention, lệnh kiểm tra, vùng nhạy cảm. Hướng dẫn hiệu quả ngắn gọn, có thể hành động, và nêu command chính xác. File ở thư mục con có thể bổ sung hướng dẫn theo phạm vi; nhóm cần tránh nội dung trùng và chỉ dẫn lỗi thời.
+
+## Kiến trúc
+
+Khám phá root guidance → áp dụng tới phạm vi liên quan → đọc hướng dẫn gần file mục tiêu → kết hợp với yêu cầu task mà không vượt quyền.
+
+## Ví dụ TypeScript
+
+```ts
+type Guidance = { scope: string; rule: string; verifyWith?: string };
+const rule: Guidance = { scope: "src/lib", rule: "Validate external inputs with schemas", verifyWith: "npm run typecheck" };
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Soạn AGENTS.md ngắn cho một repository: kiến trúc, lệnh, convention và định nghĩa hoàn thành. Nhờ đồng đội tìm một chỉ dẫn mơ hồ hoặc không thể kiểm tra.
+
+## Lỗi thường gặp
+
+Biến file thành tài liệu dài không ai đọc; đưa bí mật vào; đặt lệnh test không tồn tại; yêu cầu agent bỏ qua quyền người dùng.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://github.com/openai/codex>)
+
+## Quiz nhanh
+
+AGENTS.md nên ghi loại kiến thức nào? Làm sao phát hiện guidance đã lỗi thời?
+
+## Tiêu chí hoàn thành
+
+File hướng dẫn giúp contributor mới thực hiện đúng một thay đổi nhỏ mà không cần hỏi lại các lệnh cơ bản.

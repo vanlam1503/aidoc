@@ -1,0 +1,61 @@
+---
+id: langchain-js
+title: "LangChain.js: composing models, prompts, and runnables"
+description: "Use LangChain.js when composition abstractions reduce boilerplate with clear boundaries."
+language: en
+level: intermediate
+durationMinutes: 45
+order: 1
+prerequisites:
+  - responses-api
+tags:
+  - langchain
+  - typescript
+  - composition
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Describe Runnable composition, evaluate abstraction and dependency costs, and separate integrations from domain logic.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [responses-api](/learn/responses-api). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+LangChain.js provides integrations and composable runnables for prompts, models, parsers, retrievers, and tools. These abstractions help when swapping components or assembling a pipeline; a single simple call may need fewer layers with an official SDK. Track versions because the package ecosystem changes quickly.
+
+## Architecture
+
+Input schema → prompt and runnable → model integration → parser → domain validation; instrument meaningful steps.
+
+## TypeScript example
+
+```ts
+const chain = prompt.pipe(model).pipe(new StringOutputParser());
+const result = await chain.invoke({ question: "What is retrieval?" });
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Compare a JSON-output pipeline using an SDK directly with a LangChain implementation. Record layers, testability, dependency surface, and failure points.
+
+## Common mistakes
+
+Adding a framework before establishing the need; leaking framework-specific objects into domain logic; neglecting integration dependency versions.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://docs.langchain.com/oss/javascript/langchain/overview>)
+
+## Quick quiz
+
+What does a Runnable provide? When should a small service avoid adding LangChain?
+
+## Completion criteria
+
+You can justify a dependency using a specific need and test the parser/domain boundary.

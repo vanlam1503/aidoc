@@ -1,0 +1,61 @@
+---
+id: langchain-js
+title: "LangChain.js: compose model, prompt và runnable"
+description: "Dùng LangChain.js khi composition abstraction giảm boilerplate có kiểm soát."
+language: vi
+level: intermediate
+durationMinutes: 45
+order: 1
+prerequisites:
+  - responses-api
+tags:
+  - langchain
+  - typescript
+  - composition
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Mô tả Runnable composition; đánh giá abstraction và dependency; tách integration khỏi domain logic.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [responses-api](/learn/responses-api). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+LangChain.js cung cấp integrations và composable runnable cho prompt, model, parser, retriever và tool. Abstraction hữu ích khi cần thay thành phần hoặc lắp pipeline; với một lời gọi đơn giản, SDK chính thức có thể ít lớp hơn. Theo dõi phiên bản vì package ecosystem thay đổi nhanh.
+
+## Kiến trúc
+
+Input schema → prompt/runnable → model integration → parser → domain validation; observability bao quanh từng bước có ý nghĩa.
+
+## Ví dụ TypeScript
+
+```ts
+const chain = prompt.pipe(model).pipe(new StringOutputParser());
+const result = await chain.invoke({ question: "What is retrieval?" });
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+So sánh một pipeline trả JSON: viết flow dùng SDK trực tiếp và LangChain; ghi số lớp, khả năng test, dependency surface và điểm lỗi.
+
+## Lỗi thường gặp
+
+Thêm framework trước khi biết nhu cầu; để framework-specific objects lan vào domain; không pin hoặc cập nhật integration dependencies.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://docs.langchain.com/oss/javascript/langchain/overview>)
+
+## Quiz nhanh
+
+Runnable giúp gì? Khi nào không nên thêm LangChain vào một service nhỏ?
+
+## Tiêu chí hoàn thành
+
+Bạn có quyết định dependency dựa trên nhu cầu cụ thể và test được parser/domain boundary.

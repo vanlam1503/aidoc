@@ -1,0 +1,61 @@
+---
+id: observability
+title: "Observability: tracing, metrics và cảnh báo"
+description: "Đo latency, lỗi, chất lượng và chi phí để chẩn đoán hệ thống agent."
+language: vi
+level: advanced
+durationMinutes: 45
+order: 4
+prerequisites:
+  - agent-evaluations
+tags:
+  - observability
+  - metrics
+  - tracing
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Chọn metric có hành động; gắn correlation ID; thiết kế redaction và retention.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [agent-evaluations](/learn/agent-evaluations). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+Logs giải thích sự kiện, metrics chỉ ra xu hướng, traces nối các bước của một request. Với AI, cần thêm tool-call rate, retrieval hit, refusal, token và đánh giá chất lượng. Metric cần phân biệt theo phiên bản và use case; không log raw prompts mặc định nếu có PII.
+
+## Kiến trúc
+
+Request ID → structured logs + spans → aggregate latency/error/usage → alert threshold → trace sampling và redacted debugging.
+
+## Ví dụ TypeScript
+
+```ts
+type Usage = { inputTokens: number; outputTokens: number; durationMs: number; failed: boolean };
+function estimatedCost(u: Usage, inRate: number, outRate: number) { return u.inputTokens * inRate + u.outputTokens * outRate; }
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Đề xuất dashboard có 5 biểu đồ cho agent RAG và một alert phát hiện tăng lỗi citation; ghi rõ dữ liệu không được đưa vào log.
+
+## Lỗi thường gặp
+
+Thu thập metric nhưng không có owner/action; ghi PII vào log; đặt alert theo tổng trung bình che lỗi nhóm nhỏ.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://docs.langchain.com/langsmith/observability>)
+
+## Quiz nhanh
+
+Log, metric và trace khác nhau thế nào? Nêu metric đặc thù cho RAG.
+
+## Tiêu chí hoàn thành
+
+Bạn nối được symptom tới trace an toàn và xác định hành động vận hành từ alert.

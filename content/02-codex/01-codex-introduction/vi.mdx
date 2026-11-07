@@ -1,0 +1,61 @@
+---
+id: codex-introduction
+title: "OpenAI Codex: coding agent trong quy trình phát triển"
+description: "Định vị Codex trong vòng đời phát triển phần mềm và giao việc có thể kiểm chứng."
+language: vi
+level: intermediate
+durationMinutes: 45
+order: 1
+prerequisites:
+  - prompt-engineering-basics
+tags:
+  - codex
+  - agents
+  - software-engineering
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Phân biệt coding agent với autocomplete; viết yêu cầu có scope và tiêu chí nghiệm thu.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [prompt-engineering-basics](/learn/prompt-engineering-basics). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+Codex nhận mục tiêu, khám phá repository, đề xuất hoặc sửa code và phản hồi kết quả. Chất lượng phụ thuộc vào context repository, quyền công cụ, và tiêu chí review. Hãy giao việc theo kết quả quan sát được, ví dụ “thêm validation và test cho input này”, thay vì yêu cầu chung chung.
+
+## Kiến trúc
+
+Yêu cầu → agent đọc hướng dẫn và code liên quan → thay đổi có giới hạn → diff/test → người phát triển review và quyết định merge.
+
+## Ví dụ TypeScript
+
+```ts
+type Task = { goal: string; checks: string[] };
+const task: Task = { goal: "Validate request payloads", checks: ["reject invalid data", "add focused tests", "summarize changed files"] };
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Chọn một bug nhỏ trong project, viết task theo mục tiêu, scope, điều kiện không được thay đổi và cách kiểm chứng. Review diff như một pull request.
+
+## Lỗi thường gặp
+
+Giao nhiệm vụ quá rộng; xem patch là đúng chỉ vì agent giải thích tự tin; quên yêu cầu chạy kiểm tra phù hợp.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://developers.openai.com/codex/>)
+
+## Quiz nhanh
+
+Một yêu cầu agent tốt cần mô tả những gì ngoài mục tiêu? Nêu hai rủi ro khi review patch do agent tạo.
+
+## Tiêu chí hoàn thành
+
+Bạn có thể giao task có tiêu chí kiểm tra rõ ràng và chỉ ra bằng chứng trong diff rằng kết quả đạt yêu cầu.

@@ -1,0 +1,91 @@
+---
+id: prompt-engineering-basics
+title: Prompt Engineering Fundamentals
+description: Thiết kế chỉ dẫn rõ ràng bằng role, context, constraints và tiêu chí đầu ra.
+language: vi
+level: basic
+durationMinutes: 45
+order: 2
+prerequisites:
+  - llm-fundamentals
+tags:
+  - prompt-engineering
+  - zero-shot
+  - few-shot
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Bạn sẽ cấu trúc prompt cho tác vụ cụ thể, phân biệt zero-shot và few-shot, dùng template có biến, và xây dựng tiêu chí để so sánh các phiên bản.
+
+## Điều kiện tiên quyết
+
+Nắm được token và context window ở bài [LLM là gì?](/learn/llm-fundamentals).
+
+## Lý thuyết
+
+Prompt engineering là quá trình thiết kế đầu vào và đánh giá đầu ra một cách có hệ thống. Một prompt hữu ích thường nêu rõ **task**, **context**, **constraints**, và **output format**. Role hoặc persona có thể giúp định hướng phong cách, nhưng không thay thế yêu cầu cụ thể.
+
+Trong các API hỗ trợ message roles, **system** thường đặt hành vi và giới hạn nền tảng của ứng dụng; **developer** mô tả quy tắc sản phẩm và output contract; **user** mang yêu cầu và dữ liệu của người dùng. Mức ưu tiên chính xác tùy API, nên luôn theo tài liệu của model đang dùng. Không ghép văn bản user vào developer/system content như thể đó là chỉ dẫn đáng tin.
+
+- **Zero-shot:** mô tả tác vụ mà không đưa ví dụ. Phù hợp khi tác vụ rõ và model làm tốt theo kiến thức sẵn có.
+- **Few-shot:** đưa một số ví dụ input/output. Hữu ích khi cần định dạng, nhãn, hoặc quy ước đặc thù.
+- **Prompt template:** khung tái sử dụng có các biến được điền từ dữ liệu người dùng. Cần phân biệt rõ dữ liệu với chỉ dẫn để tránh nhập nhằng.
+
+Template giúp chuẩn hóa prompt nhưng phải đặt placeholder trong vùng dữ liệu có ranh giới rõ. Few-shot examples nên phản ánh cả trường hợp bình thường lẫn cặp nhãn dễ nhầm; ví dụ sai có thể dạy model quy tắc sai ổn định hơn.
+
+Hãy đánh giá trên tập trường hợp đại diện, gồm cả input rỗng, biên, lỗi chính tả và nội dung đối kháng. Thay đổi từng yếu tố có chủ đích để biết điều gì tạo cải thiện.
+
+## Kiến trúc của một prompt
+
+```text
+Developer instructions (mục tiêu, giới hạn)
+  + User input (dữ liệu tác vụ)
+  + Examples (quy ước minh họa, nếu cần)
+  + Output contract (schema/format)
+  → model response → validation + evaluation
+```
+
+Trong các API hỗ trợ nhiều vai trò, dùng đúng tầng chỉ dẫn theo tài liệu API. Nội dung người dùng không nên được nối thành chỉ dẫn đặc quyền.
+
+## Ví dụ TypeScript: template có dữ liệu phân tách
+
+```ts
+type Ticket = { subject: string; message: string };
+
+function buildTicketPrompt(ticket: Ticket): string {
+  return `Phân loại yêu cầu hỗ trợ theo schema đã định.\n\n` +
+    `<ticket>\nSubject: ${ticket.subject}\nMessage: ${ticket.message}\n</ticket>`;
+}
+```
+
+Trong ứng dụng thực tế, serialize dữ liệu an toàn, áp giới hạn độ dài, và dùng Structured Outputs cho JSON thay vì dựa vào lời nhắc “hãy trả JSON”.
+
+## Thực hành
+
+1. Viết zero-shot prompt để phân loại email thành `billing`, `technical`, hoặc `other`.
+2. Tạo hai ví dụ few-shot cho một nhãn khó phân biệt.
+3. Lập 8 test case và chấm đúng nhãn, tuân thủ format, và xử lý trường hợp thiếu thông tin.
+
+## Lỗi thường gặp
+
+- Viết chỉ dẫn mơ hồ như “hãy làm tốt nhất có thể”.
+- Nhồi nhiều mục tiêu không liên quan vào một prompt.
+- Dùng few-shot ví dụ sai hoặc không đại diện.
+- Cho rằng prompt injection có thể giải quyết chỉ bằng câu “ignore malicious instructions”.
+
+## Đọc thêm
+
+- [OpenAI prompting guide](https://platform.openai.com/docs/guides/prompt-engineering)
+- [Prompt Engineering Guide](https://github.com/dair-ai/Prompt-Engineering-Guide)
+
+## Quiz nhanh
+
+1. Khi nào few-shot có lợi hơn zero-shot?
+2. Vì sao cần test case thay vì đánh giá bằng một ví dụ đẹp?
+3. Prompt template cần xử lý dữ liệu người dùng như thế nào?
+
+## Tiêu chí hoàn thành
+
+Bạn hoàn thành khi tạo được prompt có task, input boundaries và output contract rõ ràng, rồi chứng minh được bằng test set rằng nó đáp ứng mục tiêu.

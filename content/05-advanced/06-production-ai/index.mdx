@@ -1,0 +1,61 @@
+---
+id: production-ai
+title: "Production deployment and CI/CD for AI applications"
+description: "Deploy safely with secret management, staged rollouts, migrations, and rollback."
+language: en
+level: advanced
+durationMinutes: 45
+order: 6
+prerequisites:
+  - observability
+tags:
+  - production
+  - ci-cd
+  - deployment
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Design a release pipeline, check secrets and migrations, and define rollback for model behavior changes.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [observability](/learn/observability). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+AI deployment versions include code, prompts, model configuration, retrieval indexes, and evaluators. CI should run type checks, unit/integration tests, content/evaluation gates, and secret scans. A staged rollout exposes limited traffic while monitoring cost, latency, refusals, and quality. Database changes need backward compatibility so the application can roll back.
+
+## Architecture
+
+Commit → CI checks and evaluations → build artifact → staging smoke tests and canary → approve promotion → monitor SLOs and quality → roll back version, configuration, or index.
+
+## TypeScript example
+
+```ts
+type Release = { app: string; promptVersion: string; model: string; indexVersion: string };
+const release: Release = { app: "1.8.0", promptVersion: "support-v12", model: "configured-model", indexVersion: "kb-2026-10-31" };
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Write a release checklist for a prompt change alongside a database schema change. Select canary metrics, rollback triggers, and compatibility checks for an older index.
+
+## Common mistakes
+
+Deploying unversioned prompt changes; overlooking API key rotation; applying destructive migrations without a recovery plan.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://12factoragents.com/>)
+
+## Quick quiz
+
+What must an AI release artifact version? Name one quality-based and one operational rollback trigger.
+
+## Completion criteria
+
+You can explain a commit-to-canary pipeline with an executable rollback plan.

@@ -1,0 +1,61 @@
+---
+id: codex-configuration
+title: "Codex configuration và permission boundaries"
+description: "Tùy chỉnh cấu hình theo project mà vẫn giữ quyền minh bạch và dễ review."
+language: vi
+level: intermediate
+durationMinutes: 45
+order: 7
+prerequisites:
+  - agents-md
+tags:
+  - codex
+  - configuration
+  - permissions
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Nhận diện cấu hình theo scope; giới hạn tool; giải thích cách cấu hình ảnh hưởng hành vi agent.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [agents-md](/learn/agents-md). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+Cấu hình có thể chọn model, hướng dẫn, môi trường và permission. Ưu tiên thiết lập dự án có thể review cùng code; tránh thay đổi scope toàn máy khi chỉ cần project local. Quyền network, shell và ghi file có thể tạo side effect nên mô tả lý do và cách kiểm tra.
+
+## Kiến trúc
+
+Defaults → user config → project config → session constraints; quyền hiệu lực là giao của policy, runtime sandbox và approval.
+
+## Ví dụ TypeScript
+
+```ts
+type Permissions = { read: boolean; writePaths: string[]; network: "deny" | "allow" };
+const projectPolicy: Permissions = { read: true, writePaths: ["src", "tests"], network: "deny" };
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Viết cấu hình cho repo docs-only, rồi cho app repo có test. So sánh quyền, scope áp dụng và nguy cơ nếu cấu hình được commit.
+
+## Lỗi thường gặp
+
+Sao chép config mẫu không hiểu quyền; để project config xin quyền rộng hơn cần thiết; commit credential.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://developers.openai.com/codex/>)
+
+## Quiz nhanh
+
+Cấu hình cấp project khác cấp user thế nào? Kể tên hai quyền có thể tạo side effect.
+
+## Tiêu chí hoàn thành
+
+Bạn review được effective permissions và giải thích mọi ngoại lệ có trong config.

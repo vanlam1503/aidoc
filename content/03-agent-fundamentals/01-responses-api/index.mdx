@@ -1,0 +1,63 @@
+---
+id: responses-api
+title: "OpenAI Responses API: request and output lifecycle"
+description: "Call the Responses API from the server and understand inputs, output items, and response flow."
+language: en
+level: intermediate
+durationMinutes: 45
+order: 1
+prerequisites:
+  - structured-outputs
+tags:
+  - openai
+  - responses-api
+  - typescript
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Separate the server adapter from the UI, validate input, and handle responses and errors without exposing secrets.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [structured-outputs](/learn/structured-outputs). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+The Responses API creates model responses that may contain text, tool calls, and other item types. Keep the SDK client on the server to protect the API key. Choose a model for the task, bound inputs and outputs, attach request IDs, and handle timeouts, rate limits, and refusals.
+
+## Architecture
+
+UI → route handler validates payload → service calls SDK → normalize response → UI renders status; secrets stay in the server environment.
+
+## TypeScript example
+
+```ts
+import OpenAI from "openai";
+const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const response = await client.responses.create({ model: process.env.OPENAI_MODEL!, input: "Explain context windows briefly." });
+const answer = response.output_text;
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Design a route that accepts questions up to 4,000 characters. Define states for success, refusal, timeout, quota exhaustion, and a missing API key.
+
+## Common mistakes
+
+Creating the SDK in a client component; assuming all output is plain text; logging requests with tokens or private data.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://platform.openai.com/docs/guides/text>)
+
+## Quick quiz
+
+Why must the API key stay on the server? Name two API failure cases that need distinct handling.
+
+## Completion criteria
+
+You can write an adapter with validation, timeouts, and error mapping that does not expose internal exceptions.

@@ -1,0 +1,61 @@
+---
+id: codex-mcp
+title: "MCP fundamentals: kết nối model với tools và context"
+description: "Hiểu host, client, server, tools, resources và ranh giới quyền của MCP."
+language: vi
+level: intermediate
+durationMinutes: 45
+order: 5
+prerequisites:
+  - codex-cli
+tags:
+  - mcp
+  - protocol
+  - tools
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Vẽ được luồng MCP; phân biệt tools và resources; xác định điểm cần kiểm tra quyền.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [codex-cli](/learn/codex-cli). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+**Model Context Protocol (MCP)** là một protocol mở để ứng dụng kết nối với external systems qua servers. Trong kiến trúc MCP, host điều phối ứng dụng và tạo client connections; client duy trì kết nối protocol tới server; server cung cấp tools, resources hoặc prompts. MCP chuẩn hóa giao tiếp, không tự xác thực business authorization hay làm server đáng tin. Cần kiểm tra danh tính server, scope dữ liệu, tham số và hành động ghi. [MCP: Architecture](https://modelcontextprotocol.io/docs/learn/architecture)
+
+## Kiến trúc
+
+Host client khởi tạo kết nối → discovery trả capability → user/agent chọn tool → server xử lý request → host hiển thị kết quả đã gắn nguồn.
+
+## Ví dụ TypeScript
+
+```ts
+type ToolCall = { name: "search_docs" | "create_issue"; input: Record<string, string> };
+function needsApproval(call: ToolCall): boolean { return call.name === "create_issue"; }
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Vẽ luồng cho server chỉ đọc tài liệu và server tạo issue. Đánh dấu dữ liệu đi ra khỏi host và hành động cần human approval.
+
+## Lỗi thường gặp
+
+Coi MCP server như plugin đáng tin mặc định; bật tool ghi khi chỉ cần đọc; cho rằng protocol sẽ kiểm tra business authorization.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://modelcontextprotocol.io/introduction>)
+
+## Quiz nhanh
+
+Host chịu trách nhiệm gì? Vì sao server tool vẫn cần policy kiểm tra ở application?
+
+## Tiêu chí hoàn thành
+
+Bạn mô tả được tool discovery, invocation và trust boundary trong một kết nối MCP.

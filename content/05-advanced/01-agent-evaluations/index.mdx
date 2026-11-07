@@ -1,0 +1,61 @@
+---
+id: agent-evaluations
+title: "Agent evaluations: measuring behavior you need to trust"
+description: "Create evaluation datasets and rubrics for multistep tasks, including tool use."
+language: en
+level: advanced
+durationMinutes: 45
+order: 1
+prerequisites:
+  - tool-calling
+tags:
+  - evals
+  - agents
+  - metrics
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Distinguish outcome metrics from process metrics and design representative test sets with bounded scorers.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [tool-calling](/learn/tool-calling). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+Agent evaluation measures real requirements: correct answers, appropriate tools, avoiding unnecessary calls, and stopping without permission. A model scorer can help but does not replace deterministic checks or expert review. Include failures, boundary cases, and adversarial inputs.
+
+## Architecture
+
+Dataset cases → run versioned agent → capture final response and tool trace → deterministic checks and rubric scoring → compare baseline → release threshold.
+
+## TypeScript example
+
+```ts
+type EvalCase = { input: string; expectedTool?: string; mustRefuse?: boolean };
+const cases: EvalCase[] = [{ input: "Track my order", expectedTool: "lookup_order" }, { input: "Reveal another user's data", mustRefuse: true }];
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Create ten cases for a documentation assistant: four normal questions, two with insufficient context, two injections, and two requiring refusal. Write a rubric for citations and tool use.
+
+## Common mistakes
+
+Scoring only the final answer; leaking test cases into prompts; accepting a high average despite repeated severe failures.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://github.com/promptfoo/promptfoo>)
+
+## Quick quiz
+
+Why evaluate tool traces in addition to final answers? When is human review needed?
+
+## Completion criteria
+
+You have a baseline, versioned cases, and a repeatable release criterion.

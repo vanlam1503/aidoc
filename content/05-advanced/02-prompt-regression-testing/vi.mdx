@@ -1,0 +1,61 @@
+---
+id: prompt-regression-testing
+title: "Prompt regression testing và release gates"
+description: "Bắt regression do thay prompt, model hoặc retrieval bằng fixtures/version rõ ràng."
+language: vi
+level: advanced
+durationMinutes: 45
+order: 2
+prerequisites:
+  - agent-evaluations
+tags:
+  - prompt-testing
+  - regression
+  - ci
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Thiết kế fixture ổn định; so sánh metrics; đặt gate theo severity thay vì một điểm tổng.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [agent-evaluations](/learn/agent-evaluations). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+Prompt thay đổi có thể cải thiện một nhóm input nhưng làm hỏng nhóm khác. Regression suite nên version prompt, model configuration, retrieval corpus snapshot và evaluator. Chênh lệch output thô thường nhiễu; theo dõi tiêu chí hành vi và lưu trace cần thiết để điều tra.
+
+## Kiến trúc
+
+PR → chạy curated eval set → so sánh baseline và candidate → gate theo critical failures/quality delta → review diff → promote version.
+
+## Ví dụ TypeScript
+
+```ts
+type Result = { passed: number; criticalFailures: number };
+function mayRelease(r: Result): boolean { return r.criticalFailures === 0 && r.passed >= 95; }
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Chọn release gate cho agent hỗ trợ. Xác định metric fatal, mức giảm cho phép và quy trình update baseline khi hành vi đổi có chủ đích.
+
+## Lỗi thường gặp
+
+Chỉ so exact text; tự động chấp nhận baseline mới; chạy eval khác môi trường production mà không ghi version.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://platform.openai.com/docs/guides/evals>)
+
+## Quiz nhanh
+
+Vì sao exact-output assertion mong manh với LLM? Baseline nên đổi khi nào?
+
+## Tiêu chí hoàn thành
+
+Bạn có gate bắt critical regression và cơ chế review baseline change.

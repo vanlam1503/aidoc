@@ -1,0 +1,61 @@
+---
+id: rag-embeddings
+title: "RAG và embeddings: truy xuất trước khi sinh"
+description: "Thiết kế ingestion và retrieval pipeline có trích dẫn nguồn."
+language: vi
+level: intermediate
+durationMinutes: 45
+order: 2
+prerequisites:
+  - context-engineering
+tags:
+  - rag
+  - embeddings
+  - retrieval
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Phân biệt embedding với generation; mô tả chunking/retrieval; thiết kế citation provenance.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [context-engineering](/learn/context-engineering). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+**Retrieval-Augmented Generation (RAG)** kết hợp retrieval từ nguồn tri thức bên ngoài với generation: ứng dụng truy xuất thông tin liên quan và đưa chúng vào context để model tạo phản hồi có căn cứ từ nguồn đó. **Embedding** là vector số biểu diễn nội dung trong không gian mà quan hệ hình học có thể hữu ích cho tác vụ như similarity search; khoảng cách vector chỉ là tín hiệu, không chứng minh nội dung đúng hay liên quan với mọi query. Chunk boundaries, metadata, freshness và quyền truy cập quyết định chất lượng trước cả prompt. [OpenAI: Retrieval](https://platform.openai.com/docs/guides/retrieval) · [OpenAI: Embeddings](https://platform.openai.com/docs/guides/embeddings)
+
+## Kiến trúc
+
+Nguồn → parse/normalize → chunks có document ID/version → embeddings/index → query rewrite/filter → retrieve/rerank → context có nguồn → answer + citations.
+
+## Ví dụ TypeScript
+
+```ts
+type RetrievedChunk = { id: string; text: string; source: string; updatedAt: string };
+function cite(chunk: RetrievedChunk): string { return `[${chunk.id}] ${chunk.source}`; }
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Lấy bộ 5 tài liệu nhỏ, chọn chiến lược chunking, định metadata, tạo 5 câu hỏi và kiểm tra liệu gold passage có nằm trong top 3.
+
+## Lỗi thường gặp
+
+Nhầm vector similarity với xác minh; chunk quá lớn hoặc cắt mất tiêu đề; bỏ ACL hoặc version nguồn.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://platform.openai.com/docs/guides/embeddings>)
+
+## Quiz nhanh
+
+Embedding dùng cho bước nào? Cần lưu metadata gì để câu trả lời có thể trích dẫn?
+
+## Tiêu chí hoàn thành
+
+Bạn đo được retrieval recall trên bộ câu hỏi mẫu và giữ citation về đúng tài liệu/đoạn.

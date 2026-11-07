@@ -1,0 +1,73 @@
+---
+id: langgraph-state-machines
+title: "LangGraph state machines and conditional routing"
+description: "Model an agent workflow with nodes, edges, state, and termination conditions."
+language: en
+level: advanced
+durationMinutes: 45
+order: 4
+prerequisites:
+  - langchain-js
+tags:
+  - langgraph
+  - state-machine
+  - routing
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Design typed state, draw a bounded graph, and prevent uncontrolled loops or undefined routes.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [langchain-js](/learn/langchain-js). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+LangGraph represents workflows as graphs with shared state. Nodes perform small steps, edges choose subsequent steps, and conditional routing branches on state. An explicit graph supports retries, human review, and transition tests. Design termination conditions before adding an agent loop.
+
+## Architecture
+
+START → classify → route to answer, retrieval, or approval → validate → END; state passes through nodes under a defined schema.
+
+```mermaid
+flowchart TD
+  S([START]) --> C[classify]
+  C -->|needs sources| R[retrieve]
+  C -->|direct answer| A[answer]
+  R --> V[validate evidence]
+  V -->|grounded| A
+  V -->|insufficient| H[human review]
+  A --> E([END])
+  H --> E
+```
+
+## TypeScript example
+
+```ts
+type State = { question: string; route: "retrieve" | "answer"; attempts: number };
+function route(state: State) { return state.attempts > 2 ? "answer" : state.route; }
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Draw a question-answering workflow with retrieval, insufficient-evidence, and escalation branches. Specify termination conditions and valid state transitions.
+
+## Common mistakes
+
+Building confusing graphs with oversized nodes; non-exhaustive conditional routing; forgetting retry limits.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://docs.langchain.com/oss/javascript/langgraph/overview>)
+
+## Quick quiz
+
+What are nodes and edges responsible for? Name two ways to ensure the graph terminates.
+
+## Completion criteria
+
+You can test each transition and show every branch reaches END or an explicit waiting state.

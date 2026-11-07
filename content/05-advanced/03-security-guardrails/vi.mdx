@@ -1,0 +1,65 @@
+---
+id: security-guardrails
+title: "Security và guardrails cho AI applications"
+description: "Áp defense in depth cho prompt injection, dữ liệu nhạy cảm và tool permissions."
+language: vi
+level: advanced
+durationMinutes: 45
+order: 3
+prerequisites:
+  - prompt-injection-fundamentals
+tags:
+  - security
+  - guardrails
+  - privacy
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Vẽ threat model; phân biệt input/output checks với access control; xác định fail-closed behavior.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [prompt-injection-fundamentals](/learn/prompt-injection-fundamentals). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+Guardrails gồm kiểm soát ở nhiều tầng: authentication, authorization, input/output validation, tool allowlists, data minimization, human review và monitoring. Model moderation/classification chỉ là tín hiệu bổ sung. Threat model phải xét người dùng, nội dung RAG, tool output, tenant boundary và hành động có tác động.
+
+## Kiến trúc
+
+Untrusted input → validation/classification → least-privilege tool surface → policy check per call → output filter → audit + incident response.
+
+## Ví dụ TypeScript
+
+```ts
+type PolicyDecision = "allow" | "deny" | "review";
+function decide(action: string, amount: number): PolicyDecision {
+  if (action === "refund" && amount > 0) return "review";
+  if (!["lookup", "draft", "refund"].includes(action)) return "deny";
+  return "allow";
+}
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Threat-model một agent có thể đọc đơn và tạo hoàn tiền. Vẽ trust boundaries, quyền theo user, approval threshold và kịch bản incident.
+
+## Lỗi thường gặp
+
+Dựa vào system prompt như sandbox; cho tool tin vào user ID từ model; lọc output nhưng bỏ authorization phía server.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://owasp.org/www-project-top-10-for-large-language-model-applications/>)
+
+## Quiz nhanh
+
+Guardrail nào phải nằm ngoài model? Vì sao cần human review cho hành động rủi ro?
+
+## Tiêu chí hoàn thành
+
+Bạn có threat model và kiểm soát độc lập với model cho mọi side effect.

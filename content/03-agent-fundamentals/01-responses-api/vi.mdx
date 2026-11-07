@@ -1,0 +1,63 @@
+---
+id: responses-api
+title: "OpenAI Responses API: vòng đời request và output"
+description: "Gọi Responses API từ server, hiểu input, output items và luồng phản hồi."
+language: vi
+level: intermediate
+durationMinutes: 45
+order: 1
+prerequisites:
+  - structured-outputs
+tags:
+  - openai
+  - responses-api
+  - typescript
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Tách server adapter khỏi UI; validate input; xử lý response và lỗi mà không lộ secret.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [structured-outputs](/learn/structured-outputs). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+Responses API cung cấp một giao diện tạo model response có thể chứa văn bản, tool call và nhiều loại item. Client SDK nên nằm server-side để bảo vệ API key. Ứng dụng cần chọn model theo yêu cầu, giới hạn input/output, gắn request ID và xử lý timeout, rate limit cùng refusal.
+
+## Kiến trúc
+
+UI → route handler validate payload → service gọi SDK → normalize response → UI render trạng thái; secrets chỉ nằm trong server environment.
+
+## Ví dụ TypeScript
+
+```ts
+import OpenAI from "openai";
+const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const response = await client.responses.create({ model: process.env.OPENAI_MODEL!, input: "Explain context windows briefly." });
+const answer = response.output_text;
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Thiết kế route nhận câu hỏi có giới hạn 4.000 ký tự. Viết bảng trạng thái cho success, refusal, timeout, quota và API key thiếu.
+
+## Lỗi thường gặp
+
+Tạo SDK ở client component; tin rằng mọi output chỉ có text; log request kèm token hoặc dữ liệu riêng tư.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://platform.openai.com/docs/guides/text>)
+
+## Quiz nhanh
+
+Vì sao API key phải giữ server-side? Nêu hai lỗi API cần xử lý riêng.
+
+## Tiêu chí hoàn thành
+
+Bạn viết được adapter có validation, timeout/error mapping và không trả nguyên exception nội bộ cho người dùng.

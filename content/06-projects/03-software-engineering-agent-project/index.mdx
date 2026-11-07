@@ -1,0 +1,61 @@
+---
+id: software-engineering-agent-project
+title: "Project: a software engineering agent with checkpoints and approvals"
+description: "Combine repository context, planning, allowlisted tools, test loops, and human review."
+language: en
+level: advanced
+durationMinutes: 45
+order: 3
+prerequisites:
+  - agent-evaluations
+tags:
+  - project
+  - software-engineering
+  - orchestration
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Design a bounded multistep workflow, require tests, and obtain approval for external side effects.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [agent-evaluations](/learn/agent-evaluations). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+A software engineering agent needs more than a single prompt: scope files, read guidance, plan, make small edits, run allowed tests, and report. Bound iterations and spending; dependency changes, migrations, and pushes need separate approval. The user reviews the final diff.
+
+## Architecture
+
+Issue → inspect repository and guidance → plan checkpoint → bounded edits → tests and lint → summarize diff → approve risky actions → user review and merge.
+
+## TypeScript example
+
+```ts
+type RunBudget = { maxSteps: number; maxFilesChanged: number; maxRetries: number };
+const limits: RunBudget = { maxSteps: 12, maxFilesChanged: 20, maxRetries: 2 };
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Choose a small issue, allowlist commands and files, and checkpoint after planning and before migrations. Evaluate correctness, passing tests, scope discipline, and summary usefulness.
+
+## Common mistakes
+
+Changing too many files; weakening tests to hide a bug; retrying until a green run; pushing or deploying without approval.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://github.com/openai/codex>)
+
+## Quick quiz
+
+Which steps need checkpoints? Define stopping conditions and necessary approval gates.
+
+## Completion criteria
+
+You can run a bounded workflow with passing tests, an in-scope diff, and approval gates the model cannot bypass.

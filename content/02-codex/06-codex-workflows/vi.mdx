@@ -1,0 +1,61 @@
+---
+id: codex-workflows
+title: "Codex workflows: review, sửa lỗi và bàn giao patch"
+description: "Dùng agent cho code review và sửa lỗi với đầu vào, bằng chứng và giới hạn rõ."
+language: vi
+level: intermediate
+durationMinutes: 45
+order: 6
+prerequisites:
+  - agents-md
+tags:
+  - codex
+  - code-review
+  - workflow
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Tổ chức workflow review; phân loại finding theo bằng chứng và mức độ; tránh sửa ngoài scope.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [agents-md](/learn/agents-md). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+Agent review code nên tìm lỗi có thể dẫn đến hành vi sai, lỗ hổng hoặc regression; mỗi finding cần chỉ vị trí, điều kiện tái hiện và tác động. Reviewer con người xác nhận vì model có thể báo sai hoặc bỏ sót. Workflow sửa lỗi nên giữ reproduction test để ngăn lỗi quay lại.
+
+## Kiến trúc
+
+Diff + requirements + test context → agent findings có severity/evidence → maintainer triage → targeted fix → regression test → review lại.
+
+## Ví dụ TypeScript
+
+```ts
+type Finding = { file: string; line: number; impact: string; evidence: string; confidence: number };
+function actionable(f: Finding): boolean { return f.evidence.length > 0 && f.impact.length > 0; }
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Dùng một diff nhỏ, yêu cầu review chỉ tìm correctness/security. Ghi finding, kiểm tra thủ công, thêm test cho một lỗi thật và chạy lại review.
+
+## Lỗi thường gặp
+
+Yêu cầu review toàn repository không nêu phạm vi; chấp nhận finding thiếu evidence; để agent tự merge hoặc deploy.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://github.com/openai/codex>)
+
+## Quiz nhanh
+
+Một code review finding cần những trường thông tin nào? Vì sao false positive phải được ghi nhận?
+
+## Tiêu chí hoàn thành
+
+Bạn chứng minh được finding bằng test hoặc code path và giữ được trace từ finding đến fix.

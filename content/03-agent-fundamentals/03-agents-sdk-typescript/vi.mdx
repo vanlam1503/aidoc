@@ -1,0 +1,64 @@
+---
+id: agents-sdk-typescript
+title: "OpenAI Agents SDK với TypeScript"
+description: "Tổ chức agent, tool, handoff và trace bằng SDK chính thức."
+language: vi
+level: intermediate
+durationMinutes: 45
+order: 3
+prerequisites:
+  - tool-calling
+tags:
+  - openai
+  - agents-sdk
+  - typescript
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Nêu các đối tượng agent/tool/handoff; chọn khi nào SDK đơn giản hơn orchestration tự viết.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [tool-calling](/learn/tool-calling). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+Trong Agents SDK, **agent** là đơn vị workflow kết hợp model và instructions, cùng các hành vi runtime tùy chọn như tools, guardrails, MCP servers, handoffs và structured outputs. Agents SDK cung cấp abstraction cho agent loop, tool, handoff và tracing. Dùng SDK khi các tính năng này giải quyết nhu cầu thật; vẫn cần hiểu vòng lặp và giới hạn. Đặt instructions, tool contracts và output validation cạnh agent definition để dễ review. [OpenAI: Agent definitions](https://developers.openai.com/api/docs/guides/agents/define-agents)
+
+## Kiến trúc
+
+Request → triage agent → (handoff có điều kiện) specialist → tool execution có policy → final response và trace.
+
+## Ví dụ TypeScript
+
+```ts
+const supportAgent = new Agent({
+  name: "Support",
+  instructions: "Answer from approved support sources.",
+  tools: [lookupOrder],
+});
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Xây sơ đồ agent hỗ trợ chỉ có một tool read-only; thêm điều kiện handoff sang người thật khi thiếu dữ kiện hoặc cần sửa giao dịch.
+
+## Lỗi thường gặp
+
+Thêm nhiều agent dù một agent đủ; để handoff làm mất context cần thiết; coi SDK tracing là kiểm soát bảo mật.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://github.com/openai/openai-agents-js>)
+
+## Quiz nhanh
+
+Handoff khác tool call ở mục đích nào? Thành phần nào vẫn phải được application authorize?
+
+## Tiêu chí hoàn thành
+
+Bạn giải thích được agent loop và chỉ ra boundary giữa SDK orchestration với policy của ứng dụng.

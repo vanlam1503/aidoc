@@ -1,0 +1,61 @@
+---
+id: checkpointing-recovery
+title: "Checkpointing, retries, and recovery"
+description: "Persist workflow state to resume safely after failures or human review."
+language: en
+level: advanced
+durationMinutes: 45
+order: 9
+prerequisites:
+  - langgraph-state-machines
+tags:
+  - checkpointing
+  - recovery
+  - resilience
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Choose checkpoint boundaries, use idempotency, and distinguish transient from permanent failures.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [langgraph-state-machines](/learn/langgraph-state-machines). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+A checkpoint records workflow state at a resumable boundary. Avoid storing secrets or excessive data. Retry transient failures with backoff and limits; side effects need idempotency or reconciliation. Version checkpoint schemas so new application versions can read older state through a planned migration path.
+
+## Architecture
+
+Node completes → serialize minimal versioned state → durable checkpoint → restart or resume → deduplicate tool side effects → record attempt and error.
+
+## TypeScript example
+
+```ts
+type Checkpoint = { schemaVersion: 2; step: string; attempts: number; idempotencyKey: string };
+function retryable(status: number) { return status === 429 || status >= 500; }
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Simulate a timeout after a payment provider accepts a request but before the response arrives. Design recovery that avoids charging twice.
+
+## Common mistakes
+
+Retrying validation failures; unbounded retry counts; unversioned checkpoints or sensitive checkpoint data.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://docs.langchain.com/oss/javascript/langgraph/persistence>)
+
+## Quick quiz
+
+When is a failure retryable? Why does an ambiguous timeout make idempotency important?
+
+## Completion criteria
+
+You have a resumption path that handles ambiguous outcomes without repeating side effects.

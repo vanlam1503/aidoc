@@ -1,0 +1,61 @@
+---
+id: code-review-agent-project
+title: "Project: a code review agent with verifiable findings"
+description: "Design a read-only local diff reviewer that returns evidence-backed findings."
+language: en
+level: advanced
+durationMinutes: 45
+order: 1
+prerequisites:
+  - codex-workflows
+tags:
+  - project
+  - code-review
+  - agent
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Build a read-only review pipeline, cite files and lines, and measure precision on sample diffs.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [codex-workflows](/learn/codex-workflows). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+A code review agent needs bounded context: the diff, repository guidance, and relevant tests. Findings require severity, location, reproduction conditions, and evidence. Keep the first project read-only rather than allowing edits or merges; focus on triage, false-positive measurement, and an audit trail.
+
+## Architecture
+
+Git diff → context pack with changed files, nearby code, and rules → model analysis → schema validation → path/line verification → report → human triage.
+
+## TypeScript example
+
+```ts
+type ReviewFinding = { severity: "high" | "medium" | "low"; file: string; line: number; evidence: string; suggestion: string };
+function inChangedFile(f: ReviewFinding, changed: Set<string>) { return changed.has(f.file); }
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Create a fixture with one real bug and two distractors. Score finding precision, path validity, severity, and reproducibility. Keep the agent read-only.
+
+## Common mistakes
+
+Sending the entire repository; citing nonexistent lines; allowing unreviewed commits of proposed fixes.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://github.com/openai/openai-cookbook>)
+
+## Quick quiz
+
+What report fields let a developer verify a finding? Which metric reflects false alarms?
+
+## Completion criteria
+
+The agent returns findings pointing to valid changed files and lines and meets a predefined precision threshold.

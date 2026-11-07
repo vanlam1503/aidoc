@@ -1,0 +1,84 @@
+---
+id: structured-outputs
+title: "Structured Outputs and data contracts"
+description: "Turn model responses into schema-based data that applications can validate and handle safely."
+language: en
+level: basic
+durationMinutes: 35
+order: 4
+prerequisites:
+  - prompt-engineering-basics
+tags:
+  - structured-outputs
+  - json-schema
+  - validation
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Distinguish JSON mode from schema-constrained output, design bounded schemas, and validate data before application use.
+
+## Prerequisites
+
+Know basic TypeScript and how to describe desired output in a prompt.
+
+## Theory
+
+Many applications need machine-readable output: classification labels, product attributes, or action plans. Asking a model to “return JSON” does not guarantee valid JSON or the correct structure.
+
+**Structured Outputs** guides a model to produce output that conforms to a supported JSON Schema. It constrains structure and types, but does not verify facts, business consistency, or access rights. The application must still check these before using output to trigger side effects. [OpenAI: Structured Outputs](https://platform.openai.com/docs/guides/structured-outputs)
+
+## Architecture
+
+```text
+Input → model with output schema → parse/validate → business rules → side effect
+                                         └→ controlled error / retry policy
+```
+
+Distinguish format errors, refusals, business-rule failures, and transport errors. Successful JSON parsing alone should not trigger a sensitive action.
+
+## TypeScript example with Zod
+
+```ts
+import { z } from "zod";
+
+const Triage = z.object({
+  category: z.enum(["billing", "technical", "other"]),
+  urgency: z.enum(["low", "normal", "high"]),
+  rationale: z.string().max(500),
+});
+
+const result = Triage.safeParse(JSON.parse(modelText));
+if (!result.success) throw new Error("Model output did not match triage schema");
+```
+
+With the Responses API, pass a JSON Schema through the documented Structured Outputs mechanism. The example above illustrates application validation after receiving a response.
+
+## Practice
+
+1. Design a leave-request schema with dates, duration, and reason.
+2. Add valid-date constraints in the business layer.
+3. Test missing fields, invalid enums, and valid output that lacks authorization for execution.
+
+## Common mistakes
+
+- Confusing valid JSON with correct data.
+- Overly permissive schemas with many optional fields.
+- Retrying schema mismatches indefinitely.
+- Using model output directly for SQL, shell commands, or access decisions.
+
+## Further reading
+
+- \* Essential — [OpenAI: Structured Outputs](https://platform.openai.com/docs/guides/structured-outputs)
+- [Zod documentation](https://zod.dev/)
+
+## Quick quiz
+
+1. Which errors does a schema address, and which does it leave unresolved?
+2. Why is business validation necessary after successful parsing?
+3. When should the application request corrected output, and when should it return an error?
+
+## Completion criteria
+
+Define a strict schema, validate output on the server, and test both formatting and business-rule failures.

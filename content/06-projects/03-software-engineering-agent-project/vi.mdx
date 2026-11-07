@@ -1,0 +1,61 @@
+---
+id: software-engineering-agent-project
+title: "Project: software engineering agent có checkpoint và approval"
+description: "Kết hợp repo context, plan, tools có allowlist, test loop và người duyệt."
+language: vi
+level: advanced
+durationMinutes: 45
+order: 3
+prerequisites:
+  - agent-evaluations
+tags:
+  - project
+  - software-engineering
+  - orchestration
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Thiết kế workflow nhiều bước có giới hạn; bắt buộc test; xin duyệt trước side effect ngoài repo.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [agent-evaluations](/learn/agent-evaluations). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+Software engineering agent không phải một prompt duy nhất: nó phải định phạm vi file, đọc hướng dẫn, lập plan, sửa nhỏ, chạy test được phép và báo cáo. Loop cần giới hạn số lần và ngân sách; thay đổi dependency, migration hoặc push cần approval riêng. Người dùng cần review diff cuối cùng.
+
+## Kiến trúc
+
+Issue → inspect repo/guidance → plan checkpoint → bounded edits → tests/lint → summarize diff → approval for risky action → user review/merge.
+
+## Ví dụ TypeScript
+
+```ts
+type RunBudget = { maxSteps: number; maxFilesChanged: number; maxRetries: number };
+const limits: RunBudget = { maxSteps: 12, maxFilesChanged: 20, maxRetries: 2 };
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Chọn một issue nhỏ, định allowlist lệnh/file, checkpoint sau plan và trước migration. Định eval cho correctness, test pass, scope discipline và usability của summary.
+
+## Lỗi thường gặp
+
+Agent thay quá nhiều file; sửa test để che bug; retry tới khi “xanh”; push/deploy mà không có approval.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://github.com/openai/codex>)
+
+## Quiz nhanh
+
+Những bước nào cần checkpoint? Nêu tiêu chí dừng agent và approval gates cần có.
+
+## Tiêu chí hoàn thành
+
+Bạn chạy được workflow giới hạn, test pass, diff trong scope và approval gate không thể bị model tự bỏ qua.

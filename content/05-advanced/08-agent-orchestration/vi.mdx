@@ -1,0 +1,61 @@
+---
+id: agent-orchestration
+title: "Orchestration và human-in-the-loop"
+description: "Điều phối tác vụ, retry, approval và resume mà không mất accountability."
+language: vi
+level: advanced
+durationMinutes: 45
+order: 8
+prerequisites:
+  - langgraph-state-machines
+tags:
+  - orchestration
+  - human-in-the-loop
+  - recovery
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Thiết kế trạng thái chờ người; tạo approval payload; đảm bảo resume có authorization lại.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [langgraph-state-machines](/learn/langgraph-state-machines). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+Human-in-the-loop phù hợp khi cần phê duyệt quyền, tác động tài chính hoặc thông tin chưa chắc. Workflow phải persist trạng thái, giải thích lý do dừng, cho người xem đầy đủ context, và kiểm tra quyền lại khi resume. Approval cần gắn với action cụ thể, dữ liệu/version và thời hạn để tránh TOCTOU.
+
+## Kiến trúc
+
+Plan → risk policy → wait_for_approval(action hash, actor, expiry) → human decision → re-authorize → execute idempotently → audit.
+
+## Ví dụ TypeScript
+
+```ts
+type Approval = { actionId: string; payloadHash: string; approvedBy?: string; expiresAt: string };
+function isCurrent(a: Approval, hash: string, now: Date) { return a.payloadHash === hash && new Date(a.expiresAt) > now; }
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Thiết kế phê duyệt hoàn tiền: người duyệt thấy số tiền, đơn hàng, lý do; sửa payload sau duyệt phải vô hiệu approval.
+
+## Lỗi thường gặp
+
+Approval chỉ là boolean chung; không expire; không kiểm tra lại role người duyệt hoặc dữ liệu đổi.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://docs.langchain.com/oss/javascript/langgraph/interrupts>)
+
+## Quiz nhanh
+
+Approval cần bind với dữ liệu nào? Tại sao phải authorize lại lúc resume?
+
+## Tiêu chí hoàn thành
+
+Bạn chứng minh action chỉ chạy nếu payload chưa đổi, approval còn hạn và người duyệt đủ quyền.

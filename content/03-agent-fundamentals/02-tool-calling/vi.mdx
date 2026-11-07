@@ -1,0 +1,62 @@
+---
+id: tool-calling
+title: "Tool calling: xác thực ý định trước khi chạy hành động"
+description: "Định nghĩa tool schema, kiểm tra tham số và kiểm soát side effect do model đề xuất."
+language: vi
+level: intermediate
+durationMinutes: 45
+order: 2
+prerequisites:
+  - responses-api
+tags:
+  - tool-calling
+  - function-calling
+  - security
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Mô tả tool call là đề xuất; validate arguments; phân biệt read action và write action.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [responses-api](/learn/responses-api). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+Khi model tạo tool call, ứng dụng phải thực thi vòng lặp: nhận call → parse/validate arguments → authorize user/resource → chạy tool → gửi kết quả về model. Schema giúp định dạng không đủ để cấp quyền. Tool nên nhỏ, có hợp đồng ổn định và trả kết quả có cấu trúc.
+
+## Kiến trúc
+
+Model đề xuất function + args → Zod parse → policy authorization → handler có timeout → output được lọc → tiếp tục response hoặc hỏi người dùng xác nhận.
+
+## Ví dụ TypeScript
+
+```ts
+const Args = z.object({ orderId: z.string().regex(/^ORD-[0-9]{6}$/) });
+const args = Args.parse(JSON.parse(rawArguments));
+await assertCanReadOrder(session.user.id, args.orderId);
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Thiết kế hai tool tra cứu đơn hàng và hoàn tiền. Chỉ ra validation schema, quyền theo owner, idempotency key và chỗ cần phê duyệt.
+
+## Lỗi thường gặp
+
+Thực thi arguments chưa parse; tin orderId do model đưa; cung cấp shell/SQL tùy ý; không đặt timeout hoặc retry giới hạn.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://platform.openai.com/docs/guides/function-calling>)
+
+## Quiz nhanh
+
+Schema và authorization giải quyết hai vấn đề khác nhau ra sao? Khi nào cần idempotency?
+
+## Tiêu chí hoàn thành
+
+Tool chỉ thực hiện hành động đã được validate, authorize và có giới hạn side effect.

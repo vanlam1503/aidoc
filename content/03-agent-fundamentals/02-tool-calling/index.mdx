@@ -1,0 +1,62 @@
+---
+id: tool-calling
+title: "Tool calling: validate intent before executing actions"
+description: "Define tool schemas, validate arguments, and control model-proposed side effects."
+language: en
+level: intermediate
+durationMinutes: 45
+order: 2
+prerequisites:
+  - responses-api
+tags:
+  - tool-calling
+  - function-calling
+  - security
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Explain why a tool call is a proposal, validate arguments, and distinguish read actions from write actions.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [responses-api](/learn/responses-api). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+When a model proposes a tool call, the application runs the loop: receive call → parse and validate arguments → authorize user and resource → execute tool → return the result to the model. A schema constrains format; it does not grant permissions. Keep tools small, contracts stable, and results structured.
+
+## Architecture
+
+Model proposes function and arguments → Zod parsing → authorization policy → handler with timeout → filtered output → continue response or request confirmation.
+
+## TypeScript example
+
+```ts
+const Args = z.object({ orderId: z.string().regex(/^ORD-[0-9]{6}$/) });
+const args = Args.parse(JSON.parse(rawArguments));
+await assertCanReadOrder(session.user.id, args.orderId);
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Design order-lookup and refund tools. Specify validation schemas, owner-based authorization, idempotency keys, and approval points.
+
+## Common mistakes
+
+Executing unparsed arguments; trusting a model-supplied order ID; exposing arbitrary shell or SQL; omitting timeouts or bounded retries.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://platform.openai.com/docs/guides/function-calling>)
+
+## Quick quiz
+
+How do schema validation and authorization solve different problems? When is idempotency needed?
+
+## Completion criteria
+
+Tools execute only validated, authorized actions with bounded side effects.

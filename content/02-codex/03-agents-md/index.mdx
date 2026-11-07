@@ -1,0 +1,61 @@
+---
+id: agents-md
+title: "AGENTS.md: durable guidance for coding agents"
+description: "Write concise repository guidance that an agent can apply and verify."
+language: en
+level: intermediate
+durationMinutes: 45
+order: 3
+prerequisites:
+  - codex-introduction
+tags:
+  - agents-md
+  - codex
+  - repository
+updatedAt: 2026-10-31
+---
+
+## Learning objectives
+
+Distinguish repository guidance from task requests, define instruction scope, and avoid conflicting rules.
+
+## Prerequisites
+
+Complete the prerequisite lesson: [codex-introduction](/learn/codex-introduction). If you already know this material, use the practice questions to assess your understanding.
+
+## Theory
+
+AGENTS.md stores recurring project knowledge: architecture, conventions, verification commands, and sensitive areas. Effective guidance is concise, actionable, and names exact commands. Files in subdirectories can add scoped instructions; avoid duplication and outdated guidance.
+
+## Architecture
+
+Discover root guidance → apply it to the relevant scope → read guidance near the target file → combine it with task requirements without exceeding permissions.
+
+## TypeScript example
+
+```ts
+type Guidance = { scope: string; rule: string; verifyWith?: string };
+const rule: Guidance = { scope: "src/lib", rule: "Validate external inputs with schemas", verifyWith: "npm run typecheck" };
+```
+
+This snippet illustrates boundaries and data types. Before production use, add validation, error handling, and permissions appropriate to the use case.
+
+## Practice
+
+Write a short AGENTS.md covering architecture, commands, conventions, and the definition of done. Ask a teammate to identify an ambiguous or unverifiable instruction.
+
+## Common mistakes
+
+Turning guidance into an unreadable handbook; including secrets; naming nonexistent test commands; instructing an agent to bypass user permissions.
+
+## Further reading
+
+- \* Essential — [Primary resource](<https://github.com/openai/codex>)
+
+## Quick quiz
+
+What knowledge belongs in AGENTS.md? How can you detect outdated guidance?
+
+## Completion criteria
+
+The guidance lets a new contributor make a small change without asking for basic project commands.

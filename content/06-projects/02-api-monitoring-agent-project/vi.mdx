@@ -1,0 +1,61 @@
+---
+id: api-monitoring-agent-project
+title: "Project: API monitoring agent với escalation có kiểm soát"
+description: "Theo dõi API health, phân loại incident và tạo bản tóm tắt cho on-call."
+language: vi
+level: advanced
+durationMinutes: 45
+order: 2
+prerequisites:
+  - agent-orchestration
+tags:
+  - project
+  - monitoring
+  - incident-response
+updatedAt: 2026-10-31
+---
+
+## Mục tiêu học tập
+
+Tách detection rule khỏi LLM summary; giới hạn tool; thiết kế dedupe và escalation policy.
+
+## Điều kiện tiên quyết
+
+Hoàn thành bài liên quan trước đó: [agent-orchestration](/learn/agent-orchestration). Nếu đã biết phần này, hãy dùng câu hỏi thực hành để tự đánh giá.
+
+## Lý thuyết
+
+Monitoring agent nên dùng deterministic checks để phát hiện ngưỡng availability/latency. LLM có thể tổng hợp log đã lọc, gợi ý runbook và soạn incident update; không nên tự restart hệ thống hay đổi traffic nếu chưa có policy/phê duyệt. Dedupe tránh spam và incident phải có trace.
+
+## Kiến trúc
+
+Metrics alert → incident state/dedupe → retrieve runbook → summarize evidence with timestamps → propose action → human approval → audit/close.
+
+## Ví dụ TypeScript
+
+```ts
+type Incident = { key: string; severity: "warning" | "critical"; observedAt: string; evidence: string[] };
+function dedupeKey(i: Incident) { return `${i.key}:${i.severity}`; }
+```
+
+Đây là đoạn minh họa ranh giới/kiểu dữ liệu; trước production cần bổ sung validation, error handling và quyền phù hợp với use case.
+
+## Thực hành
+
+Dựng tabletop cho tăng latency và 5xx. Viết deterministic trigger, thông tin được đưa vào model, thông báo on-call và hành động bị cấm tự động.
+
+## Lỗi thường gặp
+
+Để model tự phát hiện mọi outage; đưa secret header vào log; không chống alert storm hoặc nhầm dữ liệu cũ.
+
+## Đọc thêm
+
+- [Tài liệu gốc](<https://github.com/humanlayer/12-factor-agents>)
+
+## Quiz nhanh
+
+Phần nào nên deterministic? Cần gì để dedupe incident và ngăn hành động nguy hiểm?
+
+## Tiêu chí hoàn thành
+
+Agent tạo summary có evidence/time, dedupe đúng và không thực hiện remediation ngoài quyền.
