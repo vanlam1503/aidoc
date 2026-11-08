@@ -2,7 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 test("key settings enable chat, stay masked and empty after saving, and support removal", async ({ page }) => {
-  const key = "fake-test-key-12345678901234567890";
+  const key = `AQ.${"Ab9_-".repeat(150)}.signature+/=`;
   let configured = false;
   await page.route("**/api/chat", route => route.fulfill({ json: { configured, conversations: [] } }));
   await page.route("**/api/assistant/key", async route => {
@@ -18,10 +18,15 @@ test("key settings enable chat, stay masked and empty after saving, and support 
   const dialog = page.getByRole("dialog", { name: "Academy AI Assistant" });
   const input = dialog.getByLabel("Gemini API key", { exact: true });
   await expect(input).toHaveAttribute("type", "password");
+  await input.fill("");
+  await dialog.getByRole("button", { name: "Save API key", exact: true }).click();
+  await expect(dialog.getByRole("alert")).toContainText("Paste the complete API key");
+  expect(configured).toBe(false);
   await input.fill(key);
   await expect(input).not.toHaveAttribute("value", key);
   await dialog.getByRole("button", { name: "Save API key", exact: true }).click();
   await expect(dialog.getByRole("textbox", { name: "Your question" })).toBeEnabled();
+  await expect(dialog.getByRole("heading", { name: "What are you working through?" })).toBeVisible();
   expect(await page.content()).not.toContain(key);
   expect(await page.evaluate(() => JSON.stringify([localStorage, sessionStorage]))).not.toContain(key);
   await page.reload();
@@ -37,13 +42,16 @@ test("key settings enable chat, stay masked and empty after saving, and support 
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
 });
 
-test("pasting a key activates chat immediately and allows sending a question", async ({ page }) => {
+test("pasting then saving a key restores the ready chat and allows sending a question", async ({ page }) => {
   let configured = false;
   let saves = 0;
   let questions = 0;
+  let finishSave!: () => void;
+  const saveGate = new Promise<void>(resolve => { finishSave = resolve; });
   await page.route("**/api/assistant/key", async route => {
-    configured = true;
     saves += 1;
+    await saveGate;
+    configured = true;
     await route.fulfill({ json: { configured } });
   });
   await page.route("**/api/chat", async route => {
@@ -56,11 +64,15 @@ test("pasting a key activates chat immediately and allows sending a question", a
   await page.getByRole("button", { name: "Ask assistant", exact: true }).click();
   const dialog = page.getByRole("dialog", { name: "Academy AI Assistant" });
   const keyInput = dialog.getByLabel("Gemini API key", { exact: true });
-  await keyInput.evaluate(element => {
-    const clipboardData = new DataTransfer();
-    clipboardData.setData("text/plain", "fake-pasted-key-12345678901234567890");
-    element.dispatchEvent(new ClipboardEvent("paste", { clipboardData, bubbles: true, cancelable: true }));
-  });
+  await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.evaluate(async () => navigator.clipboard.writeText("fake-pasted-key-12345678901234567890"));
+  await keyInput.focus();
+  await page.keyboard.press(process.platform === "darwin" ? "Meta+v" : "Control+v");
+  await expect(keyInput).toHaveValue("fake-pasted-key-12345678901234567890");
+  await expect(keyInput).toHaveAttribute("type", "password");
+  expect(saves).toBe(0);
+  await dialog.getByRole("button", { name: "Save API key", exact: true }).click();
+  finishSave();
   await expect(dialog.getByRole("status")).toHaveText("Chat enabled");
   await expect(dialog.getByText("Google Gemini API configuration needed")).toHaveCount(0);
   await dialog.getByRole("textbox", { name: "Your question" }).fill("Explain tokens");

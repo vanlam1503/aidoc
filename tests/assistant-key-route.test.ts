@@ -20,14 +20,21 @@ describe("write-only local API key configuration", () => {
     expect(mocks.save).toHaveBeenCalledWith(secret);
     expect(mocks.remove).toHaveBeenCalledOnce();
   });
+  it("accepts long auth keys containing punctuation", async () => {
+    const key = `AQ.${"Ab9_-".repeat(150)}.signature+/=`;
+    const response = await POST(request("POST", { apiKey: key }));
+    expect(response.status).toBe(200);
+    expect(mocks.save).toHaveBeenCalledWith(key);
+    expect(await response.text()).not.toContain(key);
+  });
   it("rejects missing/cross origins and invalid or oversized input before saving", async () => {
     for (const origin of ["https://evil.example", ""]) {
       expect((await POST(request("POST", { apiKey: secret }, origin))).status).toBe(403);
       expect((await DELETE(request("DELETE", undefined, origin))).status).toBe(403);
     }
-    expect((await POST(request("POST", { apiKey: "short" }))).status).toBe(400);
+    expect((await POST(request("POST", { apiKey: "" }))).status).toBe(400);
     expect((await POST(request("POST", { apiKey: secret, extra: true }))).status).toBe(400);
-    expect((await POST(request("POST", { apiKey: "x".repeat(2000) }))).status).toBe(413);
+    expect((await POST(request("POST", { apiKey: "x".repeat(40_000) }))).status).toBe(413);
     expect(mocks.save).not.toHaveBeenCalled();
   });
   it("does not leak file or provider details on storage failures", async () => {

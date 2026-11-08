@@ -78,7 +78,6 @@ describe("assistant terminal and cancellation states", () => {
     fireEvent.change(input, { target: { value: key } });
     expect(input).not.toHaveAttribute("value");
     fireEvent.click(screen.getByRole("button", { name: "Save API key" }));
-    expect(input).toHaveValue("");
     expect(await screen.findByRole("textbox", { name: "Your question" })).toBeEnabled();
     expect(document.body.innerHTML).not.toContain(key);
     expect(JSON.stringify(localStorage)).not.toContain(key);
@@ -86,7 +85,7 @@ describe("assistant terminal and cancellation states", () => {
     expect(screen.getByLabelText("Gemini API key", { exact: true })).toHaveValue("");
   });
 
-  it("automatically saves a pasted key and ignores stale history responses after activation", async () => {
+  it("saves a pasted key on Save and ignores stale history responses after activation", async () => {
     const key = "fake-pasted-key-12345678901234567890";
     let resolveStale!: (response: Response) => void;
     let reads = 0;
@@ -100,7 +99,9 @@ describe("assistant terminal and cancellation states", () => {
     const input = await screen.findByLabelText("Gemini API key", { exact: true });
     act(() => window.dispatchEvent(new Event("focus")));
     expect(input).toBeInTheDocument();
-    fireEvent.paste(input, { clipboardData: { getData: () => key } });
+    fireEvent.input(input, { target: { value: key }, inputType: "insertFromPaste" });
+    expect(fetchMock.mock.calls.some(([url]) => url === "/api/assistant/key")).toBe(false);
+    fireEvent.click(screen.getByRole("button", { name: "Save API key" }));
     expect(await screen.findByRole("textbox", { name: "Your question" })).toBeEnabled();
     expect(screen.getByText("Chat enabled")).toBeInTheDocument();
     const save = fetchMock.mock.calls.find(([url]) => url === "/api/assistant/key");
@@ -117,10 +118,11 @@ describe("assistant terminal and cancellation states", () => {
     render(<LanguageProvider><Chatbot /></LanguageProvider>);
     fireEvent.click(screen.getByRole("button", { name: "Ask assistant" }));
     const input = await screen.findByLabelText("Gemini API key", { exact: true });
-    fireEvent.paste(input, { clipboardData: { getData: () => "fake-failed-key-12345678901234567890" } });
-    expect(await screen.findByRole("alert")).toHaveTextContent("Could not update the key");
+    fireEvent.input(input, { target: { value: "fake-failed-key-12345678901234567890" }, inputType: "insertFromPaste" });
+    fireEvent.click(screen.getByRole("button", { name: "Save API key" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Could not save the key");
     expect(screen.queryByRole("textbox", { name: "Your question" })).not.toBeInTheDocument();
-    expect(input).toHaveValue("");
+    expect(input).toHaveValue("fake-failed-key-12345678901234567890");
   });
 
   it("preserves draft-only events without sending an automatic request", async () => {

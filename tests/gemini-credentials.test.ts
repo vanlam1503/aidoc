@@ -22,9 +22,16 @@ describe("local API credentials", () => {
     expect(await store.read()).toBeNull();
   });
 
+  it("preserves long auth keys with punctuation without truncating or reformatting them", async () => {
+    const key = `AQ.${"Ab9_-".repeat(150)}.signature+/=`;
+    const store = new GeminiCredentials(filePath);
+    await store.save(key);
+    expect(await new GeminiCredentials(filePath).read()).toBe(key);
+  });
+
   it("rejects malformed values and reports corrupt files without including secrets", async () => {
     const store = new GeminiCredentials(filePath);
-    await expect(store.save("short")).rejects.toThrow("Invalid API key");
+    await expect(store.save("")).rejects.toThrow("Invalid API key");
     await fs.mkdir(path.dirname(filePath));
     await fs.writeFile(filePath, '{"apiKey":"secret value with spaces"}');
     await expect(store.read()).rejects.toThrow("Local credentials unavailable");

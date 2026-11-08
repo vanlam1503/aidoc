@@ -13,7 +13,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   if (!hasSameOrigin(request)) return reply({ error: "Cross-origin request denied" }, 403);
-  const body = await readBoundedJson(request, 1024);
+  const body = await readBoundedJson(request, 32_768);
   if (!body.ok) return reply({ error: body.message }, body.status);
   const parsed = geminiKeyInput.safeParse(body.value);
   if (!parsed.success) return reply({ error: "Enter a valid Gemini API key" }, 400);

@@ -2,9 +2,9 @@ import "server-only";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
-import { z } from "zod";
+import { geminiKeyInput } from "@/lib/gemini/key-schema";
+export { geminiKeyInput } from "@/lib/gemini/key-schema";
 
-export const geminiKeyInput = z.object({ apiKey: z.string().trim().min(20).max(256).regex(/^[A-Za-z0-9_-]+$/) }).strict();
 
 /** Credentials never join learning data, browser storage, or API responses. */
 export class GeminiCredentials {
@@ -12,7 +12,7 @@ export class GeminiCredentials {
 
   async read(): Promise<string | null> {
     try {
-      if ((await fs.stat(this.filePath)).size > 4096) throw new Error("Invalid credential file");
+      if ((await fs.stat(this.filePath)).size > 32_768) throw new Error("Invalid credential file");
       const parsed = geminiKeyInput.safeParse(JSON.parse(await fs.readFile(this.filePath, "utf8")) as unknown);
       if (!parsed.success) throw new Error("Invalid credential file");
       return parsed.data.apiKey;

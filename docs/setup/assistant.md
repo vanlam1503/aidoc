@@ -5,10 +5,10 @@ Ask Assistant uses the Gemini Developer API through the server-only `@google/gen
 ## Configure the assistant
 
 1. Get a key from [Google AI Studio](https://aistudio.google.com/apikey).
-2. Open **Ask Assistant → API key settings**, paste it into the password input to save and activate chat automatically. For manual entry, choose **Save API key**.
+2. Open **Ask Assistant → API key settings**, enter or paste it into the password input, then choose **Save API key** to activate chat.
 3. Chat becomes available immediately. The same settings allow replacing or removing the key.
 
-The password field has no prefilled value, clears on submission, and never reloads the saved key. Saving sends the entered key to the local server in a POST body. The server validates input and same-origin requests, then atomically writes `.data/gemini-key.json` with file mode `0600`. API responses expose only configuration state, never the key. Browser localStorage/sessionStorage and learning/conversation data do not contain it. The credential file is protected by OS permissions and is not encrypted; Git ignores `.data/`. Saving establishes local configuration; Google validates the key and model access when a chat request is made.
+The password field has no prefilled value, clears after a successful save, and never reloads the saved key. Saving sends the entered key to the local server in a POST body. Keys are treated as opaque credentials, including auth-key punctuation and values up to 4096 characters; Google determines their validity on chat requests. The server validates input and same-origin requests, then atomically writes `.data/gemini-key.json` with file mode `0600`. API responses expose only configuration state, never the key. Browser localStorage/sessionStorage and learning/conversation data do not contain it. The credential file is protected by OS permissions and is not encrypted; Git ignores `.data/`. Saving establishes local configuration; Google validates the key and model access when a chat request is made.
 
 API keys in environment variables are no longer used. Optional model and deadline settings remain server-side in `.env`:
 
