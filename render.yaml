@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: aidoc-learning-vanlam1503
+    runtime: docker
+    plan: starter
+    region: singapore
+    healthCheckPath: /
+    autoDeployTrigger: commit
+    disk:
+      name: academy-data
+      mountPath: /app/.data
+      sizeGB: 1
+    envVars:
+      - key: GEMINI_MODEL
+        value: gemini-3.5-flash-lite
+      - key: GEMINI_TIMEOUT_MS
+        value: "90000"

@@ -16,6 +16,10 @@ npm run dev
 
 Open http://localhost:3001. Lessons and search work without credentials or a database.
 
+## Deploy the learning app
+
+GitHub Pages cannot run this Next.js app or its API routes. To host the full learning experience, deploy it as a Node.js app with Docker Compose and a persistent volume for learner data. See [self-hosting and deployment](docs/deployment/self-hosted.md). The repository's GitHub Pages URL may show the README; the running app is served from the domain configured for the deployment.
+
 ## Content workflow
 
 English is the default for the interface, assistant, and all 33 lessons. The language selected in Settings applies to lesson titles, descriptions, body text, the table of contents, navigation, search results, and learning pathway links. The header language selector displays the current selection: choosing English displays English content, and choosing Tiếng Việt displays Vietnamese content. Selecting the same language again keeps it selected. The preference is saved on the current device; browser language does not override the English default. Selecting Vietnamese loads the original Vietnamese lessons.
