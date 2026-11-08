@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ApiKeySettings } from "@/components/chatbot/api-key-settings";
 import { AssistantMarkdown } from "@/components/chatbot/assistant-markdown";
 import { FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useLanguage } from "@/components/language-provider";
@@ -38,6 +39,7 @@ export function Chatbot({ lessonId }: { lessonId?: string }) {
   const input = useRef<HTMLTextAreaElement>(null);
   const bottom = useRef<HTMLDivElement>(null);
   const wasOpen = useRef(false);
+  const historyVersion = useRef(0);
 
   useEffect(() => {
     if (!open || !expanded) return;
@@ -117,16 +119,27 @@ export function Chatbot({ lessonId }: { lessonId?: string }) {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open]);
 
+  function applyConfiguration(configured: boolean) {
+    // An older history response must not revert a successful save/remove.
+    historyVersion.current += 1;
+    setAccess(configured ? "ready" : "config");
+    setLoading(false);
+    setError("");
+  }
+
   async function loadHistory() {
+    const version = ++historyVersion.current;
     setLoading(true);
     try {
-      const response = await fetch("/api/chat");
+      const response = await fetch("/api/chat", { cache: "no-store" });
+      if (version !== historyVersion.current) return;
       if (!response.ok) { setAccess("unavailable"); return; }
       const data = await response.json() as { configured: boolean; conversations: Conversation[] };
+      if (version !== historyVersion.current) return;
       setConversations(data.conversations);
       setAccess(data.configured ? "ready" : "config");
-    } catch { setAccess("unavailable"); }
-    finally { setLoading(false); }
+    } catch { if (version === historyVersion.current) setAccess("unavailable"); }
+    finally { if (version === historyVersion.current) setLoading(false); }
   }
 
   async function selectConversation(id: string) {
@@ -222,10 +235,11 @@ export function Chatbot({ lessonId }: { lessonId?: string }) {
       <header className="chat-header"><div className="chat-mark">✳</div><div><strong>{t("chat_title")}</strong><span>{lessonId ? t("chat_context_lesson") : t("chat_context_general")}</span></div><button type="button" className="chat-expand" aria-label={t(expanded ? "chat_collapse" : "chat_expand")} title={t(expanded ? "chat_collapse" : "chat_expand")} aria-pressed={expanded} onClick={() => setExpanded((value) => !value)}><span aria-hidden="true">{expanded ? "↙" : "↗"}</span></button><button type="button" className="chat-close" onClick={() => { setOpen(false); setExpanded(false); }} aria-label={t("chat_close")}>×</button></header>
       <nav className="chat-mode-tabs" aria-label={t("chat_title")}><button type="button" aria-pressed={mode === "chat"} onClick={() => setMode("chat")}>{t("chat_tab_ask")}</button><button type="button" aria-pressed={mode === "search"} onClick={() => setMode("search")}>{t("chat_tab_search")}</button></nav>
       {mode === "search" ? <div className="chat-search-view"><label className="chat-search-input"><span aria-hidden="true">⌕</span><input value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder={t("chat_search_placeholder")} /></label><div className="chat-search-results" aria-live="polite">{searchResults.length ? searchResults.map((result) => <Link key={result.id} href={`/learn/${result.id}`} onClick={() => setOpen(false)}><span className={`level level-${result.level}`}>{result.level}</span><strong>{result.title}</strong><small>{result.sectionTitle} · {result.description}</small></Link>) : <p>{t("chat_search_empty")}</p>}</div></div> : <>
+      {(access === "ready" || access === "config") && <ApiKeySettings configured={access === "ready"} disabled={streaming} onSaved={applyConfiguration} />}
       {(access === "ready" || access === "config") && <div className="chat-history-bar">{access === "ready" && <button type="button" disabled={streaming} onClick={() => { pendingSelectionRef.current = null; setPendingSelection(null); setActiveId(null); setMessages([]); setSources([]); setError(""); }}>{t("chat_new")}</button>}{conversations.length > 0 && <label>{t("chat_recent")} <select value={activeId ?? ""} disabled={streaming} onChange={(event) => event.target.value && void selectConversation(event.target.value)}><option value="">{t("chat_choose")}</option>{conversations.map((conversation) => <option key={conversation.id} value={conversation.id}>{conversation.title}</option>)}</select></label>}</div>}
       {loading && <div className="chat-loading" role="status">{t("chat_loading")}</div>}
       {!loading && access === "unknown" && <div className="chat-loading">{t("chat_connecting")}</div>}
-      {!loading && access === "config" && <div className="chat-state"><span className="chat-state-icon">⚙</span><strong>{t("chat_config_title")}</strong><p>{t("chat_config_body")}</p><Link href="/setup">{t("chat_setup")}</Link>{conversations.length > 0 && <span className="history-note">{t("chat_history_saved")}</span>}</div>}
+      {!loading && access === "config" && <div className="chat-state"><span className="chat-state-icon">⚙</span><strong>{t("chat_config_title")}</strong><p>{t("chat_config_body")}</p>{conversations.length > 0 && <span className="history-note">{t("chat_history_saved")}</span>}</div>}
       {!loading && access === "unavailable" && <div className="chat-state"><strong>{t("chat_unavailable")}</strong><p>{t("chat_database")}</p><button type="button" onClick={() => void loadHistory()}>{t("retry")}</button></div>}
       {(access === "ready" || access === "config") && <div className="chat-messages" aria-live="polite">{messages.length === 0 && access === "ready" && <div className="chat-welcome"><span className="eyebrow">{t("chat_welcome_kicker")}</span><h3>{t("chat_welcome_title")}</h3><p>{t("chat_welcome_body")}</p><div className="chat-suggestions"><button onClick={() => setDraft(lessonId ? "Explain the key idea in this lesson and give me a short example." : "How should I start learning AI engineering?")}>{t("chat_suggestion_explain")}</button><button onClick={() => setDraft("Give me a practical exercise about context engineering.")}>{t("chat_suggestion_exercise")}</button><button onClick={() => setMode("search")}>{t("chat_suggestion_search")}</button></div></div>}
         {messages.map((message) => <article className={`chat-message ${message.role}`} key={message.id}><span>{message.role === "user" ? (locale === "vi" ? "BẠN" : "YOU") : "ACADEMY ASSISTANT"}</span>{message.role === "assistant" ? <AssistantMarkdown content={message.content} /> : <p>{message.content}</p>}</article>)}

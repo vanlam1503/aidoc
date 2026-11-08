@@ -1,4 +1,5 @@
 import "server-only";
+import { geminiCredentials } from "@/lib/gemini/credentials";
 import { GoogleGenAI, ThinkingLevel, type Content } from "@google/genai";
 
 export const defaultGeminiModel = "gemini-3.5-flash-lite";
@@ -12,21 +13,22 @@ export function getGeminiTimeoutMs(): number {
   return Number.isInteger(value) && value >= 10_000 && value <= 180_000 ? value : 90_000;
 }
 
-export function isGeminiConfigured(): boolean {
-  return Boolean(process.env.GEMINI_API_KEY?.trim()) && /^gemini-[a-zA-Z0-9._-]+$/.test(getGeminiModel());
+export async function isGeminiConfigured(): Promise<boolean> {
+  return Boolean(await geminiCredentials.read()) && /^gemini-[a-zA-Z0-9._-]+$/.test(getGeminiModel());
 }
 
 export type AssistantMessage = { role: "user" | "assistant"; content: string };
 
-export function streamGeminiResponse({ instructions, messages, signal }: {
+export async function streamGeminiResponse({ instructions, messages, signal }: {
   instructions: string;
   messages: AssistantMessage[];
   signal: AbortSignal;
 }) {
-  if (!isGeminiConfigured()) throw new Error("GEMINI_NOT_CONFIGURED");
+  const apiKey = await geminiCredentials.read();
+  if (!apiKey || !/^gemini-[a-zA-Z0-9._-]+$/.test(getGeminiModel())) throw new Error("GEMINI_NOT_CONFIGURED");
   const model = getGeminiModel();
   const client = new GoogleGenAI({
-    apiKey: process.env.GEMINI_API_KEY!.trim(),
+    apiKey,
     enterprise: false,
     httpOptions: { timeout: getGeminiTimeoutMs(), retryOptions: { attempts: 1 } },
   });

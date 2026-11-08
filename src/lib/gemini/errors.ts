@@ -22,7 +22,7 @@ export function describeAssistantError(error: unknown, locale: Locale) {
     TIMEOUT: ["Gemini took too long to respond. Try again or choose a faster GEMINI_MODEL in .env. The timeout can be adjusted with GEMINI_TIMEOUT_MS.", "Gemini phản hồi quá lâu. Hãy thử lại hoặc chọn GEMINI_MODEL nhanh hơn trong .env. Có thể chỉnh thời gian chờ bằng GEMINI_TIMEOUT_MS."],
     CANCELLED: ["Response stopped.", "Đã dừng phản hồi."],
     RATE_LIMIT: ["Gemini rate limit reached. Check your API quota and retry later.", "Đã chạm giới hạn Gemini API. Kiểm tra quota và thử lại sau."],
-    AUTH_ERROR: ["Google rejected API access. Check GEMINI_API_KEY and this project's Gemini API permissions.", "Google từ chối quyền truy cập API. Kiểm tra GEMINI_API_KEY và quyền Gemini API của project."],
+    AUTH_ERROR: ["Google rejected API access. Update the API key in Assistant settings and check this project's Gemini API permissions.", "Google từ chối quyền truy cập API. Cập nhật API key trong cài đặt Trợ lý và kiểm tra quyền Gemini API của project."],
     INVALID_REQUEST: ["Gemini rejected the request. Check the API key and model settings in .env.", "Gemini từ chối yêu cầu. Kiểm tra API key và cấu hình model trong .env."],
     MODEL_UNAVAILABLE: ["The configured Gemini model is unavailable. Check GEMINI_MODEL and model access in Google AI Studio.", "Model Gemini đã chọn không khả dụng. Kiểm tra GEMINI_MODEL và quyền dùng model trong Google AI Studio."],
     NETWORK_ERROR: ["The server could not connect to Gemini. Check the network or proxy and try again.", "Server không kết nối được Gemini. Kiểm tra mạng hoặc proxy rồi thử lại."],
