@@ -1,6 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { getGeminiTimeoutMs, getGeminiModel, isGeminiConfigured, streamGeminiResponse } from "@/lib/gemini/client";
 
+const keyMocks = vi.hoisted(() => ({ read: vi.fn() }));
+vi.mock("@/lib/gemini/credentials", () => ({ geminiCredentials: keyMocks }));
+
 const fetchMock = vi.fn<typeof fetch>();
 
 function sse(events: unknown[]) {
@@ -8,24 +11,25 @@ function sse(events: unknown[]) {
 }
 
 beforeEach(() => {
-  vi.stubEnv("GEMINI_API_KEY", "test-server-secret");
+  keyMocks.read.mockResolvedValue("test-server-secret");
   vi.stubEnv("GEMINI_MODEL", "");
   vi.stubGlobal("fetch", fetchMock);
 });
 afterEach(() => { vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
 
 describe("Gemini server adapter", () => {
-  it("uses a default model and requires a nonempty server key and valid model ID", () => {
+  it("uses a default model and requires a saved server key and valid model ID", async () => {
     expect(getGeminiModel()).toBe("gemini-3.5-flash-lite");
-    expect(isGeminiConfigured()).toBe(true);
+    expect(await isGeminiConfigured()).toBe(true);
     vi.stubEnv("GEMINI_MODEL", "gemini-custom-model");
     expect(getGeminiModel()).toBe("gemini-custom-model");
     vi.stubEnv("GEMINI_MODEL", "../untrusted-path");
-    expect(isGeminiConfigured()).toBe(false);
+    expect(await isGeminiConfigured()).toBe(false);
     vi.stubEnv("GEMINI_MODEL", "");
-    vi.stubEnv("GEMINI_API_KEY", "  ");
-    expect(isGeminiConfigured()).toBe(false);
-    expect(() => streamGeminiResponse({ instructions: "Help", messages: [], signal: new AbortController().signal })).toThrow("GEMINI_NOT_CONFIGURED");
+    keyMocks.read.mockResolvedValue(null);
+    vi.stubEnv("GEMINI_API_KEY", "old-env-key-must-be-ignored");
+    expect(await isGeminiConfigured()).toBe(false);
+    await expect(streamGeminiResponse({ instructions: "Help", messages: [], signal: new AbortController().signal })).rejects.toThrow("GEMINI_NOT_CONFIGURED");
     expect(fetchMock).not.toHaveBeenCalled();
   });
 

@@ -24,15 +24,17 @@ export async function GET(request: Request) {
     if (conversationId) {
       const conversation = await localStore.getConversation(conversationId);
       if (!conversation) return NextResponse.json({ error: "Conversation not found" }, { status: 404 });
-      return NextResponse.json({ configured: isGeminiConfigured(), conversation });
+      return NextResponse.json({ configured: await isGeminiConfigured(), conversation });
     }
-    return NextResponse.json({ configured: isGeminiConfigured(), conversations: await localStore.listConversations() });
+    return NextResponse.json({ configured: await isGeminiConfigured(), conversations: await localStore.listConversations() });
   } catch { return NextResponse.json({ error: "Local chat history is unavailable" }, { status: 503 }); }
 }
 
 export async function POST(request: Request) {
   if (!hasSameOrigin(request)) return NextResponse.json({ error: "Cross-origin request denied" }, { status: 403 });
-  if (!isGeminiConfigured()) return NextResponse.json({ error: "Set GEMINI_API_KEY in the server .env file to enable the AI assistant.", code: "GEMINI_NOT_CONFIGURED" }, { status: 503 });
+  try {
+    if (!await isGeminiConfigured()) return NextResponse.json({ error: "Add a Gemini API key in Assistant settings to enable chat.", code: "GEMINI_NOT_CONFIGURED" }, { status: 503 });
+  } catch { return NextResponse.json({ error: "Local API configuration is unavailable" }, { status: 503 }); }
   const body = await readBoundedJson(request, 20_000);
   if (!body.ok) return NextResponse.json({ error: body.message }, { status: body.status });
   const parsed = chatInput.safeParse(body.value);

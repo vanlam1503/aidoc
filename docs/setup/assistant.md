@@ -1,20 +1,23 @@
 # Google Gemini assistant setup
 
-Ask Assistant uses the Gemini Developer API through the server-only `@google/genai` SDK adapter in `src/lib/gemini/client.ts`. The browser calls `/api/chat`; it never receives the API key. No sign-in is required. Local lessons, search, dashboard, progress, and bookmarks work without API credentials.
+Ask Assistant uses the Gemini Developer API through the server-only `@google/genai` SDK adapter in `src/lib/gemini/client.ts`. The browser calls `/api/chat`; the server never returns the saved API key. No sign-in is required. Local lessons, search, dashboard, progress, and bookmarks work without API credentials.
 
-## Configure the server
+## Configure the assistant
 
-Copy `.env.example` to `.env` if the local file does not already exist. Put your key in the project-root `.env`:
+1. Get a key from [Google AI Studio](https://aistudio.google.com/apikey).
+2. Open **Ask Assistant → API key settings**, enter or paste it into the password input, then choose **Save API key** to activate chat.
+3. Chat becomes available immediately. The same settings allow replacing or removing the key.
+
+The password field has no prefilled value, clears after a successful save, and never reloads the saved key. Saving sends the entered key to the local server in a POST body. Keys are treated as opaque credentials, including auth-key punctuation and values up to 4096 characters; Google determines their validity on chat requests. The server validates input and same-origin requests, then atomically writes `.data/gemini-key.json` with file mode `0600`. API responses expose only configuration state, never the key. Browser localStorage/sessionStorage and learning/conversation data do not contain it. The credential file is protected by OS permissions and is not encrypted; Git ignores `.data/`. Saving establishes local configuration; Google validates the key and model access when a chat request is made.
+
+API keys in environment variables are no longer used. Optional model and deadline settings remain server-side in `.env`:
 
 ```dotenv
-GEMINI_API_KEY=your_google_ai_studio_key
 GEMINI_MODEL=gemini-3.5-flash-lite
 GEMINI_TIMEOUT_MS=90000
 ```
 
-`GEMINI_API_KEY` is required. `GEMINI_MODEL` is optional and defaults to `gemini-3.5-flash-lite`; use a Gemini model enabled for your Google project. Restart `npm run dev` after editing environment variables. Next.js loads `.env` automatically; an existing `.env.local` overrides matching variables, so remove stale overrides if a change appears ineffective.
-
-`.gitignore` excludes `.env` and `.env.*` while retaining example files. The checked-in `.env.example` contains placeholders only. Never put the key in `NEXT_PUBLIC_*` variables, browser code, source files, or screenshots. Deployments should set these variables in their server secret configuration.
+`GEMINI_MODEL` defaults to `gemini-3.5-flash-lite`; use a model enabled for your Google project. Restart the app after changing model/deadline environment variables. Saving or removing the key does not need a restart. Never put the key in `NEXT_PUBLIC_*`, source files, logs, or screenshots. This remains a personal workspace: browsers connected to this server share the key configuration, just as they share study data.
 
 ## Local persistence
 

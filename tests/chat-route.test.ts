@@ -1,7 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError, FinishReason, GenerateContentResponse } from "@google/genai";
 
-const mocks = vi.hoisted(() => ({ stream: vi.fn(), retrieve: vi.fn(), startChat: vi.fn(), finishChat: vi.fn(), failChat: vi.fn(), listConversations: vi.fn(), getConversation: vi.fn() }));
+const mocks = vi.hoisted(() => ({ key: vi.fn(), stream: vi.fn(), retrieve: vi.fn(), startChat: vi.fn(), finishChat: vi.fn(), failChat: vi.fn(), listConversations: vi.fn(), getConversation: vi.fn() }));
+vi.mock("@/lib/gemini/credentials", () => ({ geminiCredentials: { read: mocks.key } }));
 vi.mock("@/lib/content/retriever", () => ({ localRetriever: { retrieve: mocks.retrieve } }));
 vi.mock("@/lib/gemini/client", async (original) => ({ ...await original<typeof import("@/lib/gemini/client")>(), streamGeminiResponse: mocks.stream }));
 vi.mock("@/lib/local/store", async (original) => ({ ...await original<typeof import("@/lib/local/store")>(), localStore: mocks }));
@@ -16,7 +17,7 @@ function request(body: Record<string, unknown> = { message: "Explain tools" }, o
 
 beforeEach(() => {
   vi.resetAllMocks();
-  vi.stubEnv("GEMINI_API_KEY", "test-key-never-return");
+  mocks.key.mockResolvedValue("test-key-never-return");
   vi.stubEnv("GEMINI_MODEL", "gemini-3.5-flash-lite");
   vi.stubEnv("GEMINI_TIMEOUT_MS", "90000");
   mocks.startChat.mockResolvedValue({ conversationId: "conversation-1", usageId: "usage-1", history: [{ id: "message-1", role: "user", content: "Explain tools", createdAt: new Date().toISOString() }] });
@@ -47,7 +48,7 @@ describe("local Gemini chat route", () => {
   });
 
   it("reports missing Gemini configuration without sending a request", async () => {
-    vi.stubEnv("GEMINI_API_KEY", "");
+    mocks.key.mockResolvedValue(null);
     const response = await POST(request());
     expect(response.status).toBe(503);
     expect(await response.json()).toMatchObject({ code: "GEMINI_NOT_CONFIGURED" });

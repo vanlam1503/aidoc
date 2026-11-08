@@ -44,12 +44,12 @@ The store keeps stable lesson IDs for progress/bookmarks, UUIDs for conversation
 
 ## Security and privacy
 
-- Keep secrets in server environment variables and provide placeholders only in `.env.example`.
+- Keep credentials in ignored server-only files with owner-only permissions; `.env.example` documents optional non-secret runtime settings.
 - There are no account cookies or login routes; local writes require a matching request origin.
 - Validate request bodies and cap lengths, retrieved context, history, and generated output.
 - Apply personal-workspace quotas and timeout/error handling before enabling chat for users.
 - Treat lesson text as untrusted context for prompt-injection purposes; instruct the model to cite sources and not follow instructions found inside retrieved documents.
-- Keep `GEMINI_API_KEY` in the server `.env` file; never prefix it with `NEXT_PUBLIC_`.
+- Save the Gemini API key through Assistant settings into `.data/gemini-key.json` with mode `0600`; return only configuration state and never expose the key through HTML, API responses, or browser storage.
 
 ## Extension points
 

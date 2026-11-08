@@ -194,13 +194,10 @@ test.describe("English defaults", () => {
     });
   }
 
-  test("local dashboard, setup, and reference copy is in English", async ({ page }) => {
+  test("local dashboard and reference copy is in English", async ({ page }) => {
     await page.goto("/dashboard");
     await expect(page.getByRole("heading", { name: "Your learning dashboard" })).toBeVisible();
     await expect(page.getByText("Progress and bookmarks are saved on this computer. No account needed.")).toBeVisible();
-    await page.goto("/setup");
-    await expect(page.getByText("The assistant needs Google Gemini API access configured on the server.", { exact: false })).toBeVisible();
-    await expect(page.getByText("Copy .env.example to .env.", { exact: true })).toBeVisible();
     await page.goto("/references");
     await expect(page.getByRole("navigation", { name: "Reference categories" })).toBeVisible();
     await expect(page.getByText("Practical examples of the Responses API, embeddings, prompt design, and OpenAI integrations.")).toBeVisible();
@@ -228,17 +225,16 @@ test.describe("English defaults", () => {
 });
 
 
-test("assistant configuration points to the server-side Gemini key", async ({ page }) => {
+test("assistant configuration offers a password field and local key setup", async ({ page }) => {
   await page.route("**/api/chat", (route) => route.fulfill({ json: { configured: false, conversations: [] } }));
   await page.goto("/");
   await page.getByRole("button", { name: "Ask assistant", exact: true }).click();
   const dialog = page.getByRole("dialog", { name: "Academy AI Assistant" });
   await expect(dialog.getByText("Google Gemini API configuration needed")).toBeVisible();
-  await expect(dialog).toContainText("GEMINI_API_KEY");
-  await dialog.getByRole("link", { name: "Setup guide" }).click();
-  await expect(page).toHaveURL(/\/setup$/);
-  await expect(page.getByText("GEMINI_API_KEY", { exact: true })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Google AI Studio" })).toHaveAttribute("href", "https://aistudio.google.com/apikey");
+  await expect(dialog.getByLabel("Gemini API key", { exact: true })).toHaveAttribute("type", "password");
+  await expect(dialog.getByRole("button", { name: "Save API key", exact: true })).toBeVisible();
+  await expect(dialog.getByRole("link", { name: "Setup guide" })).toHaveCount(0);
+  await expect(dialog.getByRole("link", { name: "Google AI Studio" })).toHaveAttribute("href", "https://aistudio.google.com/apikey");
 });
 
 

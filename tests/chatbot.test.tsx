@@ -60,6 +60,71 @@ describe("assistant terminal and cancellation states", () => {
     expect(reply).not.toHaveTextContent("**Tokenization**");
   });
 
+  it("saves a password key without restoring it into HTML or browser storage and enables chat", async () => {
+    const key = "fake-key-12345678901234567890";
+    let configured = false;
+    fetchMock.mockImplementation(async (url, init) => {
+      if (url === "/api/assistant/key" && init?.method === "POST") {
+        expect(JSON.parse(String(init.body))).toEqual({ apiKey: key });
+        configured = true;
+        return Response.json({ configured: true });
+      }
+      return Response.json({ configured, conversations: [] });
+    });
+    render(<LanguageProvider><Chatbot /></LanguageProvider>);
+    fireEvent.click(screen.getByRole("button", { name: "Ask assistant" }));
+    const input = await screen.findByLabelText("Gemini API key", { exact: true });
+    expect(input).toHaveAttribute("type", "password");
+    fireEvent.change(input, { target: { value: key } });
+    expect(input).not.toHaveAttribute("value");
+    fireEvent.click(screen.getByRole("button", { name: "Save API key" }));
+    expect(await screen.findByRole("textbox", { name: "Your question" })).toBeEnabled();
+    expect(document.body.innerHTML).not.toContain(key);
+    expect(JSON.stringify(localStorage)).not.toContain(key);
+    expect(JSON.stringify(sessionStorage)).not.toContain(key);
+    expect(screen.getByLabelText("Gemini API key", { exact: true })).toHaveValue("");
+  });
+
+  it("saves a pasted key on Save and ignores stale history responses after activation", async () => {
+    const key = "fake-pasted-key-12345678901234567890";
+    let resolveStale!: (response: Response) => void;
+    let reads = 0;
+    fetchMock.mockImplementation(async (url, init) => {
+      if (url === "/api/assistant/key") return Response.json({ configured: true });
+      if (++reads === 1) return Response.json({ configured: false, conversations: [] });
+      return new Promise<Response>((resolve) => { resolveStale = resolve; });
+    });
+    render(<LanguageProvider><Chatbot /></LanguageProvider>);
+    fireEvent.click(screen.getByRole("button", { name: "Ask assistant" }));
+    const input = await screen.findByLabelText("Gemini API key", { exact: true });
+    act(() => window.dispatchEvent(new Event("focus")));
+    expect(input).toBeInTheDocument();
+    fireEvent.input(input, { target: { value: key }, inputType: "insertFromPaste" });
+    expect(fetchMock.mock.calls.some(([url]) => url === "/api/assistant/key")).toBe(false);
+    fireEvent.click(screen.getByRole("button", { name: "Save API key" }));
+    expect(await screen.findByRole("textbox", { name: "Your question" })).toBeEnabled();
+    expect(screen.getByText("Chat enabled")).toBeInTheDocument();
+    const save = fetchMock.mock.calls.find(([url]) => url === "/api/assistant/key");
+    expect(JSON.parse(String(save?.[1]?.body))).toEqual({ apiKey: key });
+    await act(async () => resolveStale(Response.json({ configured: false, conversations: [] })));
+    expect(screen.getByRole("textbox", { name: "Your question" })).toBeEnabled();
+    expect(document.body.innerHTML).not.toContain(key);
+  });
+
+  it("keeps chat disabled and shows an error when a pasted key cannot be saved", async () => {
+    fetchMock.mockImplementation(async (url) => url === "/api/assistant/key"
+      ? Response.json({ error: "Cannot save" }, { status: 503 })
+      : Response.json({ configured: false, conversations: [] }));
+    render(<LanguageProvider><Chatbot /></LanguageProvider>);
+    fireEvent.click(screen.getByRole("button", { name: "Ask assistant" }));
+    const input = await screen.findByLabelText("Gemini API key", { exact: true });
+    fireEvent.input(input, { target: { value: "fake-failed-key-12345678901234567890" }, inputType: "insertFromPaste" });
+    fireEvent.click(screen.getByRole("button", { name: "Save API key" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Could not save the key");
+    expect(screen.queryByRole("textbox", { name: "Your question" })).not.toBeInTheDocument();
+    expect(input).toHaveValue("fake-failed-key-12345678901234567890");
+  });
+
   it("preserves draft-only events without sending an automatic request", async () => {
     fetchMock.mockImplementation(async () => history());
     render(<LanguageProvider><Chatbot /></LanguageProvider>);

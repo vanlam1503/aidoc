@@ -25,7 +25,7 @@ next-env.d.ts
 .vercel/
 .npm/
 
-# Server API keys live in .env; ignore local secrets and keep examples versioned
+# Ignore local environment configuration and keep examples versioned
 .env
 .env.*
 !.env.example
@@ -46,5 +46,5 @@ Thumbs.db
 *.swp
 *.swo
 
-# Personal local learning data (progress, bookmarks, conversations, usage)
+# Personal local learning data and server-only Gemini credentials
 /.data/

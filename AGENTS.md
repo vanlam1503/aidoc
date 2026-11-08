@@ -9,7 +9,7 @@
 - `src/lib/bookmarks/schema.ts` defines backward-compatible lesson/link bookmarks. Shared client bookmark state belongs in `BookmarkProvider`; `/bookmarks` provides local search and link management.
 - Validate API inputs and enforce same-origin checks before local writes; keep atomic serialized file updates in the store.
 - External service access belongs in server-only feature modules or route handlers, never in UI components.
-- Keep the local learning flow free of account requirements. Gemini API keys stay on the server in `.env`.
+- Keep the local learning flow free of account requirements. Gemini API keys stay in the ignored server file `.data/gemini-key.json` (mode `0600`); settings endpoints must never return credentials.
 
 ## Standards
 
