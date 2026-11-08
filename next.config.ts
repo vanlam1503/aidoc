@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Keep the local development indicator from covering the mobile Home tab.
+  devIndicators: false,
   pageExtensions: ["ts", "tsx", "md", "mdx"],
   async headers() {
     return [{

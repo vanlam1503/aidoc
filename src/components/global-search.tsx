@@ -36,7 +36,7 @@ export function GlobalSearch({ lessons }: { lessons: SearchResult[] }) {
   }, []);
 
   return <>
-    <Button type="button" variant="outline" size="sm" className="global-search-trigger" onClick={() => void openSearch()}><span aria-hidden="true">⌕</span><span className="search-trigger-label">{t("chat_tab_search")}</span><kbd>⌘ / Ctrl K</kbd></Button>
+    <Button type="button" variant="outline" size="sm" className="global-search-trigger" aria-label={`${t("chat_tab_search")} ⌘ / Ctrl K`} aria-keyshortcuts="Meta+k Control+k" onClick={() => void openSearch()}><span aria-hidden="true">⌕</span><span className="search-trigger-label">{t("chat_tab_search")}</span><kbd>⌘ / Ctrl K</kbd></Button>
     <dialog className="search-dialog" ref={dialog} onClose={() => setQuery("")} aria-label={t("chat_tab_search")}>
       <div className="dialog-search"><span aria-hidden="true">⌕</span><input ref={input} value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t("chat_search_placeholder")} aria-label={t("chat_search_placeholder")} /><button type="button" onClick={() => dialog.current?.close()}>Esc</button></div>
       <div className="dialog-results" aria-live="polite">{results.slice(0, 8).map((lesson) => <Link key={lesson.id} href={`/learn/${lesson.id}`} onClick={() => dialog.current?.close()}><span className={`level level-${lesson.level}`}>{t(lesson.level === "basic" ? "level_basic" : lesson.level === "intermediate" ? "level_intermediate" : "level_advanced")}</span><span><strong>{lesson.title}</strong><small>{lesson.description}</small></span><span aria-hidden="true">↗</span></Link>)}{!results.length && <p>{t("no_results")}</p>}</div>

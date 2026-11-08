@@ -28,6 +28,10 @@ Every lesson includes three original interview practice questions with answer ou
 
 The home page includes an interactive AI learning orbit: Prompting, Agents, and System revolve around AI in 24, 46, and 78 seconds respectively, so closer orbits move faster. A small decorative moon circles Agents every 6.5 seconds and shares the same pause and reduced-motion behavior. Hover or focus a topic control to pause; the animation continues when the pointer moves over empty space or lesson suggestions. Hover, focus, click, or tap a topic to reveal three localized lesson suggestions. The first recommendation is marked `* Essential` and links lead to lessons and their existing references/examples. A pause control and reduced-motion support are included. The reusable `LearningOrbit` component accepts lesson summaries and requires no external services.
 
+## Mobile web interface
+
+On screens up to 760px wide, the app uses a compact header and fixed bottom tabs for Home, Learn, Flashcards, Bookmarks, and Progress. Home offers a first lesson or the last lesson opened in this browser; that shortcut is stored in browser localStorage. The mobile reader has a scrollable curriculum panel, larger reading text, and touch-sized controls. The Assistant sits above the tabs and can expand to the full screen. Safe-area spacing supports phones with a home indicator, and language/theme preferences remain available in Settings. This is the same responsive web app and uses the same local server data.
+
 ## Local data and optional AI assistant
 
 No Google login, OAuth setup, PostgreSQL, or database migration is required. Progress, bookmarks, conversation history, and request usage are saved in the ignored `.data/academy.json` file on this computer. The dashboard and lesson controls are available immediately. Back up that file if you want to preserve your learning state when moving the project.

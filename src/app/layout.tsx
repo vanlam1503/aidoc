@@ -1,5 +1,6 @@
 import { BookmarkProvider } from "@/components/bookmarks/bookmark-provider";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { MobileNavigation } from "@/components/mobile-navigation";
 import Script from "next/script";
 import { ThemeProvider } from "@/components/theme-provider";
 import { LanguageProvider } from "@/components/language-provider";
@@ -13,6 +14,12 @@ export const metadata: Metadata = {
   description: "A practical learning path for prompt engineering, Codex, AI agents, RAG, and production systems.",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang={defaultLocale} data-scroll-behavior="smooth" suppressHydrationWarning><body><Script id="theme-bootstrap" strategy="beforeInteractive">{themeBootstrap}</Script><ThemeProvider><LanguageProvider><BookmarkProvider>{children}</BookmarkProvider></LanguageProvider></ThemeProvider></body></html>;
+  return <html lang={defaultLocale} data-scroll-behavior="smooth" suppressHydrationWarning><body><Script id="theme-bootstrap" strategy="beforeInteractive">{themeBootstrap}</Script><ThemeProvider><LanguageProvider><BookmarkProvider>{children}<MobileNavigation /></BookmarkProvider></LanguageProvider></ThemeProvider></body></html>;
 }
