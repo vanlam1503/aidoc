@@ -12,7 +12,7 @@ tags:
   - observability
   - metrics
   - tracing
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -51,6 +51,38 @@ Collecting metrics without an owner or response; logging personal data; averagin
 ## Further reading
 
 - \* Essential — [Primary resource](<https://docs.langchain.com/langsmith/observability>)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — How do a trace and a span differ?
+
+**Why essential:** Correlated operations are needed to locate the source of a failed agent run.
+
+**Answer outline:** A trace follows related work across a request or workflow; a span describes one operation with timing and context. Propagate identifiers across model, retrieval, and tool boundaries.
+
+Reference: [OpenTelemetry traces and spans](https://opentelemetry.io/docs/concepts/signals/traces/).
+
+### 2. What should an AI service dashboard measure?
+
+**Answer outline:** Track latency distributions, traffic, errors, and saturation, then add task quality and token cost. Segment by model and version so aggregate metrics do not conceal regressions.
+
+Reference: [Google SRE monitoring](https://sre.google/sre-book/monitoring-distributed-systems/).
+
+### 3. A slow answer looks correct. What would you inspect?
+
+**Answer outline:** Follow the run trace to find repeated retrieval, unnecessary tools, retries, or a slow model call. Compare the execution path with a successful baseline rather than inspecting text alone.
+
+Reference: [LangSmith Observability](https://docs.langchain.com/langsmith/observability).
+
+### Interview resources
+
+- \* Essential — [OpenTelemetry traces and spans](https://opentelemetry.io/docs/concepts/signals/traces/): read first to verify the core concept before the design exercises.
+
+- [OpenTelemetry JavaScript](https://github.com/open-telemetry/opentelemetry-js): Upstream: inspect JavaScript tracing and context propagation.
+
+- [OpenTelemetry demo](https://github.com/open-telemetry/opentelemetry-demo): Sample repository maintained by OpenTelemetry: study service traces and failure diagnosis; it is not a complete AI agent project.
 
 ## Quick quiz
 

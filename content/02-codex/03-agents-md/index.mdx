@@ -12,7 +12,7 @@ tags:
   - agents-md
   - codex
   - repository
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -51,6 +51,38 @@ Turning guidance into an unreadable handbook; including secrets; naming nonexist
 ## Further reading
 
 - \* Essential — [Primary resource](<https://github.com/openai/codex>)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — How does Codex discover repository guidance?
+
+**Why essential:** Instruction scope is a prerequisite for predictable repository work.
+
+**Answer outline:** It layers global guidance with project files along the path to the working directory. More local guidance can override earlier project guidance; inspect the applicable chain.
+
+Reference: [Custom instructions with AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md).
+
+### 2. What belongs in AGENTS.md instead of a task prompt?
+
+**Answer outline:** Put durable architecture, setup, verification commands, and repository conventions there. Keep one-off acceptance criteria with the task so permanent guidance stays accurate and concise.
+
+Reference: [Iterating development workflows with Codex](https://developers.openai.com/cookbook/examples/codex/iterating-development-workflows-with-codex).
+
+### 3. Can AGENTS.md authorize access outside a sandbox?
+
+**Answer outline:** No. Natural-language guidance shapes agent behavior; runtime permissions enforce access. Resolve conflicting instructions without treating a project file as a new security capability.
+
+Reference: [Custom instructions with AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md).
+
+### Interview resources
+
+- \* Essential — [Custom instructions with AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md): read first to verify the core concept before the design exercises.
+
+- [Codex](https://github.com/openai/codex): Upstream: inspect the CLI implementation and repository guidance.
+
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook): Sample repository: compare the Codex workflow recipes with your own task.
 
 ## Quick quiz
 

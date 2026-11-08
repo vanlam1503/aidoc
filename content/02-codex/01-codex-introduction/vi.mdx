@@ -12,7 +12,7 @@ tags:
   - codex
   - agents
   - software-engineering
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -51,6 +51,38 @@ Giao nhiệm vụ quá rộng; xem patch là đúng chỉ vì agent giải thíc
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://developers.openai.com/codex/>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Coding agent khác autocomplete thế nào?
+
+**Vì sao cần ưu tiên:** Tiêu chí nghiệm thu quan sát được giúp đánh giá kết quả của agent.
+
+**Gợi ý trả lời:** Nó có thể đọc repository, sửa file, chạy lệnh và lặp để đạt mục tiêu. Vì vậy nhiệm vụ cần phạm vi, ràng buộc và tiêu chí hoàn thành kiểm chứng được.
+
+Nguồn kiểm chứng: [Codex CLI](https://learn.chatgpt.com/docs/codex/cli).
+
+### 2. Bạn cung cấp context gì cho nhiệm vụ sửa bug?
+
+**Gợi ý trả lời:** Gồm cách tái hiện, hành vi mong đợi, điểm vào liên quan, hướng dẫn repository và lệnh kiểm tra. Yêu cầu bằng chứng nối thay đổi với lỗi ban đầu.
+
+Nguồn kiểm chứng: [Custom instructions with AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md).
+
+### 3. Test pass thì patch đã sẵn sàng merge chưa?
+
+**Gợi ý trả lời:** Cần đọc diff, yêu cầu, mức phù hợp của test và các luồng chưa kiểm tra. Một lệnh pass chỉ chứng minh các kiểm tra đã chạy, không chứng minh mọi yêu cầu đều đạt.
+
+Nguồn kiểm chứng: [Iterating development workflows with Codex](https://developers.openai.com/cookbook/examples/codex/iterating-development-workflows-with-codex).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [Codex CLI](https://learn.chatgpt.com/docs/codex/cli): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [Codex](https://github.com/openai/codex): Upstream: đọc cách CLI hoạt động và hướng dẫn trong repository.
+
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook): Repo ví dụ: đối chiếu các quy trình Codex với bài thực hành của bạn.
 
 ## Quiz nhanh
 

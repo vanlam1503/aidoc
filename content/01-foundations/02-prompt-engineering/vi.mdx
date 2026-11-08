@@ -12,7 +12,7 @@ tags:
   - prompt-engineering
   - zero-shot
   - few-shot
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -79,6 +79,38 @@ Trong ứng dụng thực tế, serialize dữ liệu an toàn, áp giới hạn
 
 - [OpenAI prompting guide](https://platform.openai.com/docs/guides/prompt-engineering)
 - [Prompt Engineering Guide](https://github.com/dair-ai/Prompt-Engineering-Guide)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Prompt đáng tin cậy cần những gì?
+
+**Vì sao cần ưu tiên:** Mô tả nhiệm vụ có thể kiểm chứng là điều kiện để cải thiện prompt.
+
+**Gợi ý trả lời:** Nêu mục tiêu, dữ liệu liên quan, ràng buộc, định dạng đầu ra và tiêu chí thành công. Tách hướng dẫn khỏi tài liệu đầu vào; dùng ví dụ sát nhiệm vụ.
+
+Nguồn kiểm chứng: [OpenAI prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering).
+
+### 2. Khi nào nên thêm ví dụ few-shot?
+
+**Gợi ý trả lời:** Dùng ví dụ khi cần minh họa định dạng khó hoặc ranh giới phân loại. So với prompt đơn giản trên tập kiểm tra riêng; ví dụ có thể tốn context hoặc tạo thiên lệch.
+
+Nguồn kiểm chứng: [OpenAI prompting](https://developers.openai.com/api/docs/guides/prompting).
+
+### 3. Prompt sửa được một ca nhưng làm hỏng ca khác. Bạn làm gì?
+
+**Gợi ý trả lời:** Quản lý phiên bản prompt, giữ cả hai ca, viết assertion và so ứng viên với baseline. Quyết định bằng kết quả đo thay vì một câu trả lời có vẻ thuyết phục.
+
+Nguồn kiểm chứng: [Promptfoo configuration](https://www.promptfoo.dev/docs/configuration/guide/).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [OpenAI prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [OpenAI Node SDK](https://github.com/openai/openai-node): Upstream: kiểm tra kiểu request và vòng đời xử lý trong SDK TypeScript chính thức.
+
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook): Repo ví dụ: áp dụng các mẫu prompt và API; phần lớn ví dụ dùng Python.
 
 ## Quiz nhanh
 

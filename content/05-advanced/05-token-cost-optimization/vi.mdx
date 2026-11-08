@@ -12,7 +12,7 @@ tags:
   - cost
   - token
   - optimization
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -51,6 +51,38 @@ Cắt context tùy tiện; cache cá nhân sai quyền; quên retry cost.
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://platform.openai.com/docs/guides/prompt-caching>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Giảm chi phí mà không âm thầm giảm chất lượng thế nào?
+
+**Vì sao cần ưu tiên:** Tối ưu chi phí cần ràng buộc chất lượng và usage đo được.
+
+**Gợi ý trả lời:** Lập baseline chất lượng, tìm lời gọi tốn kém rồi thử đầu ra ngắn hơn, model nhỏ hơn và ít request thừa. So chi phí mỗi nhiệm vụ thành công, không chỉ mỗi request.
+
+Nguồn kiểm chứng: [OpenAI latency optimization](https://developers.openai.com/api/docs/guides/latency-optimization).
+
+### 2. Prompt caching có giống lưu câu trả lời hoàn chỉnh không?
+
+**Gợi ý trả lời:** Không. Prompt caching dùng lại tính toán cho tiền tố prompt khớp; model vẫn sinh đầu ra. Đo cache usage thật và giá đọc, ghi hiện hành theo model.
+
+Nguồn kiểm chứng: [OpenAI prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching).
+
+### 3. Vì sao prompt ngắn hơn có thể tiết kiệm ít hơn kỳ vọng?
+
+**Gợi ý trả lời:** Có thể mất tiền tố dùng lại hoặc tăng retry và tool call. So tổng usage, lần ghi và đọc cache cùng chi phí nhiệm vụ thành công trước khi chấp nhận giảm token.
+
+Nguồn kiểm chứng: [OpenAI prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [OpenAI latency optimization](https://developers.openai.com/api/docs/guides/latency-optimization): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [OpenAI Node SDK](https://github.com/openai/openai-node): Upstream: kiểm tra kiểu request và vòng đời xử lý trong SDK TypeScript chính thức.
+
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook): Repo ví dụ: áp dụng các mẫu prompt và API; phần lớn ví dụ dùng Python.
 
 ## Quiz nhanh
 

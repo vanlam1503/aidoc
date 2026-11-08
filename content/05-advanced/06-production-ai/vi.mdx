@@ -12,7 +12,7 @@ tags:
   - production
   - ci-cd
   - deployment
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -51,6 +51,36 @@ Deploy prompt đổi mà không version; bỏ qua API key rotation; migration de
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://12factoragents.com/>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Một bản phát hành AI cần quản lý phiên bản những gì?
+
+**Vì sao cần ưu tiên:** Bản phát hành cần quan sát và khôi phục được trước khi nhận lưu lượng rộng.
+
+**Gợi ý trả lời:** Gồm mã ứng dụng, prompt, cấu hình model, retrieval và dữ liệu đánh giá. Giữ artifact phát hành nhận diện được để so sánh và khôi phục khi có hồi quy.
+
+Nguồn kiểm chứng: [Google SRE canary releases](https://sre.google/workbook/canarying-releases/).
+
+### 2. Quản lý thông tin xác thực và tách môi trường thế nào?
+
+**Gợi ý trả lời:** Giữ thông tin xác thực API ở server, dùng secret manager hoặc biến môi trường; cách ly staging với production bằng danh tính dịch vụ và ngân sách có giới hạn.
+
+Nguồn kiểm chứng: [OpenAI production best practices](https://developers.openai.com/api/docs/guides/production-best-practices).
+
+### 3. Vì sao kết hợp đánh giá offline với canary rollout?
+
+**Gợi ý trả lời:** Cổng offline bắt lỗi đã biết; triển khai nhỏ có đối chứng giúp thấy hành vi trên lưu lượng thật. Định nghĩa theo dõi và điều kiện rollback trước khi mở rộng.
+
+Nguồn kiểm chứng: [Google SRE canary releases](https://sre.google/workbook/canarying-releases/).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [Google SRE canary releases](https://sre.google/workbook/canarying-releases/): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [Promptfoo](https://github.com/promptfoo/promptfoo): Upstream và repo mẫu: áp dụng examples để viết assertion và bộ kiểm thử hồi quy.
 
 ## Quiz nhanh
 

@@ -12,7 +12,7 @@ tags:
   - project
   - code-review
   - agent
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -51,6 +51,40 @@ Sending the entire repository; citing nonexistent lines; allowing unreviewed com
 ## Further reading
 
 - \* Essential — [Primary resource](<https://github.com/openai/openai-cookbook>)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — What makes an automated review finding actionable?
+
+**Why essential:** Review findings need evidence before they can justify a code change.
+
+**Answer outline:** Identify the affected code, concrete trigger, incorrect behavior, and impact. Provide a reproduction or clear reasoning grounded in the diff; distinguish evidence from uncertainty.
+
+Reference: [Code review and evidence](https://learn.chatgpt.com/docs/code-review).
+
+### 2. Why is reviewing a pull request also an execution-security problem?
+
+**Answer outline:** Repository code, scripts, and PR text may be attacker-controlled. Inspect without privileged secrets and isolate any test execution; do not let untrusted content authorize publishing or data access.
+
+Reference: [GitHub Actions secure use](https://docs.github.com/en/actions/reference/security/secure-use).
+
+### 3. How would you evaluate false-positive review comments?
+
+**Answer outline:** Create labeled diffs with real bugs and harmless changes. Measure finding precision, missed important defects, and evidence quality, rather than rewarding the number of comments.
+
+Reference: [LangSmith Evaluation](https://docs.langchain.com/langsmith/evaluation).
+
+### Interview resources
+
+- \* Essential — [Code review and evidence](https://learn.chatgpt.com/docs/code-review): read first to verify the core concept before the design exercises.
+
+- [Codex](https://github.com/openai/codex): Upstream: inspect the CLI implementation and repository guidance.
+
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook): Sample repository: compare the Codex workflow recipes with your own task.
+
+These repositories provide reference building blocks, not a finished implementation of this project.
 
 ## Quick quiz
 

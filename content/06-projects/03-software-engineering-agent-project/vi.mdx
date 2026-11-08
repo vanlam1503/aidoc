@@ -12,7 +12,7 @@ tags:
   - project
   - software-engineering
   - orchestration
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -51,6 +51,38 @@ Agent thay quá nhiều file; sửa test để che bug; retry tới khi “xanh�
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://github.com/openai/codex>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Bạn thiết kế giới hạn nào cho software engineering agent?
+
+**Vì sao cần ưu tiên:** Coding agent cần workspace giới hạn và thay đổi xét duyệt được trước quyền triển khai.
+
+**Gợi ý trả lời:** Cấp workspace có phạm vi, thông tin xác thực hạn chế, ràng buộc nhiệm vụ rõ và kiểm tra xác minh được. Tách sửa mã khỏi merge hoặc triển khai có đặc quyền.
+
+Nguồn kiểm chứng: [Codex sandboxing](https://learn.chatgpt.com/docs/sandboxing).
+
+### 2. Phê duyệt triển khai cần cho người xét duyệt thấy gì?
+
+**Gợi ý trả lời:** Hiển thị đúng artifact hoặc commit, môi trường đích, kết quả kiểm tra liên quan và hành động đang chờ. Gắn phê duyệt với phiên bản ấy; đổi mã hoặc đích làm quyết định cũ không còn đủ.
+
+Nguồn kiểm chứng: [LangGraph interrupts](https://docs.langchain.com/oss/javascript/langgraph/interrupts).
+
+### 3. Khôi phục khi tiến trình agent bị crash thế nào?
+
+**Gợi ý trả lời:** Nạp state nhiệm vụ bền vững và baseline workspace, kiểm tra phần đã xong, chỉ chạy lại kiểm tra cần thiết. Đối soát thao tác ngoài trước replay; checkpoint không tự bảo đảm tác động đúng một lần.
+
+Nguồn kiểm chứng: [LangGraph checkpointers](https://docs.langchain.com/oss/javascript/langgraph/checkpointers).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [Codex sandboxing](https://learn.chatgpt.com/docs/sandboxing): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [LangGraph.js](https://github.com/langchain-ai/langgraphjs): Upstream và repo mẫu: dùng examples để tìm hiểu state, điều hướng và khôi phục.
+
+Các repo cung cấp thành phần tham khảo, không phải bản triển khai hoàn chỉnh của dự án này.
 
 ## Quiz nhanh
 

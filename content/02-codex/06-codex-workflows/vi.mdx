@@ -12,7 +12,7 @@ tags:
   - codex
   - code-review
   - workflow
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -51,6 +51,38 @@ Yêu cầu review toàn repository không nêu phạm vi; chấp nhận finding 
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://github.com/openai/codex>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Bạn tổ chức workflow sửa bug trong repository thế nào?
+
+**Vì sao cần ưu tiên:** Lỗi tái hiện được là điểm bắt đầu để kiểm chứng bản sửa.
+
+**Gợi ý trả lời:** Tái hiện lỗi, đọc hướng dẫn và mã liên quan, sửa đúng phạm vi, chạy kiểm tra phù hợp và đánh giá diff cuối cùng theo tiêu chí nghiệm thu.
+
+Nguồn kiểm chứng: [Codex testing and review practices](https://learn.chatgpt.com/docs/learn/best-practices).
+
+### 2. Giữ các thay đổi khác của lập trình viên thế nào?
+
+**Gợi ý trả lời:** Kiểm tra trạng thái repository trước khi sửa, giữ patch hẹp và đọc từng hunk. Dùng worktree riêng khi cần; không coi các thay đổi chưa commit là có thể bỏ đi.
+
+Nguồn kiểm chứng: [Codex CLI](https://learn.chatgpt.com/docs/codex/cli).
+
+### 3. Bản bàn giao của agent cần những gì?
+
+**Gợi ý trả lời:** Nêu hành vi sau thay đổi, phạm vi đã sửa, bằng chứng kiểm tra và giới hạn còn lại. Ghi rõ quyết định đang chờ và bước khôi phục để người tiếp theo làm tiếp.
+
+Nguồn kiểm chứng: [Iterating development workflows with Codex](https://developers.openai.com/cookbook/examples/codex/iterating-development-workflows-with-codex).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [Codex testing and review practices](https://learn.chatgpt.com/docs/learn/best-practices): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [Codex](https://github.com/openai/codex): Upstream: đọc cách CLI hoạt động và hướng dẫn trong repository.
+
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook): Repo ví dụ: đối chiếu các quy trình Codex với bài thực hành của bạn.
 
 ## Quiz nhanh
 

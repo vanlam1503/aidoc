@@ -12,7 +12,7 @@ tags:
   - openai
   - agents-sdk
   - typescript
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -54,6 +54,36 @@ Adding agents when one suffices; losing necessary context during handoff; treati
 ## Further reading
 
 - \* Essential — [Primary resource](<https://github.com/openai/openai-agents-js>)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — What does the Agents SDK handle around a model?
+
+**Why essential:** Understanding the runtime loop clarifies what the SDK handles and what your server owns.
+
+**Answer outline:** It runs the agent loop and coordinates configured tools and agent behavior. Your application still owns deployment, credentials, tool implementations, storage, and authorization decisions.
+
+Reference: [OpenAI Agents SDK](https://developers.openai.com/api/docs/guides/agents/sdk).
+
+### 2. When would you choose a handoff instead of an agent as a tool?
+
+**Answer outline:** A handoff lets a specialist take over the conversation. An agent used as a tool returns bounded help while the manager retains ownership of the final answer.
+
+Reference: [Orchestration and handoffs](https://developers.openai.com/api/docs/guides/agents/orchestration).
+
+### 3. Do agent-level input guardrails protect every tool call?
+
+**Answer outline:** No. Their placement follows agent-chain boundaries. Put authorization and effect-specific validation directly around each relevant tool; use approval interruptions for actions requiring human review.
+
+Reference: [Guardrails and human review](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals).
+
+### Interview resources
+
+- \* Essential — [OpenAI Agents SDK](https://developers.openai.com/api/docs/guides/agents/sdk): read first to verify the core concept before the design exercises.
+
+- [OpenAI Agents SDK for JavaScript](https://github.com/openai/openai-agents-js): Upstream and sample repository: study the examples directory for tools, handoffs, and run state.
 
 ## Quick quiz
 

@@ -12,7 +12,7 @@ tags:
   - openai
   - responses-api
   - typescript
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -53,6 +53,38 @@ Creating the SDK in a client component; assuming all output is plain text; loggi
 ## Further reading
 
 - \* Essential — [Primary resource](<https://platform.openai.com/docs/guides/text>)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — Why is reading only output[0].content[0].text unsafe?
+
+**Why essential:** Correct output parsing is required before handling tool calls or streaming.
+
+**Answer outline:** Responses output can mix messages, tool calls, and other items. Inspect item types, or use the SDK text helper when you only need aggregated text.
+
+Reference: [OpenAI text generation](https://developers.openai.com/api/docs/guides/text).
+
+### 2. How should a streaming consumer detect success?
+
+**Answer outline:** Handle typed lifecycle events separately from text deltas. Completion, failure, and connection loss need distinct outcomes; visible partial text alone does not establish successful completion.
+
+Reference: [Streaming API responses](https://developers.openai.com/api/docs/guides/streaming-responses).
+
+### 3. Does previous_response_id make conversation history free?
+
+**Answer outline:** No. It links response state, while earlier input in the chain can still be billed. Track usage and context growth instead of equating stored state with free tokens.
+
+Reference: [OpenAI conversation state](https://developers.openai.com/api/docs/guides/conversation-state).
+
+### Interview resources
+
+- \* Essential — [OpenAI text generation](https://developers.openai.com/api/docs/guides/text): read first to verify the core concept before the design exercises.
+
+- [OpenAI Node SDK](https://github.com/openai/openai-node): Upstream: check request types and lifecycle handling in the official TypeScript SDK.
+
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook): Sample repository: adapt the prompting and API examples; most examples use Python.
 
 ## Quick quiz
 

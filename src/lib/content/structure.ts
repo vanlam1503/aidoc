@@ -1,8 +1,8 @@
 import { defaultLocale, type Locale } from "../i18n/config";
 
 const requiredSections: Record<Locale, readonly string[]> = {
-  en: ["Learning objectives", "Prerequisites", "Theory", "Architecture", "TypeScript example", "Practice", "Common mistakes", "Further reading", "Quick quiz", "Completion criteria"],
-  vi: ["Mục tiêu học tập", "Điều kiện tiên quyết", "Lý thuyết", "Kiến trúc", "Ví dụ TypeScript", "Thực hành", "Lỗi thường gặp", "Đọc thêm", "Quiz nhanh", "Tiêu chí hoàn thành"],
+  en: ["Learning objectives", "Prerequisites", "Theory", "Architecture", "TypeScript example", "Practice", "Common mistakes", "Further reading", "Interview questions", "Quick quiz", "Completion criteria"],
+  vi: ["Mục tiêu học tập", "Điều kiện tiên quyết", "Lý thuyết", "Kiến trúc", "Ví dụ TypeScript", "Thực hành", "Lỗi thường gặp", "Đọc thêm", "Câu hỏi phỏng vấn", "Quiz nhanh", "Tiêu chí hoàn thành"],
 };
 
 export function findMissingLessonSections(source: string, language: Locale = defaultLocale): string[] {

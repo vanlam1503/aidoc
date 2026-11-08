@@ -12,7 +12,7 @@ tags:
   - langsmith
   - tracing
   - evaluation
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -51,6 +51,38 @@ Ghi toàn bộ PII vào trace; tối ưu theo một trace; nhầm log quan sát 
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://docs.langchain.com/langsmith/observability>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Tracing bổ sung gì ngoài câu trả lời cuối của assistant?
+
+**Vì sao cần ưu tiên:** Trace hữu ích cần ghi được luồng thực thi mà không lộ dữ liệu nhạy cảm.
+
+**Gợi ý trả lời:** Nó cho thấy lời gọi model, context truy xuất, tool, thời gian và lỗi trong lượt chạy. Dùng luồng đó để tìm truy xuất sai hoặc lời gọi không cần thiết.
+
+Nguồn kiểm chứng: [LangSmith Observability](https://docs.langchain.com/langsmith/observability).
+
+### 2. Offline evaluation khác online evaluation thế nào?
+
+**Gợi ý trả lời:** Offline so các phiên bản trên dataset tuyển chọn trước phát hành. Online theo dõi lưu lượng thật và phát hiện lỗi mới; đưa các lỗi đã xét duyệt vào dataset hồi quy.
+
+Nguồn kiểm chứng: [LangSmith evaluation types](https://docs.langchain.com/langsmith/evaluation-types).
+
+### 3. Trace assistant nhiều tenant mà không ghi bí mật thế nào?
+
+**Gợi ý trả lời:** Che dữ liệu nhạy cảm trong input, output và metadata trước khi gửi đi. Cân nhắc tắt tracing với request bị hạn chế; quy định quyền truy cập và thời gian lưu trace.
+
+Nguồn kiểm chứng: [Prevent logging sensitive trace data](https://docs.langchain.com/langsmith/mask-inputs-outputs).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [LangSmith Observability](https://docs.langchain.com/langsmith/observability): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [OpenTelemetry JavaScript](https://github.com/open-telemetry/opentelemetry-js): Upstream: đọc cách tracing và truyền context trong JavaScript.
+
+- [OpenTelemetry demo](https://github.com/open-telemetry/opentelemetry-demo): Repo mẫu do OpenTelemetry duy trì: học truy vết dịch vụ và chẩn đoán lỗi; đây không phải dự án AI agent hoàn chỉnh.
 
 ## Quiz nhanh
 

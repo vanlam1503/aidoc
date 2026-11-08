@@ -12,7 +12,7 @@ tags:
   - orchestration
   - human-in-the-loop
   - recovery
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -51,6 +51,36 @@ Approval chỉ là boolean chung; không expire; không kiểm tra lại role ng
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://docs.langchain.com/oss/javascript/langgraph/interrupts>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Bước phê duyệt cần lưu bền vững những gì?
+
+**Vì sao cần ưu tiên:** Xét duyệt của con người phải dừng thực thi trước khi hành động tạo tác động.
+
+**Gợi ý trả lời:** Lưu hành động đề xuất, tham số liên quan, định danh lượt chạy và trạng thái tiếp tục. Gắn phê duyệt với đúng hành động đã xét; thay đổi đáng kể cần quyết định mới.
+
+Nguồn kiểm chứng: [LangGraph interrupts](https://docs.langchain.com/oss/javascript/langgraph/interrupts).
+
+### 2. Những bước nào nên do mã điều phối xác định?
+
+**Gợi ý trả lời:** Đặt authorization, ngân sách, chuyển trạng thái và kiểm tra bắt buộc trong mã. Cho model xử lý phán đoán có phạm vi, rồi kiểm tra đầu ra trước khi chọn chuyển tiếp được phép.
+
+Nguồn kiểm chứng: [LangGraph workflows and agents](https://docs.langchain.com/oss/javascript/langgraph/workflows-agents).
+
+### 3. Nếu phê duyệt hết hạn hoặc người xét duyệt không sẵn sàng thì sao?
+
+**Gợi ý trả lời:** Giữ hành động chờ hoặc từ chối theo policy. Ghi kết quả và chỉ tiếp tục qua luồng xét duyệt đã xác thực; không phản hồi không phải là đồng ý.
+
+Nguồn kiểm chứng: [Guardrails and human review](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [LangGraph interrupts](https://docs.langchain.com/oss/javascript/langgraph/interrupts): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [LangGraph.js](https://github.com/langchain-ai/langgraphjs): Upstream và repo mẫu: dùng examples để tìm hiểu state, điều hướng và khôi phục.
 
 ## Quiz nhanh
 

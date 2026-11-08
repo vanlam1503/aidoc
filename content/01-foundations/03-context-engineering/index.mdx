@@ -12,7 +12,7 @@ tags:
   - context-engineering
   - retrieval
   - context-window
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -75,6 +75,38 @@ This simple example assumes chunks are already ranked. Production systems need a
 
 - \* Essential — [OpenAI: Retrieval](https://platform.openai.com/docs/guides/retrieval)
 - [OpenAI Cookbook](https://github.com/openai/openai-cookbook)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — How does context engineering differ from prompt wording?
+
+**Why essential:** Context selection determines what evidence the model can use.
+
+**Answer outline:** It selects and organizes instructions, retrieved evidence, history, and tool results within a token budget. Better wording cannot compensate for missing task-critical evidence.
+
+Reference: [OpenAI prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering).
+
+### 2. How would you shorten a long conversation safely?
+
+**Answer outline:** Retain the active goal, decisions, identifiers, and unresolved work; summarize or remove stale turns. Test that essential facts and tool-call relationships survive the reduction.
+
+Reference: [LangChain short-term memory](https://docs.langchain.com/oss/javascript/langchain/short-term-memory).
+
+### 3. A relevant document exists but the answer misses it. Where do you debug?
+
+**Answer outline:** Inspect retrieval candidates, ranking, filters, chunk boundaries, and the final assembled context separately. A generator cannot cite evidence that never reached its input.
+
+Reference: [LangChain retrieval](https://docs.langchain.com/oss/javascript/deepagents/retrieval).
+
+### Interview resources
+
+- \* Essential — [OpenAI prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering): read first to verify the core concept before the design exercises.
+
+- [OpenAI Node SDK](https://github.com/openai/openai-node): Upstream: check request types and lifecycle handling in the official TypeScript SDK.
+
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook): Sample repository: adapt the prompting and API examples; most examples use Python.
 
 ## Quick quiz
 

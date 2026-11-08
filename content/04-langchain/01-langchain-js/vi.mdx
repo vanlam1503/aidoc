@@ -12,7 +12,7 @@ tags:
   - langchain
   - typescript
   - composition
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -51,6 +51,36 @@ Thêm framework trước khi biết nhu cầu; để framework-specific objects 
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://docs.langchain.com/oss/javascript/langchain/overview>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Khi nào dùng LangChain thay cho SDK trực tiếp?
+
+**Vì sao cần ưu tiên:** Chọn framework cần dựa vào luồng điều khiển ứng dụng thực sự cần.
+
+**Gợi ý trả lời:** Dùng khi abstraction chung cho model, tool và integration giảm công việc lặp. Với luồng nhỏ, cố định, gọi SDK trực tiếp có thể dễ đọc và bảo trì hơn.
+
+Nguồn kiểm chứng: [LangChain TypeScript overview](https://docs.langchain.com/oss/javascript/langchain/overview).
+
+### 2. Khi nào workflow cần LangGraph?
+
+**Gợi ý trả lời:** Khi state rõ ràng, phân nhánh, khôi phục hoặc xét duyệt cần kiểm soát thực thi. Tách bước xác định bằng mã khỏi hành động model chọn; không cần tự chủ ở mọi bước.
+
+Nguồn kiểm chứng: [LangGraph workflows and agents](https://docs.langchain.com/oss/javascript/langgraph/workflows-agents).
+
+### 3. Nâng cấp integration làm đổi hành vi đầu ra. Điều tra thế nào?
+
+**Gợi ý trả lời:** Khóa phiên bản, đọc adapter bị ảnh hưởng và so đầu vào đại diện, đầu ra đã parse cùng trace với baseline. Giao diện chung không bảo đảm mọi provider hành xử giống nhau.
+
+Nguồn kiểm chứng: [LangChain TypeScript overview](https://docs.langchain.com/oss/javascript/langchain/overview).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [LangChain TypeScript overview](https://docs.langchain.com/oss/javascript/langchain/overview): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [LangChain.js](https://github.com/langchain-ai/langchainjs): Upstream và repo mẫu: đối chiếu integration và ví dụ với phiên bản package đang cài.
 
 ## Quiz nhanh
 

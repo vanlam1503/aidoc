@@ -12,7 +12,7 @@ tags:
   - observability
   - metrics
   - tracing
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -51,6 +51,38 @@ Thu thập metric nhưng không có owner/action; ghi PII vào log; đặt alert
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://docs.langchain.com/langsmith/observability>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Trace khác span thế nào?
+
+**Vì sao cần ưu tiên:** Cần liên kết các thao tác để tìm nguồn lỗi trong lượt chạy agent.
+
+**Gợi ý trả lời:** Trace theo dõi công việc liên quan xuyên request hoặc workflow; span mô tả một thao tác với thời gian và context. Truyền định danh qua ranh giới model, retrieval và tool.
+
+Nguồn kiểm chứng: [OpenTelemetry traces and spans](https://opentelemetry.io/docs/concepts/signals/traces/).
+
+### 2. Dashboard dịch vụ AI nên đo gì?
+
+**Gợi ý trả lời:** Theo dõi phân phối độ trễ, lưu lượng, lỗi và mức bão hòa; thêm chất lượng nhiệm vụ và chi phí token. Chia theo model, phiên bản để số tổng không che hồi quy.
+
+Nguồn kiểm chứng: [Google SRE monitoring](https://sre.google/sre-book/monitoring-distributed-systems/).
+
+### 3. Câu trả lời chậm nhưng có vẻ đúng. Bạn xem gì?
+
+**Gợi ý trả lời:** Lần theo trace để tìm retrieval lặp, tool không cần, retry hoặc lời gọi model chậm. So luồng thực thi với baseline thành công thay vì chỉ đọc câu trả lời.
+
+Nguồn kiểm chứng: [LangSmith Observability](https://docs.langchain.com/langsmith/observability).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [OpenTelemetry traces and spans](https://opentelemetry.io/docs/concepts/signals/traces/): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [OpenTelemetry JavaScript](https://github.com/open-telemetry/opentelemetry-js): Upstream: đọc cách tracing và truyền context trong JavaScript.
+
+- [OpenTelemetry demo](https://github.com/open-telemetry/opentelemetry-demo): Repo mẫu do OpenTelemetry duy trì: học truy vết dịch vụ và chẩn đoán lỗi; đây không phải dự án AI agent hoàn chỉnh.
 
 ## Quiz nhanh
 

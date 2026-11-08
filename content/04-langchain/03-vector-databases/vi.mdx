@@ -12,7 +12,7 @@ tags:
   - vector-database
   - search
   - rag
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -51,6 +51,36 @@ Quên metadata filter trước khi retrieval; không xóa embedding cũ khi tài
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://docs.langchain.com/oss/javascript/integrations/vectorstores/>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Exact search khác approximate nearest-neighbor search thế nào?
+
+**Vì sao cần ưu tiên:** Cần đo đánh đổi của index trước khi tối ưu độ trễ truy xuất.
+
+**Gợi ý trả lời:** Exact search tạo baseline về recall. Index gần đúng đánh đổi recall, bộ nhớ và chi phí xây để tăng tốc; so kết quả và độ trễ trên dữ liệu cùng bộ lọc thực tế.
+
+Nguồn kiểm chứng: [pgvector indexing and filtering](https://github.com/pgvector/pgvector).
+
+### 2. Khi nào hybrid search hữu ích?
+
+**Gợi ý trả lời:** Semantic search tìm ý nghĩa liên quan; lexical search giữ lợi thế với định danh và thuật ngữ chính xác. Kết hợp xếp hạng, đánh giá truy vấn có tên, mã và cách diễn đạt khác.
+
+Nguồn kiểm chứng: [OpenAI retrieval](https://developers.openai.com/api/docs/guides/retrieval).
+
+### 3. Vì sao truy vấn ANN có bộ lọc trả ít hơn k kết quả?
+
+**Gợi ý trả lời:** Bộ lọc có thể áp dụng sau khi chọn candidate gần đúng. Kiểm tra độ chọn lọc, giới hạn scan và index; đo iterative scan hoặc partitioning, đồng thời giữ quyền truy cập tenant.
+
+Nguồn kiểm chứng: [pgvector indexing and filtering](https://github.com/pgvector/pgvector).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [pgvector indexing and filtering](https://github.com/pgvector/pgvector): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [pgvector](https://github.com/pgvector/pgvector): Upstream và ví dụ SQL: đo exact search, index gần đúng và bộ lọc. Bài này không cần repo dự án mẫu riêng.
 
 ## Quiz nhanh
 

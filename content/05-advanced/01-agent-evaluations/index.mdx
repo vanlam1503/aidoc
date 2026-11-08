@@ -12,7 +12,7 @@ tags:
   - evals
   - agents
   - metrics
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -51,6 +51,36 @@ Scoring only the final answer; leaking test cases into prompts; accepting a high
 ## Further reading
 
 - \* Essential — [Primary resource](<https://github.com/promptfoo/promptfoo>)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — What would you measure beyond the final answer?
+
+**Why essential:** A measured failure definition is required before choosing an agent architecture.
+
+**Answer outline:** Measure task success, tool selection, unauthorized actions, evidence use, and stopping behavior. Include typical, boundary, and adversarial cases; define severe-failure gates separately from averages.
+
+Reference: [OpenAI evaluation methodology](https://developers.openai.com/api/docs/guides/evaluation-best-practices).
+
+### 2. When is an LLM judge appropriate?
+
+**Answer outline:** Use it for rubric-based semantic judgments, calibrated against expert labels. Prefer deterministic checks for schema, required fields, and forbidden operations; inspect disagreements and judge bias.
+
+Reference: [LangSmith evaluation types](https://docs.langchain.com/langsmith/evaluation-types).
+
+### 3. How do you prevent evaluation leakage?
+
+**Answer outline:** Keep a held-out dataset distinct from prompt-development examples, version both, and record experiment configuration. Add reviewed production failures without silently changing the comparison baseline.
+
+Reference: [LangSmith Evaluation](https://docs.langchain.com/langsmith/evaluation).
+
+### Interview resources
+
+- \* Essential — [OpenAI evaluation methodology](https://developers.openai.com/api/docs/guides/evaluation-best-practices): read first to verify the core concept before the design exercises.
+
+- [Promptfoo](https://github.com/promptfoo/promptfoo): Upstream and sample repository: adapt the examples for assertions and regression suites.
 
 ## Quick quiz
 

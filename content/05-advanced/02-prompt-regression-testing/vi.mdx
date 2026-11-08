@@ -12,7 +12,7 @@ tags:
   - prompt-testing
   - regression
   - ci
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -51,6 +51,36 @@ Chỉ so exact text; tự động chấp nhận baseline mới; chạy eval khá
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://platform.openai.com/docs/guides/evals>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Bộ kiểm thử hồi quy prompt cần gì?
+
+**Vì sao cần ưu tiên:** Cổng kiểm thử hồi quy cần chặn lỗi nghiêm trọng trước khi prompt tới người dùng.
+
+**Gợi ý trả lời:** Quản lý phiên bản prompt, đầu vào kiểm thử, cấu hình provider và assertion. Có lỗi từng gặp và ca cần từ chối để đổi câu chữ nhỏ không âm thầm làm hỏng hành vi.
+
+Nguồn kiểm chứng: [Promptfoo configuration](https://www.promptfoo.dev/docs/configuration/guide/).
+
+### 2. Vì sao một snapshot so chuỗi chính xác thường chưa đủ?
+
+**Gợi ý trả lời:** Câu trả lời đúng nghĩa có thể khác câu chữ. Kiểm tra hành vi cần thiết bằng assertion có cấu trúc hoặc rubric đã hiệu chỉnh; chỉ so chính xác khi văn bản chính xác là yêu cầu.
+
+Nguồn kiểm chứng: [LangSmith evaluation types](https://docs.langchain.com/langsmith/evaluation-types).
+
+### 3. Ứng viên tăng điểm trung bình nhưng sai ca quan trọng. Có phát hành không?
+
+**Gợi ý trả lời:** Áp dụng cổng phát hành theo mức nghiêm trọng và nhóm nhiệm vụ. Để CI thất bại khi có hồi quy cần chặn, giữ kết quả để xét; không che lỗi nghiêm trọng trong điểm trung bình.
+
+Nguồn kiểm chứng: [Promptfoo CI/CD integration](https://www.promptfoo.dev/docs/integrations/ci-cd/).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [Promptfoo configuration](https://www.promptfoo.dev/docs/configuration/guide/): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [Promptfoo](https://github.com/promptfoo/promptfoo): Upstream và repo mẫu: áp dụng examples để viết assertion và bộ kiểm thử hồi quy.
 
 ## Quiz nhanh
 

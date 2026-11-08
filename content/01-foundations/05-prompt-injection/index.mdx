@@ -12,7 +12,7 @@ tags:
   - security
   - prompt-injection
   - trust-boundaries
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -75,6 +75,38 @@ This is an illustrative layer only. A real system must verify the caller’s acc
 
 - \* Essential — [OWASP Top 10 for LLM Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
 - [OpenAI safety best practices](https://platform.openai.com/docs/guides/safety-best-practices)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — What is indirect prompt injection?
+
+**Why essential:** Trust boundaries must be established before granting tools access to data.
+
+**Answer outline:** Attacker-controlled content arrives through a document, page, or tool result and tries to redirect the model. Treat retrieved text as evidence, with no authority to grant permissions.
+
+Reference: [OWASP prompt injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/).
+
+### 2. Does using RAG eliminate injection?
+
+**Answer outline:** No. Retrieved documents can carry malicious instructions. Restrict tools and data access in application code, and evaluate attacks that cross the boundary between external content and instructions.
+
+Reference: [OWASP prompt injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/).
+
+### 3. An MCP tool asks you to forward a user token. What must you verify?
+
+**Answer outline:** Validate the token audience and scopes at the receiving service. Do not pass through tokens issued for another resource; use a properly authorized downstream credential flow.
+
+Reference: [MCP security best practices](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices).
+
+### Interview resources
+
+- \* Essential — [OWASP prompt injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/): read first to verify the core concept before the design exercises.
+
+- [MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk): Upstream and sample repository: inspect the client/server examples and match the protocol version to the SDK release.
+
+- [MCP reference servers](https://github.com/modelcontextprotocol/servers): Sample repository: compare tool boundaries in reference servers; examples are not production security guarantees.
 
 ## Quick quiz
 

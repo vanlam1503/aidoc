@@ -12,7 +12,7 @@ tags:
   - agents-md
   - codex
   - repository
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -51,6 +51,38 @@ Biến file thành tài liệu dài không ai đọc; đưa bí mật vào; đ�
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://github.com/openai/codex>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Codex tìm hướng dẫn repository thế nào?
+
+**Vì sao cần ưu tiên:** Hiểu phạm vi chỉ dẫn giúp công việc trong repository có thể dự đoán.
+
+**Gợi ý trả lời:** Nó kết hợp hướng dẫn toàn cục với các file dự án dọc đường tới thư mục làm việc. Hướng dẫn gần hơn có thể ghi đè hướng dẫn dự án trước đó; cần kiểm tra chuỗi áp dụng.
+
+Nguồn kiểm chứng: [Custom instructions with AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md).
+
+### 2. Nội dung nào nên ở AGENTS.md thay vì prompt từng việc?
+
+**Gợi ý trả lời:** Đưa kiến trúc ổn định, thiết lập, lệnh kiểm chứng và quy ước repository vào đó. Giữ tiêu chí một lần trong nhiệm vụ để hướng dẫn lâu dài gọn và đúng.
+
+Nguồn kiểm chứng: [Iterating development workflows with Codex](https://developers.openai.com/cookbook/examples/codex/iterating-development-workflows-with-codex).
+
+### 3. AGENTS.md có cấp quyền ra ngoài sandbox được không?
+
+**Gợi ý trả lời:** Không. Hướng dẫn ngôn ngữ định hình hành vi agent; quyền runtime mới thực thi giới hạn truy cập. Xử lý mâu thuẫn chỉ dẫn nhưng không xem file dự án là quyền bảo mật mới.
+
+Nguồn kiểm chứng: [Custom instructions with AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [Custom instructions with AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [Codex](https://github.com/openai/codex): Upstream: đọc cách CLI hoạt động và hướng dẫn trong repository.
+
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook): Repo ví dụ: đối chiếu các quy trình Codex với bài thực hành của bạn.
 
 ## Quiz nhanh
 

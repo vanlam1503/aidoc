@@ -12,7 +12,7 @@ tags:
   - codex
   - cli
   - terminal
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -51,6 +51,38 @@ Cho phép mọi lệnh tự động mà không cân nhắc side effect; bỏ qua
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://github.com/openai/codex>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Sandbox khác approval policy thế nào?
+
+**Vì sao cần ưu tiên:** Phải hiểu giới hạn thực thi trước khi agent chạy lệnh trong repository.
+
+**Gợi ý trả lời:** Sandbox giới hạn khả năng truy cập filesystem và mạng. Approval policy quy định việc xét duyệt hành động cần quyền. Hướng dẫn trong repository không tự cấp quyền ở hệ điều hành.
+
+Nguồn kiểm chứng: [Codex sandboxing](https://learn.chatgpt.com/docs/sandboxing).
+
+### 2. Vì sao tạo Git checkpoint trước nhiệm vụ CLI?
+
+**Gợi ý trả lời:** Nó tạo mốc để so diff và khôi phục. Kiểm tra thay đổi có sẵn trước để nhiệm vụ giữ nguyên các công việc không liên quan.
+
+Nguồn kiểm chứng: [Codex CLI](https://learn.chatgpt.com/docs/codex/cli).
+
+### 3. Lệnh build bị sandbox chặn. Xử lý tiếp thế nào?
+
+**Gợi ý trả lời:** Xác định khả năng còn thiếu và nhiệm vụ có thực sự cần nó không. Ưu tiên cách tương đương được phép; nếu cần, xin mở quyền hẹp và báo phần kiểm chứng còn thiếu.
+
+Nguồn kiểm chứng: [Agent approvals and security](https://learn.chatgpt.com/docs/agent-approvals-security).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [Codex sandboxing](https://learn.chatgpt.com/docs/sandboxing): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [Codex](https://github.com/openai/codex): Upstream: đọc cách CLI hoạt động và hướng dẫn trong repository.
+
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook): Repo ví dụ: đối chiếu các quy trình Codex với bài thực hành của bạn.
 
 ## Quiz nhanh
 

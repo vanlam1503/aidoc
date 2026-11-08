@@ -12,7 +12,7 @@ tags:
   - evals
   - agents
   - metrics
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -51,6 +51,36 @@ Chỉ chấm câu cuối; leakage từ test set vào prompt; chấp nhận trung
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://github.com/promptfoo/promptfoo>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Bạn đo gì ngoài câu trả lời cuối cùng?
+
+**Vì sao cần ưu tiên:** Cần định nghĩa lỗi đo được trước khi chọn kiến trúc agent.
+
+**Gợi ý trả lời:** Đo hoàn thành nhiệm vụ, chọn tool, hành động trái quyền, sử dụng bằng chứng và dừng đúng lúc. Có ca thường, biên và đối kháng; đặt chặn lỗi nghiêm trọng riêng với điểm trung bình.
+
+Nguồn kiểm chứng: [OpenAI evaluation methodology](https://developers.openai.com/api/docs/guides/evaluation-best-practices).
+
+### 2. Khi nào phù hợp dùng LLM làm giám khảo?
+
+**Gợi ý trả lời:** Dùng cho đánh giá ngữ nghĩa theo rubric và hiệu chỉnh bằng nhãn chuyên gia. Ưu tiên kiểm tra xác định cho schema, trường bắt buộc và hành động cấm; xem bất đồng và thiên lệch giám khảo.
+
+Nguồn kiểm chứng: [LangSmith evaluation types](https://docs.langchain.com/langsmith/evaluation-types).
+
+### 3. Ngăn rò rỉ dữ liệu đánh giá thế nào?
+
+**Gợi ý trả lời:** Tách tập kiểm tra riêng khỏi ví dụ phát triển prompt, quản lý phiên bản cả hai và ghi cấu hình thí nghiệm. Thêm lỗi production đã xét duyệt nhưng không âm thầm đổi baseline so sánh.
+
+Nguồn kiểm chứng: [LangSmith Evaluation](https://docs.langchain.com/langsmith/evaluation).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [OpenAI evaluation methodology](https://developers.openai.com/api/docs/guides/evaluation-best-practices): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [Promptfoo](https://github.com/promptfoo/promptfoo): Upstream và repo mẫu: áp dụng examples để viết assertion và bộ kiểm thử hồi quy.
 
 ## Quiz nhanh
 

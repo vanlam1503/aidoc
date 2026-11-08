@@ -12,7 +12,7 @@ tags:
   - codex
   - configuration
   - permissions
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -51,6 +51,38 @@ Sao chép config mẫu không hiểu quyền; để project config xin quyền r
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://developers.openai.com/codex/>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Cấu hình dự án có nới lỏng chính sách tổ chức bắt buộc được không?
+
+**Vì sao cần ưu tiên:** Cần hiểu quyền hiệu lực trước khi sửa cấu hình.
+
+**Gợi ý trả lời:** Không. Yêu cầu bắt buộc giới hạn hành vi cho phép; cấu hình thường cung cấp giá trị mặc định. Kiểm tra policy hiệu lực và độ tin cậy dự án trước khi đổi cài đặt.
+
+Nguồn kiểm chứng: [Codex configuration basics](https://learn.chatgpt.com/docs/config-file/config-basic).
+
+### 2. Đặt mặc định cá nhân và cấu hình dự án ở đâu?
+
+**Gợi ý trả lời:** Mặc định người dùng nằm ở ~/.codex/config.toml; dự án được tin cậy có thể thêm lớp .codex/config.toml. Cài đặt cụ thể hơn và CLI override vẫn chịu yêu cầu bắt buộc.
+
+Nguồn kiểm chứng: [Codex configuration basics](https://learn.chatgpt.com/docs/config-file/config-basic).
+
+### 3. Tắt hỏi phê duyệt khác cấp toàn quyền thế nào?
+
+**Gợi ý trả lời:** Xét duyệt hành động và khả năng sandbox là hai cơ chế riêng. Lệnh vẫn có thể bị giới hạn file hoặc mạng chặn dù agent không hỏi xin mở quyền.
+
+Nguồn kiểm chứng: [Codex permission modes](https://learn.chatgpt.com/docs/permission-modes).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [Codex configuration basics](https://learn.chatgpt.com/docs/config-file/config-basic): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [Codex](https://github.com/openai/codex): Upstream: đọc cách CLI hoạt động và hướng dẫn trong repository.
+
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook): Repo ví dụ: đối chiếu các quy trình Codex với bài thực hành của bạn.
 
 ## Quiz nhanh
 

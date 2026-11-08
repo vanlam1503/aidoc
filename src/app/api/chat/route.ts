@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
+import { FinishReason } from "@google/genai";
 import { z } from "zod";
-import { auth } from "@/auth";
-import type { Session } from "next-auth";
-import { prisma } from "@/lib/database/prisma";
+import { localStore, LocalStoreError, type LocalMessage } from "@/lib/local/store";
 import { getLessonBySlug } from "@/lib/content/loader";
 import { localRetriever } from "@/lib/content/retriever";
-import { getOpenAIClient, getOpenAIModel, isOpenAIConfigured } from "@/lib/openai/client";
+import { AssistantError, describeAssistantError } from "@/lib/gemini/errors";
+import { getGeminiTimeoutMs, getGeminiModel, isGeminiConfigured, streamGeminiResponse } from "@/lib/gemini/client";
 import { hasSameOrigin, readBoundedJson } from "@/lib/security/request";
 import { defaultLocale, supportedLocales } from "@/lib/i18n/config";
 
@@ -14,8 +13,6 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const chatInput = z.object({ message: z.string().trim().min(1).max(4000), conversationId: z.string().min(1).max(100).optional(), lessonId: z.string().min(1).max(120).optional(), locale: z.enum(supportedLocales).default(defaultLocale) }).strict();
-const DAILY_LIMIT = 30;
-const HOURLY_LIMIT = 10;
 
 function escapeXml(value: string): string {
   return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&apos;");
@@ -23,35 +20,19 @@ function escapeXml(value: string): string {
 
 export async function GET(request: Request) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) return NextResponse.json({ error: "Sign in required" }, { status: 401 });
     const conversationId = new URL(request.url).searchParams.get("conversationId");
     if (conversationId) {
-      const conversation = await prisma.chatConversation.findFirst({
-        where: { id: conversationId, userId: session.user.id },
-        include: { messages: { where: { role: { in: ["user", "assistant"] } }, orderBy: { createdAt: "asc" }, take: 100 } },
-      });
+      const conversation = await localStore.getConversation(conversationId);
       if (!conversation) return NextResponse.json({ error: "Conversation not found" }, { status: 404 });
-      return NextResponse.json({ configured: isOpenAIConfigured(), conversation });
+      return NextResponse.json({ configured: isGeminiConfigured(), conversation });
     }
-    const conversations = await prisma.chatConversation.findMany({
-      where: { userId: session.user.id }, orderBy: { updatedAt: "desc" }, take: 20,
-      include: { messages: { orderBy: { createdAt: "desc" }, take: 1 } },
-    });
-    return NextResponse.json({ configured: isOpenAIConfigured(), conversations });
-  } catch {
-    return NextResponse.json({ error: "Chat history is unavailable" }, { status: 503 });
-  }
+    return NextResponse.json({ configured: isGeminiConfigured(), conversations: await localStore.listConversations() });
+  } catch { return NextResponse.json({ error: "Local chat history is unavailable" }, { status: 503 }); }
 }
 
 export async function POST(request: Request) {
   if (!hasSameOrigin(request)) return NextResponse.json({ error: "Cross-origin request denied" }, { status: 403 });
-  let session: Session | null;
-  try { session = await auth(); }
-  catch { return NextResponse.json({ error: "Authentication service is unavailable" }, { status: 503 }); }
-  if (!session?.user?.id) return NextResponse.json({ error: "Sign in required" }, { status: 401 });
-  if (!isOpenAIConfigured()) return NextResponse.json({ error: "Set OPENAI_API_KEY and OPENAI_MODEL on the server to enable the AI assistant.", code: "OPENAI_NOT_CONFIGURED" }, { status: 503 });
-
+  if (!isGeminiConfigured()) return NextResponse.json({ error: "Set GEMINI_API_KEY in the server .env file to enable the AI assistant.", code: "GEMINI_NOT_CONFIGURED" }, { status: 503 });
   const body = await readBoundedJson(request, 20_000);
   if (!body.ok) return NextResponse.json({ error: body.message }, { status: body.status });
   const parsed = chatInput.safeParse(body.value);
@@ -59,62 +40,20 @@ export async function POST(request: Request) {
   const { message, lessonId, locale } = parsed.data;
   if (lessonId && !getLessonBySlug(lessonId)) return NextResponse.json({ error: "Lesson not found" }, { status: 404 });
 
-  let conversationId = parsed.data.conversationId;
-  try {
-    if (conversationId) {
-      const conversation = await prisma.chatConversation.findFirst({ where: { id: conversationId, userId: session.user.id }, select: { id: true } });
-      if (!conversation) return NextResponse.json({ error: "Conversation not found" }, { status: 404 });
-    }
-  } catch {
-    return NextResponse.json({ error: "Chat service is unavailable" }, { status: 503 });
-  }
-
-  const now = new Date();
-  const dayStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-  const hourStart = new Date(now.getTime() - 60 * 60 * 1000);
+  let conversationId: string;
   let usageId: string;
+  let history: LocalMessage[];
   try {
-    const reservation = await prisma.$transaction(async (tx) => {
-      const [today, thisHour] = await Promise.all([
-        tx.aIUsageRecord.count({ where: { userId: session.user.id, createdAt: { gte: dayStart } } }),
-        tx.aIUsageRecord.count({ where: { userId: session.user.id, createdAt: { gte: hourStart } } }),
-      ]);
-      if (today >= DAILY_LIMIT || thisHour >= HOURLY_LIMIT) return null;
-      return tx.aIUsageRecord.create({ data: { userId: session.user.id, model: getOpenAIModel(), status: "started" } });
-    }, { isolationLevel: "Serializable" });
-    if (!reservation) return NextResponse.json({ error: "Usage limit reached. Try again later.", code: "USAGE_LIMIT" }, { status: 429 });
-    usageId = reservation.id;
-  } catch {
-    return NextResponse.json({ error: "Usage service is unavailable" }, { status: 503 });
+    ({ conversationId, usageId, history } = await localStore.startChat(message, getGeminiModel(), parsed.data.conversationId));
+  } catch (error) {
+    if (error instanceof LocalStoreError && error.code === "CONVERSATION_NOT_FOUND") return NextResponse.json({ error: "Conversation not found" }, { status: 404 });
+    if (error instanceof LocalStoreError && error.code === "USAGE_LIMIT") return NextResponse.json({ error: "Usage limit reached. Try again later.", code: "USAGE_LIMIT" }, { status: 429 });
+    return NextResponse.json({ error: "Unable to save local chat data" }, { status: 503 });
   }
-
-  try {
-    if (conversationId) {
-      await prisma.$transaction([
-        prisma.chatMessage.create({ data: { conversationId, role: "user", content: message } }),
-        prisma.chatConversation.update({ where: { id: conversationId }, data: { updatedAt: new Date() } }),
-      ]);
-    } else {
-      const conversation = await prisma.chatConversation.create({
-        data: { userId: session.user.id, title: message.replace(/\s+/g, " ").slice(0, 72), messages: { create: { role: "user", content: message } } },
-        select: { id: true },
-      });
-      conversationId = conversation.id;
-    }
-  } catch {
-    await prisma.aIUsageRecord.update({ where: { id: usageId }, data: { status: "failed" } }).catch(() => undefined);
-    return NextResponse.json({ error: "Unable to save this conversation" }, { status: 503 });
-  }
-
-  let history;
   let chunks;
-  try {
-    [history, chunks] = await Promise.all([
-      prisma.chatMessage.findMany({ where: { conversationId, role: { in: ["user", "assistant"] } }, orderBy: { createdAt: "desc" }, take: 10 }),
-      localRetriever.retrieve(message, { lessonId, limit: 4, locale }),
-    ]);
-  } catch {
-    await prisma.aIUsageRecord.update({ where: { id: usageId }, data: { status: "failed" } }).catch(() => undefined);
+  try { chunks = await localRetriever.retrieve(message, { lessonId, limit: 4, locale }); }
+  catch {
+    await localStore.failChat(usageId).catch(() => undefined);
     return NextResponse.json({ error: "Unable to prepare local lesson context" }, { status: 503 });
   }
   const currentLesson = lessonId ? getLessonBySlug(lessonId, locale) : undefined;
@@ -138,12 +77,11 @@ export async function POST(request: Request) {
     currentLesson ? `Current lesson: ${currentLesson.title} (${currentLesson.sourcePath}).` : "No current lesson is selected.",
   ].join("\n\n");
   const references = chunks.length
-    ? chunks.map((chunk, index) => `<excerpt source="${escapeXml(chunk.sourcePath)}" title="${escapeXml(chunk.title)}">${escapeXml(chunk.content)}</excerpt>`).join("\n")
+    ? chunks.map((chunk) => `<excerpt source="${escapeXml(chunk.sourcePath)}" title="${escapeXml(chunk.title)}">${escapeXml(chunk.content)}</excerpt>`).join("\n")
     : "No matching local documentation was retrieved. Say when an answer relies on general knowledge.";
   const input = [
-    { role: "developer" as const, content: instructions },
     ...(() => {
-      const ordered = history.reverse();
+      const ordered = history;
       const currentUserIndex = ordered.findLastIndex((item) => item.role === "user" && item.content === message);
       return ordered.filter((_, index) => index !== currentUserIndex).map((item) => ({ role: item.role === "user" ? "user" as const : "assistant" as const, content: item.content }));
     })(),
@@ -163,38 +101,53 @@ export async function POST(request: Request) {
         let outputTokens = 0;
         let completed = false;
         let requestId: string | undefined;
-        const timeout = setTimeout(() => streamAbort.abort(), 45_000);
+        let timedOut = false;
+        const aborted = new Promise<never>((_, reject) => {
+          const rejectAbort = () => reject(new AssistantError(timedOut ? "TIMEOUT" : "CANCELLED"));
+          if (streamAbort.signal.aborted) rejectAbort();
+          else streamAbort.signal.addEventListener("abort", rejectAbort, { once: true });
+        });
+        const timeout = setTimeout(() => { timedOut = true; streamAbort.abort(); }, getGeminiTimeoutMs());
         try {
-          const { data: responseStream, request_id: upstreamRequestId } = await getOpenAIClient().responses.create({ model: getOpenAIModel(), input, stream: true, max_output_tokens: 900 }, { signal: streamAbort.signal }).withResponse();
-          requestId = upstreamRequestId ?? undefined;
-          for await (const event of responseStream) {
-            if (event.type === "response.output_text.delta") {
-              if (assistantText.length < 12_000) {
-                const delta = event.delta.slice(0, 12_000 - assistantText.length);
-                assistantText += delta;
-                send({ type: "delta", text: delta });
-              }
-            } else if (event.type === "response.completed") {
-              completed = true;
-              inputTokens = event.response.usage?.input_tokens ?? 0;
-              outputTokens = event.response.usage?.output_tokens ?? 0;
+          const responseStream = await Promise.race([streamGeminiResponse({ instructions, messages: input, signal: streamAbort.signal }), aborted]);
+          const iterator = responseStream[Symbol.asyncIterator]();
+          while (true) {
+            // A hard deadline also settles the UI if the transport ignores AbortSignal.
+            const next = await Promise.race([iterator.next(), aborted]);
+            if (next.done) break;
+            const event = next.value;
+            requestId = event.responseId ?? requestId;
+            if (event.usageMetadata) {
+              inputTokens = event.usageMetadata.promptTokenCount ?? inputTokens;
+              outputTokens = (event.usageMetadata.candidatesTokenCount ?? 0) + (event.usageMetadata.thoughtsTokenCount ?? 0);
             }
+            // The SDK text getter excludes thought parts and non-text output.
+            const text = event.text;
+            if (text && assistantText.length < 12_000) {
+              const delta = text.slice(0, 12_000 - assistantText.length);
+              assistantText += delta;
+              send({ type: "delta", text: delta });
+            }
+            const finishReason = event.candidates?.[0]?.finishReason;
+            if (finishReason === FinishReason.MAX_TOKENS) throw new AssistantError("OUTPUT_LIMIT");
+            if (finishReason && finishReason !== FinishReason.STOP && finishReason !== FinishReason.FINISH_REASON_UNSPECIFIED) throw new AssistantError("CONTENT_BLOCKED");
+            if (finishReason === FinishReason.STOP) completed = true;
+            if (event.promptFeedback?.blockReason) throw new AssistantError("CONTENT_BLOCKED");
           }
-          if (!completed) throw new Error("Response stream ended before completion");
-          if (!assistantText.trim()) throw new Error("Response did not contain text output");
-          await prisma.$transaction([
-            prisma.chatMessage.create({ data: { conversationId: conversationId!, role: "assistant", content: assistantText } }),
-            prisma.chatConversation.update({ where: { id: conversationId! }, data: { updatedAt: new Date() } }),
-            prisma.aIUsageRecord.update({ where: { id: usageId }, data: { inputTokens, outputTokens, requestId, status: "success" } }),
-          ]);
+          if (!completed) throw new AssistantError("INCOMPLETE_RESPONSE");
+          if (!assistantText.trim()) throw new AssistantError("EMPTY_RESPONSE");
+          clearTimeout(timeout);
+          try { await localStore.finishChat(conversationId, usageId, assistantText, { inputTokens, outputTokens, requestId }); }
+          catch { throw new AssistantError("LOCAL_SAVE_FAILED"); }
           send({ type: "sources", sources });
           send({ type: "done" });
         } catch (error) {
-          await prisma.aIUsageRecord.update({ where: { id: usageId }, data: { requestId: error instanceof OpenAI.APIError ? error.requestID : undefined, status: "failed" } }).catch(() => undefined);
-          const message = error instanceof OpenAI.APIError && error.status === 429 ? "OpenAI rate limit reached. Please retry later." : "The AI service could not complete this request. Check the server configuration and try again.";
-          send({ type: "error", message });
+          const failure = describeAssistantError(timedOut ? new AssistantError("TIMEOUT") : error, locale);
+          await localStore.failChat(usageId, requestId, failure.code).catch(() => undefined);
+          send({ type: "error", ...failure });
         } finally {
           clearTimeout(timeout);
+          if (!completed) streamAbort.abort();
           if (!streamClosed) { streamClosed = true; controller.close(); }
         }
       })();

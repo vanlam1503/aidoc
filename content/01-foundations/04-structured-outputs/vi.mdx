@@ -12,7 +12,7 @@ tags:
   - structured-outputs
   - json-schema
   - validation
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -72,6 +72,38 @@ Trong Responses API, truyền JSON Schema theo cơ chế Structured Outputs chí
 
 - [OpenAI: Structured Outputs](https://platform.openai.com/docs/guides/structured-outputs)
 - [Zod documentation](https://zod.dev/)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — JSON mode khác Structured Outputs thế nào?
+
+**Vì sao cần ưu tiên:** Cần hợp đồng dữ liệu rõ ràng trước khi mã phía sau dùng đầu ra model.
+
+**Gợi ý trả lời:** JSON mode hướng tới JSON đúng cú pháp; Structured Outputs ràng buộc đầu ra theo schema được hỗ trợ. Cả hai không chứng minh dữ kiện nghiệp vụ trong các trường là đúng.
+
+Nguồn kiểm chứng: [OpenAI Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs).
+
+### 2. Khi nào dùng function calling thay cho câu trả lời có cấu trúc?
+
+**Gợi ý trả lời:** Dùng function calling để yêu cầu chức năng của ứng dụng; dùng câu trả lời có cấu trúc để trả dữ liệu có kiểu. Mã ứng dụng vẫn quyết định hành động có được phép hay không.
+
+Nguồn kiểm chứng: [OpenAI function calling](https://developers.openai.com/api/docs/guides/function-calling).
+
+### 3. Nếu model từ chối hoặc dừng trước khi hoàn tất thì sao?
+
+**Gợi ý trả lời:** Phân biệt từ chối, sinh chưa đủ và thành công hợp lệ. Không thực thi tác động từ dữ liệu dở dang; hiển thị trạng thái có thể xử lý tiếp và kiểm tra ràng buộc nghiệp vụ.
+
+Nguồn kiểm chứng: [OpenAI Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [OpenAI Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [OpenAI Node SDK](https://github.com/openai/openai-node): Upstream: kiểm tra kiểu request và vòng đời xử lý trong SDK TypeScript chính thức.
+
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook): Repo ví dụ: áp dụng các mẫu prompt và API; phần lớn ví dụ dùng Python.
 
 ## Quiz nhanh
 

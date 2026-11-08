@@ -11,7 +11,7 @@ tags:
   - llm
   - tokens
   - foundations
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -93,6 +93,36 @@ function remainingInput(budget: ContextBudget): number {
 
 - [OpenAI: Tokenizer](https://platform.openai.com/tokenizer)
 - [OpenAI: Context windows](https://help.openai.com/en/articles/8554397-creating-a-gpt)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Causal language model dự đoán gì?
+
+**Vì sao cần ưu tiên:** Dự đoán token giải thích khả năng sinh văn bản và sai sót có vẻ hợp lý.
+
+**Gợi ý trả lời:** Phân phối xác suất của token tiếp theo dựa trên các token trước đó. Token có thể chỉ là một phần của từ; văn bản trôi chảy chưa chứng minh thông tin đúng.
+
+Nguồn kiểm chứng: [Causal language modeling](https://huggingface.co/docs/transformers/tasks/language_modeling).
+
+### 2. Vì sao self-attention quan trọng?
+
+**Gợi ý trả lời:** Nó kết hợp thông tin giữa các vị trí để tạo biểu diễn theo ngữ cảnh. Giải thích vai trò query, key, value và phân biệt Transformer gốc với các biến thể decoder-only hiện nay.
+
+Nguồn kiểm chứng: [Attention Is All You Need](https://arxiv.org/abs/1706.03762).
+
+### 3. Model tự bịa chính sách nội bộ. Bạn xử lý thế nào?
+
+**Gợi ý trả lời:** Truy xuất chính sách có thẩm quyền, đưa đoạn liên quan vào context và yêu cầu dẫn chứng hoặc nói rõ chưa biết. Đổi prompt không cập nhật trọng số model.
+
+Nguồn kiểm chứng: [OpenAI prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [Causal language modeling](https://huggingface.co/docs/transformers/tasks/language_modeling): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [Transformers](https://github.com/huggingface/transformers): Upstream và repo mẫu: đọc định nghĩa model và ví dụ language modeling; ví dụ huấn luyện dùng Python.
 
 ## Quiz nhanh
 

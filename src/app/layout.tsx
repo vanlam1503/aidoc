@@ -1,3 +1,4 @@
+import { BookmarkProvider } from "@/components/bookmarks/bookmark-provider";
 import type { Metadata } from "next";
 import Script from "next/script";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -13,5 +14,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang={defaultLocale} data-scroll-behavior="smooth" suppressHydrationWarning><body><Script id="theme-bootstrap" strategy="beforeInteractive">{themeBootstrap}</Script><ThemeProvider><LanguageProvider>{children}</LanguageProvider></ThemeProvider></body></html>;
+  return <html lang={defaultLocale} data-scroll-behavior="smooth" suppressHydrationWarning><body><Script id="theme-bootstrap" strategy="beforeInteractive">{themeBootstrap}</Script><ThemeProvider><LanguageProvider><BookmarkProvider>{children}</BookmarkProvider></LanguageProvider></ThemeProvider></body></html>;
 }

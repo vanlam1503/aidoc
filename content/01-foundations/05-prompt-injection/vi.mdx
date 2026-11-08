@@ -12,7 +12,7 @@ tags:
   - security
   - prompt-injection
   - trust-boundaries
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -75,6 +75,38 @@ function authorize(action: z.infer<typeof Action>, canWrite: boolean): boolean {
 
 - [OWASP Top 10 for LLM Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
 - [OpenAI safety best practices](https://platform.openai.com/docs/guides/safety-best-practices)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Indirect prompt injection là gì?
+
+**Vì sao cần ưu tiên:** Phải xác định ranh giới tin cậy trước khi cấp quyền truy cập dữ liệu cho tool.
+
+**Gợi ý trả lời:** Nội dung do kẻ tấn công kiểm soát đi qua tài liệu, trang web hoặc kết quả tool để đổi hướng model. Xem văn bản truy xuất là bằng chứng, không có quyền cấp thêm quyền hạn.
+
+Nguồn kiểm chứng: [OWASP prompt injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/).
+
+### 2. Dùng RAG có loại bỏ prompt injection không?
+
+**Gợi ý trả lời:** Không. Tài liệu truy xuất có thể chứa chỉ dẫn độc hại. Giới hạn tool và dữ liệu bằng mã ứng dụng; kiểm thử các tấn công đưa chỉ dẫn qua ranh giới nội dung ngoài.
+
+Nguồn kiểm chứng: [OWASP prompt injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/).
+
+### 3. MCP tool yêu cầu chuyển tiếp token người dùng. Cần kiểm tra gì?
+
+**Gợi ý trả lời:** Kiểm tra audience và scope tại dịch vụ nhận. Không chuyển tiếp token được cấp cho tài nguyên khác; dùng luồng thông tin xác thực downstream được cấp quyền đúng.
+
+Nguồn kiểm chứng: [MCP security best practices](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [OWASP prompt injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk): Upstream và repo mẫu: đọc ví dụ client/server, đối chiếu phiên bản giao thức với SDK.
+
+- [MCP reference servers](https://github.com/modelcontextprotocol/servers): Repo mẫu: đối chiếu ranh giới tool; ví dụ không bảo đảm an toàn cho production.
 
 ## Quiz nhanh
 

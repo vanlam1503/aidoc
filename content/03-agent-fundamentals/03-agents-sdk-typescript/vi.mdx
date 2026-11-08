@@ -12,7 +12,7 @@ tags:
   - openai
   - agents-sdk
   - typescript
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -54,6 +54,36 @@ Thêm nhiều agent dù một agent đủ; để handoff làm mất context cầ
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://github.com/openai/openai-agents-js>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Agents SDK xử lý những gì quanh model?
+
+**Vì sao cần ưu tiên:** Hiểu vòng lặp runtime giúp phân biệt việc SDK xử lý với trách nhiệm server.
+
+**Gợi ý trả lời:** SDK chạy vòng lặp agent và phối hợp tool cùng hành vi đã cấu hình. Ứng dụng vẫn chịu trách nhiệm triển khai, thông tin xác thực, cài đặt tool, lưu trữ và quyết định cấp quyền.
+
+Nguồn kiểm chứng: [OpenAI Agents SDK](https://developers.openai.com/api/docs/guides/agents/sdk).
+
+### 2. Khi nào chọn handoff thay vì dùng agent như tool?
+
+**Gợi ý trả lời:** Handoff chuyển quyền tiếp tục hội thoại sang chuyên gia. Agent dạng tool trả trợ giúp có phạm vi; manager vẫn chịu trách nhiệm câu trả lời cuối cùng.
+
+Nguồn kiểm chứng: [Orchestration and handoffs](https://developers.openai.com/api/docs/guides/agents/orchestration).
+
+### 3. Input guardrail cấp agent có bảo vệ mọi tool call không?
+
+**Gợi ý trả lời:** Không. Vị trí chạy phụ thuộc ranh giới chuỗi agent. Đặt authorization và kiểm tra tác động ngay quanh tool liên quan; dùng approval interruption cho hành động cần người xét duyệt.
+
+Nguồn kiểm chứng: [Guardrails and human review](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [OpenAI Agents SDK](https://developers.openai.com/api/docs/guides/agents/sdk): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [OpenAI Agents SDK for JavaScript](https://github.com/openai/openai-agents-js): Upstream và repo mẫu: đọc thư mục examples về tool, handoff và trạng thái lượt chạy.
 
 ## Quiz nhanh
 

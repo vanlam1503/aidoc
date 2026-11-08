@@ -12,7 +12,7 @@ tags:
   - context-engineering
   - retrieval
   - context-window
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -75,6 +75,38 @@ Ví dụ đơn giản này giả định danh sách đã được xếp hạng. 
 
 - [OpenAI: Retrieval](https://platform.openai.com/docs/guides/retrieval)
 - [OpenAI Cookbook](https://github.com/openai/openai-cookbook)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Context engineering khác việc sửa câu chữ prompt thế nào?
+
+**Vì sao cần ưu tiên:** Lựa chọn context quyết định model có thể dùng bằng chứng nào.
+
+**Gợi ý trả lời:** Nó chọn và tổ chức hướng dẫn, bằng chứng truy xuất, lịch sử và kết quả tool trong giới hạn token. Câu chữ tốt không bù được bằng chứng quan trọng bị thiếu.
+
+Nguồn kiểm chứng: [OpenAI prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering).
+
+### 2. Rút gọn hội thoại dài mà vẫn giữ thông tin cần thiết thế nào?
+
+**Gợi ý trả lời:** Giữ mục tiêu hiện tại, quyết định, định danh và việc chưa xong; tóm tắt hoặc bỏ lượt cũ không liên quan. Kiểm tra các dữ kiện và quan hệ tool call còn nguyên.
+
+Nguồn kiểm chứng: [LangChain short-term memory](https://docs.langchain.com/oss/javascript/langchain/short-term-memory).
+
+### 3. Tài liệu liên quan tồn tại nhưng câu trả lời bỏ sót. Debug ở đâu?
+
+**Gợi ý trả lời:** Kiểm tra riêng candidate truy xuất, xếp hạng, bộ lọc, ranh giới chunk và context cuối cùng. Model không thể trích bằng chứng chưa được đưa vào đầu vào.
+
+Nguồn kiểm chứng: [LangChain retrieval](https://docs.langchain.com/oss/javascript/deepagents/retrieval).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [OpenAI prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [OpenAI Node SDK](https://github.com/openai/openai-node): Upstream: kiểm tra kiểu request và vòng đời xử lý trong SDK TypeScript chính thức.
+
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook): Repo ví dụ: áp dụng các mẫu prompt và API; phần lớn ví dụ dùng Python.
 
 ## Quiz nhanh
 

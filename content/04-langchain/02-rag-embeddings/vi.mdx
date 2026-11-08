@@ -12,7 +12,7 @@ tags:
   - rag
   - embeddings
   - retrieval
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -51,6 +51,38 @@ Nhầm vector similarity với xác minh; chunk quá lớn hoặc cắt mất ti
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://platform.openai.com/docs/guides/embeddings>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Dùng RAG thay vì chỉ dựa trọng số model thì thay đổi gì?
+
+**Vì sao cần ưu tiên:** Tách truy xuất khỏi sinh câu trả lời giúp chẩn đoán lỗi.
+
+**Gợi ý trả lời:** Bằng chứng bên ngoài được tìm khi có truy vấn rồi đưa vào bước sinh. Cập nhật index thay đổi bằng chứng sẵn có mà không huấn luyện lại generator; vẫn cần kiểm chứng trích dẫn.
+
+Nguồn kiểm chứng: [Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks](https://arxiv.org/abs/2005.11401).
+
+### 2. Embedding đóng góp gì và không chứng minh điều gì?
+
+**Gợi ý trả lời:** Embedding biểu diễn độ liên quan để tìm kiếm tương đồng. Vector gần nhau không chứng minh sự thật, quyền truy cập hoặc câu trả lời đầy đủ; giữ metadata và đánh giá đoạn truy xuất.
+
+Nguồn kiểm chứng: [OpenAI vector embeddings](https://developers.openai.com/api/docs/guides/embeddings).
+
+### 3. Câu trả lời sai. Tách lỗi retrieval với generation thế nào?
+
+**Gợi ý trả lời:** Kiểm tra đoạn cần thiết có được truy xuất và đưa vào context không. Sau đó đánh giá câu trả lời có dùng đúng đoạn ấy không. Đo riêng khả năng tìm bằng chứng và bám nguồn.
+
+Nguồn kiểm chứng: [LangChain retrieval](https://docs.langchain.com/oss/javascript/deepagents/retrieval).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks](https://arxiv.org/abs/2005.11401): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [OpenAI Node SDK](https://github.com/openai/openai-node): Upstream: kiểm tra kiểu request và vòng đời xử lý trong SDK TypeScript chính thức.
+
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook): Repo ví dụ: áp dụng các mẫu prompt và API; phần lớn ví dụ dùng Python.
 
 ## Quiz nhanh
 

@@ -1,0 +1,92 @@
+import AxeBuilder from "@axe-core/playwright";
+import { expect, test } from "@playwright/test";
+
+test("learning planets orbit AI, pause on hover, and suggest topic lessons", async ({ page }, testInfo) => {
+  await page.goto("/");
+  const system = page.getByRole("region", { name: "Explore the AI learning system" });
+  const hoverPlanet = async (name: string) => {
+    await system.locator(".learning-orbit-stage").scrollIntoViewIfNeeded();
+    const bounds = await system.getByRole("button", { name, exact: true }).boundingBox();
+    expect(bounds).not.toBeNull();
+    await page.mouse.move(bounds!.x + bounds!.width / 2, bounds!.y + bounds!.height / 2);
+  };
+  const carrier = system.locator(".learning-orbit-carrier").first();
+  await page.mouse.move(0, 0);
+  await expect(system).toHaveAttribute("data-paused", "false");
+  await expect(carrier).toHaveCSS("animation-play-state", "running");
+  const periods = await system.locator(".learning-orbit-carrier").evaluateAll((elements) => elements.map((element) => parseFloat(getComputedStyle(element).animationDuration)));
+  expect(periods[0]).toBeLessThan(periods[1]);
+  expect(periods[1]).toBeLessThan(periods[2]);
+  const moon = system.locator(".planet-agents .agent-moon");
+  await expect(moon).toHaveCSS("animation-play-state", "running");
+  const moonBefore = await moon.evaluate((element) => element.getAnimations()[0].currentTime as number);
+  await expect.poll(() => moon.evaluate((element) => element.getAnimations()[0].currentTime as number)).toBeGreaterThan(moonBefore);
+  const before = await carrier.evaluate((element) => element.getAnimations()[0].currentTime as number);
+  await expect.poll(() => carrier.evaluate((element) => element.getAnimations()[0].currentTime as number)).toBeGreaterThan(before);
+  await system.locator(".learning-orbit-stage").hover();
+  await expect(carrier).toHaveCSS("animation-play-state", "running");
+  await hoverPlanet("Prompting");
+  await expect(carrier).toHaveCSS("animation-play-state", "paused");
+  await expect(moon).toHaveCSS("animation-play-state", "paused");
+  const frozen = await carrier.evaluate((element) => element.getAnimations()[0].currentTime as number);
+  await page.waitForTimeout(150);
+  expect(await carrier.evaluate((element) => element.getAnimations()[0].currentTime as number)).toBeCloseTo(frozen, 0);
+  await hoverPlanet("Prompting");
+  await expect(system.getByRole("link", { name: /Prompt Engineering Fundamentals/ })).toBeVisible();
+  await expect(system.getByText(/\* Essential — Start here/)).toBeVisible();
+  await system.getByRole("link", { name: /Prompt Engineering Fundamentals/ }).hover();
+  await expect(carrier).toHaveCSS("animation-play-state", "running");
+  await expect(moon).toHaveCSS("animation-play-state", "running");
+  await expect(system.getByRole("link", { name: /Prompt Engineering Fundamentals/ })).toBeVisible();
+  await hoverPlanet("Agents");
+  await expect(system.getByRole("link", { name: /OpenAI Agents SDK with TypeScript/ })).toBeVisible();
+  await hoverPlanet("System");
+  await expect(system.getByRole("link", { name: /Production deployment/ })).toBeVisible();
+  await system.screenshot({ path: testInfo.outputPath("learning-orbit-desktop.png") });
+  const scan = await new AxeBuilder({ page }).include(".learning-orbit").withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze();
+  expect(scan.violations).toEqual([]);
+  await page.mouse.move(0, 0);
+  await expect(carrier).toHaveCSS("animation-play-state", "running");
+  await system.getByRole("button", { name: "Pause orbits", exact: true }).click();
+  await page.mouse.move(0, 0);
+  await system.getByRole("button", { name: "Resume orbits", exact: true }).blur();
+  await expect(carrier).toHaveCSS("animation-play-state", "paused");
+  await system.getByRole("button", { name: "Resume orbits", exact: true }).click();
+  await system.getByRole("button", { name: "Prompting", exact: true }).focus();
+  await expect(carrier).toHaveCSS("animation-play-state", "paused");
+  await page.keyboard.press("Escape");
+  await expect(system.getByRole("heading", { name: "Find your next lesson" })).toBeVisible();
+});
+
+test("mobile learners can tap a planet, read Vietnamese suggestions and open a lesson", async ({ browser }, testInfo) => {
+  const context = await browser.newContext({ baseURL: testInfo.project.use.baseURL, viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  const page = await context.newPage();
+  await page.addInitScript(() => localStorage.setItem("academy-locale", "vi"));
+  await page.goto("/");
+  const system = page.getByRole("region", { name: "Khám phá hệ học tập AI" });
+  // Tap the moving planet at its current location, as a touchscreen user does.
+  const planet = system.getByRole("button", { name: "Prompting", exact: true });
+  await system.locator(".learning-orbit-stage").scrollIntoViewIfNeeded();
+  const bounds = await planet.boundingBox();
+  expect(bounds).not.toBeNull();
+  await page.touchscreen.tap(bounds!.x + bounds!.width / 2, bounds!.y + bounds!.height / 2);
+  await expect(system.getByRole("link", { name: /Prompt Engineering/ })).toBeVisible();
+  await expect(system.getByRole("button", { name: "Prompting", exact: true })).toHaveAttribute("aria-pressed", "true");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await system.screenshot({ path: testInfo.outputPath("learning-orbit-mobile.png") });
+  await system.getByRole("link", { name: /Prompt Engineering/ }).click();
+  await expect(page).toHaveURL(/\/learn\/prompt-engineering-basics$/);
+  await context.close();
+});
+
+test("reduced motion keeps planets still and keyboard navigation opens suggestions", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  const system = page.getByRole("region", { name: "Explore the AI learning system" });
+  await expect(system.locator(".learning-orbit-carrier").first()).toHaveCSS("animation-name", "none");
+  await expect(system.locator(".agent-moon")).toHaveCSS("animation-name", "none");
+  await system.getByRole("button", { name: "Agents", exact: true }).focus();
+  await expect(system.getByRole("heading", { name: "Agents", exact: true })).toBeVisible();
+  await page.keyboard.press("Enter");
+  await expect(system.getByRole("button", { name: "Agents", exact: true })).toHaveAttribute("aria-pressed", "true");
+});

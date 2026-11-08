@@ -12,7 +12,7 @@ tags:
   - langgraph
   - state-machine
   - routing
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -63,6 +63,36 @@ Building confusing graphs with oversized nodes; non-exhaustive conditional routi
 ## Further reading
 
 - \* Essential — [Primary resource](<https://docs.langchain.com/oss/javascript/langgraph/overview>)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — What do state, nodes, and edges represent?
+
+**Why essential:** Explicit state and termination conditions prevent uncontrolled execution.
+
+**Answer outline:** State carries workflow data, nodes compute updates, and edges determine execution order or conditional routing. Define valid transitions and an explicit terminal outcome.
+
+Reference: [LangGraph Graph API](https://docs.langchain.com/oss/javascript/langgraph/graph-api).
+
+### 2. How do you choose a fixed workflow over an agent loop?
+
+**Answer outline:** Use fixed paths when the process is known and auditable. Use model-driven routing where inputs require judgment, with validated decisions and bounded iterations.
+
+Reference: [LangGraph workflows and agents](https://docs.langchain.com/oss/javascript/langgraph/workflows-agents).
+
+### 3. Two parallel nodes update the same field. What must be defined?
+
+**Answer outline:** Specify merge semantics with an appropriate reducer, or avoid conflicting writes. Test ordering assumptions; appending data differs from replacing a value.
+
+Reference: [LangGraph Graph API](https://docs.langchain.com/oss/javascript/langgraph/graph-api).
+
+### Interview resources
+
+- \* Essential — [LangGraph Graph API](https://docs.langchain.com/oss/javascript/langgraph/graph-api): read first to verify the core concept before the design exercises.
+
+- [LangGraph.js](https://github.com/langchain-ai/langgraphjs): Upstream and sample repository: use the examples to explore state, routing, and recovery.
 
 ## Quick quiz
 

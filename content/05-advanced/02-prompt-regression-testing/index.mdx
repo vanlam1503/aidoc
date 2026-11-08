@@ -12,7 +12,7 @@ tags:
   - prompt-testing
   - regression
   - ci
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -51,6 +51,36 @@ Comparing only exact text; automatically accepting a new baseline; evaluating ou
 ## Further reading
 
 - \* Essential — [Primary resource](<https://platform.openai.com/docs/guides/evals>)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — What belongs in a prompt regression suite?
+
+**Why essential:** Regression gates should catch critical failures before a prompt reaches users.
+
+**Answer outline:** Version prompts, test inputs, provider settings, and assertions. Include previously observed failures and expected refusal cases so a small wording change cannot silently regress behavior.
+
+Reference: [Promptfoo configuration](https://www.promptfoo.dev/docs/configuration/guide/).
+
+### 2. Why is one exact-string snapshot often insufficient?
+
+**Answer outline:** Semantically correct answers can vary in wording. Test the required behavior with structured assertions or a calibrated rubric; use exact matching only where exact text is a requirement.
+
+Reference: [LangSmith evaluation types](https://docs.langchain.com/langsmith/evaluation-types).
+
+### 3. A candidate improves average quality but fails a critical case. Ship it?
+
+**Answer outline:** Apply predefined release gates by failure severity and task slice. Fail the CI job for blocking regressions and retain results for review; do not hide critical failures in an average.
+
+Reference: [Promptfoo CI/CD integration](https://www.promptfoo.dev/docs/integrations/ci-cd/).
+
+### Interview resources
+
+- \* Essential — [Promptfoo configuration](https://www.promptfoo.dev/docs/configuration/guide/): read first to verify the core concept before the design exercises.
+
+- [Promptfoo](https://github.com/promptfoo/promptfoo): Upstream and sample repository: adapt the examples for assertions and regression suites.
 
 ## Quick quiz
 

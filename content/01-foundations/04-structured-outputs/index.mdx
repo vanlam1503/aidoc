@@ -12,7 +12,7 @@ tags:
   - structured-outputs
   - json-schema
   - validation
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -72,6 +72,38 @@ With the Responses API, pass a JSON Schema through the documented Structured Out
 
 - \* Essential — [OpenAI: Structured Outputs](https://platform.openai.com/docs/guides/structured-outputs)
 - [Zod documentation](https://zod.dev/)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — How do JSON mode and Structured Outputs differ?
+
+**Why essential:** A valid data contract is required before downstream code consumes model output.
+
+**Answer outline:** JSON mode targets syntactically valid JSON; Structured Outputs constrain supported output to a supplied schema. Neither proves the business facts inside the fields are correct.
+
+Reference: [OpenAI Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs).
+
+### 2. When should you use function calling instead of a structured answer?
+
+**Answer outline:** Use function calling to request application capabilities. Use a structured answer to return typed data to the user; application code still decides whether an action is authorized.
+
+Reference: [OpenAI function calling](https://developers.openai.com/api/docs/guides/function-calling).
+
+### 3. What if generation refuses or stops before completion?
+
+**Answer outline:** Treat refusal, incomplete generation, and schema-valid success as separate outcomes. Avoid executing side effects from partial data; surface a recoverable state and validate business constraints.
+
+Reference: [OpenAI Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs).
+
+### Interview resources
+
+- \* Essential — [OpenAI Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs): read first to verify the core concept before the design exercises.
+
+- [OpenAI Node SDK](https://github.com/openai/openai-node): Upstream: check request types and lifecycle handling in the official TypeScript SDK.
+
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook): Sample repository: adapt the prompting and API examples; most examples use Python.
 
 ## Quick quiz
 

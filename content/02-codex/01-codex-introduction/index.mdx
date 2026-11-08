@@ -12,7 +12,7 @@ tags:
   - codex
   - agents
   - software-engineering
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -51,6 +51,38 @@ Assigning tasks that are too broad; accepting a patch because the explanation so
 ## Further reading
 
 - \* Essential — [Primary resource](<https://developers.openai.com/codex/>)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — How is a coding agent different from autocomplete?
+
+**Why essential:** Observable acceptance criteria make an agent task reviewable.
+
+**Answer outline:** It can inspect a repository, edit files, run commands, and iterate toward a goal. The task therefore needs scope, constraints, and verifiable completion criteria.
+
+Reference: [Codex CLI](https://learn.chatgpt.com/docs/codex/cli).
+
+### 2. What context would you provide for a bug-fix task?
+
+**Answer outline:** Include the reproduction, expected behavior, relevant entry points, repository guidance, and checks. Ask for evidence linking the changed behavior to the original failure.
+
+Reference: [Custom instructions with AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md).
+
+### 3. Tests pass. Is the patch ready to merge?
+
+**Answer outline:** Review the diff, requirements, test relevance, and untested paths. A passing command is evidence about the checks it ran, not proof that every requirement is satisfied.
+
+Reference: [Iterating development workflows with Codex](https://developers.openai.com/cookbook/examples/codex/iterating-development-workflows-with-codex).
+
+### Interview resources
+
+- \* Essential — [Codex CLI](https://learn.chatgpt.com/docs/codex/cli): read first to verify the core concept before the design exercises.
+
+- [Codex](https://github.com/openai/codex): Upstream: inspect the CLI implementation and repository guidance.
+
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook): Sample repository: compare the Codex workflow recipes with your own task.
 
 ## Quick quiz
 

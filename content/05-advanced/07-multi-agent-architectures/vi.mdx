@@ -12,7 +12,7 @@ tags:
   - multi-agent
   - architecture
   - agents
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -51,6 +51,36 @@ Dùng agent vì trào lưu; cho mọi agent cùng quyền; không kiểm tra câ
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://github.com/openai/openai-agents-js>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Khi nào kiến trúc nhiều agent có cơ sở?
+
+**Vì sao cần ưu tiên:** Thêm agent cần lợi ích đo được để bù chi phí phối hợp.
+
+**Gợi ý trả lời:** Dùng chuyên gia khi ranh giới context, tool hoặc trách nhiệm cải thiện kết quả rõ rệt. Bắt đầu với baseline một agent; đo chất lượng, độ trễ, chi phí và lỗi phối hợp.
+
+Nguồn kiểm chứng: [LangChain multi-agent patterns](https://docs.langchain.com/oss/javascript/langchain/multi-agent).
+
+### 2. Supervisor gọi agent như tool khác handoff thế nào?
+
+**Gợi ý trả lời:** Supervisor giữ câu trả lời cuối và gọi chuyên gia để nhận đầu ra có phạm vi. Handoff chuyển quyền điều khiển sang chuyên gia; cần xác định ai trả lời người dùng tiếp.
+
+Nguồn kiểm chứng: [Orchestration and handoffs](https://developers.openai.com/api/docs/guides/agents/orchestration).
+
+### 3. Ngăn các chuyên gia lặp vô hạn hoặc làm trùng việc thế nào?
+
+**Gợi ý trả lời:** Định nghĩa hợp đồng nhiệm vụ có kiểu, trách nhiệm, ngân sách chung và quy tắc kết thúc. Trace việc giao nhiệm vụ, xử lý xung đột khi gộp; chỉ song song hóa việc độc lập.
+
+Nguồn kiểm chứng: [LangChain multi-agent patterns](https://docs.langchain.com/oss/javascript/langchain/multi-agent).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [LangChain multi-agent patterns](https://docs.langchain.com/oss/javascript/langchain/multi-agent): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [OpenAI Agents SDK for JavaScript](https://github.com/openai/openai-agents-js): Upstream và repo mẫu: đọc thư mục examples về tool, handoff và trạng thái lượt chạy.
 
 ## Quiz nhanh
 

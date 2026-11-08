@@ -12,7 +12,7 @@ tags:
   - codex
   - configuration
   - permissions
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -51,6 +51,38 @@ Copying configuration without understanding permissions; requesting broader proj
 ## Further reading
 
 - \* Essential — [Primary resource](<https://developers.openai.com/codex/>)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — Can project configuration weaken an enforced organization policy?
+
+**Why essential:** Effective permissions must be understood before changing configuration.
+
+**Answer outline:** No. Enforced requirements constrain allowed behavior; ordinary configuration supplies defaults. Diagnose the active policy and project trust before changing a local setting.
+
+Reference: [Codex configuration basics](https://learn.chatgpt.com/docs/config-file/config-basic).
+
+### 2. Where would you put personal defaults and project overrides?
+
+**Answer outline:** User defaults live in ~/.codex/config.toml; trusted projects can add .codex/config.toml layers. More specific settings and CLI overrides still remain subject to enforced requirements.
+
+Reference: [Codex configuration basics](https://learn.chatgpt.com/docs/config-file/config-basic).
+
+### 3. Why is disabling approval prompts different from granting full access?
+
+**Answer outline:** Approval review and sandbox capabilities are separate controls. A command can remain blocked by filesystem or network limits even when the agent will not ask for escalation.
+
+Reference: [Codex permission modes](https://learn.chatgpt.com/docs/permission-modes).
+
+### Interview resources
+
+- \* Essential — [Codex configuration basics](https://learn.chatgpt.com/docs/config-file/config-basic): read first to verify the core concept before the design exercises.
+
+- [Codex](https://github.com/openai/codex): Upstream: inspect the CLI implementation and repository guidance.
+
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook): Sample repository: compare the Codex workflow recipes with your own task.
 
 ## Quick quiz
 

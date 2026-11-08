@@ -12,7 +12,7 @@ tags:
   - cost
   - token
   - optimization
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -51,6 +51,38 @@ Cutting context arbitrarily; sharing private caches across authorization boundar
 ## Further reading
 
 - \* Essential — [Primary resource](<https://platform.openai.com/docs/guides/prompt-caching>)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — How would you reduce cost without silently reducing task quality?
+
+**Why essential:** Cost optimization needs a quality constraint and measured usage.
+
+**Answer outline:** Establish a quality baseline, inspect expensive calls, then test shorter outputs, smaller models, and fewer redundant requests. Compare cost per successful task, not only cost per request.
+
+Reference: [OpenAI latency optimization](https://developers.openai.com/api/docs/guides/latency-optimization).
+
+### 2. Is prompt caching the same as caching a complete answer?
+
+**Answer outline:** No. Prompt caching reuses computation for matching prompt prefixes; the model still generates output. Measure actual cache usage and current model-specific read/write pricing.
+
+Reference: [OpenAI prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching).
+
+### 3. Why might shorter prompts save less money than expected?
+
+**Answer outline:** You may lose a reusable prefix or increase retries and tool calls. Compare total usage, cache writes and reads, and successful-task cost before accepting a token reduction.
+
+Reference: [OpenAI prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching).
+
+### Interview resources
+
+- \* Essential — [OpenAI latency optimization](https://developers.openai.com/api/docs/guides/latency-optimization): read first to verify the core concept before the design exercises.
+
+- [OpenAI Node SDK](https://github.com/openai/openai-node): Upstream: check request types and lifecycle handling in the official TypeScript SDK.
+
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook): Sample repository: adapt the prompting and API examples; most examples use Python.
 
 ## Quick quiz
 

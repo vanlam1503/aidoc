@@ -6,7 +6,7 @@ Review this repository as an engineer assessing an AI engineering learning platf
 
 Audit the current implementation and produce a prioritized review. This is a review task, not an implementation task.
 
-The intended product is AI Engineering Academy: a local-first learning platform covering Basic through Advanced AI engineering. Public lessons, references, and local search should work without authentication, a database, or AI credentials. Google sign-in, saved learning state, and AI assistance are optional capabilities.
+The intended product is AI Engineering Academy: a local-first learning platform covering Basic through Advanced AI engineering. Public lessons, references, and local search should work without authentication, a database, or AI credentials. Progress, bookmarks, and chat history use local file persistence without sign-in. AI assistance requires a Gemini server key.
 
 Use these as requirements to verify, not proof that the implementation satisfies them:
 
@@ -14,7 +14,7 @@ Use these as requirements to verify, not proof that the implementation satisfies
 - Local Markdown-compatible MDX lessons under `content/`, with stable lesson IDs.
 - Content loading/validation and local search/retrieval modules.
 - Auth.js, Prisma, and PostgreSQL for user-owned account and learning data.
-- A server-side OpenAI assistant using local lesson context.
+- A server-side Google Gemini assistant using local lesson context.
 - English as the default for the interface, assistant, new lessons, and review report. Preserve existing Vietnamese lessons and explicit language preferences; assess display language separately from lesson language.
 
 Verify the actual repository structure before applying this context. Identify independent subprojects, including `research-assistant/` if present, and determine whether they participate in the application runtime. Do not assume a separate agent project powers the Academy assistant.
@@ -90,7 +90,7 @@ Trace concrete trust boundaries and attack paths rather than listing generic ris
 
 ### Identity and persistence
 
-- Authentication and ownership enforcement on every protected read/write, including progress, bookmarks, conversations, and messages. Where authorized, use two distinct test users to check cross-user access denial.
+- Local read/write validation, origin guards, atomic persistence, quota reservation, and handling of corrupt files. The current application is one personal workspace without user accounts; do not require OAuth or cross-user tests for this local mode.
 - Session expiry/sign-out behavior, OAuth configuration, cookie handling, request-origin/CSRF protections, input/body limits, and safe error responses.
 - Database constraints, transactions, concurrency, retries, idempotency, ordering, and progress/completion consistency.
 - Secret handling and server-only service access. If a suspected credential is committed or hardcoded, report its location without its value and recommend rotation plus removal from source/history as appropriate.
@@ -225,7 +225,7 @@ Use a shared rubric:
 
 Each row needs a rationale, finding/evidence references, confidence, and verification limitations. Use `Unknown` for insufficient evidence and `N/A` for genuinely out-of-scope criteria; neither is zero or a pass. Do not hide release blockers in an average score.
 
-Give separate release assessments for public learning, authenticated persistence, and the live AI assistant. For each, state `Ready for stated scope`, `Ready with conditions`, `Not ready`, or `Insufficient evidence`, with release gates and required acceptance checks. A successful production build alone does not establish production readiness.
+Give separate release assessments for public learning, local persistence, and the live AI assistant. For each, state `Ready for stated scope`, `Ready with conditions`, `Not ready`, or `Insufficient evidence`, with release gates and required acceptance checks. A successful production build alone does not establish production readiness.
 
 ## 11. Prioritized improvement roadmap
 

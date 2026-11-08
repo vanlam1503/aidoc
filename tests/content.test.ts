@@ -48,6 +48,25 @@ describe("local curriculum", () => {
     expect(references.flatMap((reference) => reference.relatedLessons).every((id) => ids.has(id))).toBe(true);
   });
 
+  it("provides three sourced interview questions for every lesson in both languages", () => {
+    for (const locale of ["en", "vi"] as const) {
+      for (const lesson of getLessons(locale)) {
+        const heading = locale === "en" ? "Interview questions" : "Câu hỏi phỏng vấn";
+        const section = lesson.body.split(`## ${heading}\n`)[1]?.split(/\n## /)[0];
+        expect(section, `${locale}/${lesson.id}`).toBeDefined();
+        const questions = section!.split(/^### \d\. /m).slice(1);
+        expect(questions, `${locale}/${lesson.id}`).toHaveLength(3);
+        expect(questions[0]).toContain("\\* Essential");
+        for (const question of questions) {
+          expect(question).toMatch(locale === "en" ? /\*\*Answer outline:\*\*/ : /\*\*Gợi ý trả lời:\*\*/);
+          expect(question).toMatch(/\[[^\]]+\]\(https:\/\/[^)]+\)/);
+        }
+        expect(section).toMatch(/(?:checked on|kiểm chứng ngày) \d{4}-\d{2}-\d{2}/);
+        expect(section).toContain("https://github.com/");
+      }
+    }
+  });
+
   it("has resources in every reference category", () => {
     for (const category of referenceCategories) {
       expect(references.some((reference) => reference.category === category), category).toBe(true);
@@ -68,6 +87,7 @@ describe("English lesson authoring", () => {
 ## Practice
 ## Common mistakes
 ## Further reading
+## Interview questions
 ## Quick quiz
 ## Completion criteria`;
 

@@ -12,7 +12,7 @@ tags:
   - mcp
   - protocol
   - tools
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -51,6 +51,38 @@ Coi MCP server như plugin đáng tin mặc định; bật tool ghi khi chỉ c�
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://modelcontextprotocol.io/introduction>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Host, client và server trong MCP liên hệ thế nào?
+
+**Vì sao cần ưu tiên:** Cần hiểu vai trò giao thức và ranh giới cấp quyền trước khi tích hợp tool.
+
+**Gợi ý trả lời:** Ứng dụng host quản lý tương tác model và quyền; các client của nó giao tiếp với server cung cấp chức năng. MCP chuẩn hóa tích hợp, không cung cấp chính model.
+
+Nguồn kiểm chứng: [MCP architecture overview](https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture).
+
+### 2. Tool, resource và prompt khác nhau thế nào?
+
+**Gợi ý trả lời:** Tool cung cấp thao tác gọi được; resource cung cấp context có thể đọc; prompt cung cấp mẫu thông điệp dùng lại. Cần mô tả rõ dữ liệu và tác động của từng chức năng.
+
+Nguồn kiểm chứng: [MCP architecture overview](https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture).
+
+### 3. Remote MCP server cần kiểm tra bảo mật gì?
+
+**Gợi ý trả lời:** Xác thực danh tính, audience token, scope và quyền sở hữu tài nguyên. Giới hạn truy cập downstream và đích mạng; không mặc định host đã cấp quyền mọi thao tác được yêu cầu.
+
+Nguồn kiểm chứng: [MCP security best practices](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [MCP architecture overview](https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk): Upstream và repo mẫu: đọc ví dụ client/server, đối chiếu phiên bản giao thức với SDK.
+
+- [MCP reference servers](https://github.com/modelcontextprotocol/servers): Repo mẫu: đối chiếu ranh giới tool; ví dụ không bảo đảm an toàn cho production.
 
 ## Quiz nhanh
 

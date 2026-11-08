@@ -12,7 +12,7 @@ tags:
   - codex
   - skills
   - automation
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -51,6 +51,38 @@ Overly broad descriptions that trigger incorrectly; duplicating the entire handb
 ## Further reading
 
 - \* Essential — [Primary resource](<https://github.com/openai/codex>)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — What does a skill package, and when should it activate?
+
+**Why essential:** Clear activation conditions prevent a reusable workflow from running in the wrong task.
+
+**Answer outline:** A SKILL.md defines its name, description, and workflow, with optional scripts and resources. Its description should identify both useful situations and boundaries.
+
+Reference: [Build skills](https://learn.chatgpt.com/docs/build-skills).
+
+### 2. Why use progressive disclosure for skills?
+
+**Answer outline:** Load brief discovery metadata first, then the selected workflow and necessary references. This limits irrelevant context while retaining detailed guidance when the task needs it.
+
+Reference: [Build skills](https://learn.chatgpt.com/docs/build-skills).
+
+### 3. A skill includes a shell script. What would you review before using it?
+
+**Answer outline:** Inspect the script, inputs, filesystem writes, network access, and secret handling. Reusable instructions do not replace sandbox enforcement or task-specific authorization.
+
+Reference: [Agent approvals and security](https://learn.chatgpt.com/docs/agent-approvals-security).
+
+### Interview resources
+
+- \* Essential — [Build skills](https://learn.chatgpt.com/docs/build-skills): read first to verify the core concept before the design exercises.
+
+- [Codex](https://github.com/openai/codex): Upstream: inspect how the coding agent loads guidance.
+
+- [OpenAI Plugins](https://github.com/openai/plugins): Sample repository for reusable skills and plugins; the older openai/skills catalog is deprecated.
 
 ## Quick quiz
 

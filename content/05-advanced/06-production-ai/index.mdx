@@ -12,7 +12,7 @@ tags:
   - production
   - ci-cd
   - deployment
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -51,6 +51,36 @@ Deploying unversioned prompt changes; overlooking API key rotation; applying des
 ## Further reading
 
 - \* Essential — [Primary resource](<https://12factoragents.com/>)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — What should be versioned for an AI release?
+
+**Why essential:** A release must be observable and reversible before receiving broad traffic.
+
+**Answer outline:** Version application code, prompt, model configuration, retrieval settings, and evaluation data. Keep the release artifact identifiable so a regression can be compared and rolled back.
+
+Reference: [Google SRE canary releases](https://sre.google/workbook/canarying-releases/).
+
+### 2. How do you handle credentials and environment separation?
+
+**Answer outline:** Keep API credentials server-side, use a secret manager or environment variables, and isolate staging from production with restricted service identities and budgets.
+
+Reference: [OpenAI production best practices](https://developers.openai.com/api/docs/guides/production-best-practices).
+
+### 3. Why combine offline evaluation with a canary rollout?
+
+**Answer outline:** Offline gates catch known failures; a small controlled rollout reveals behavior on live traffic. Define monitoring and rollback conditions before increasing exposure.
+
+Reference: [Google SRE canary releases](https://sre.google/workbook/canarying-releases/).
+
+### Interview resources
+
+- \* Essential — [Google SRE canary releases](https://sre.google/workbook/canarying-releases/): read first to verify the core concept before the design exercises.
+
+- [Promptfoo](https://github.com/promptfoo/promptfoo): Upstream and sample repository: adapt the examples for assertions and regression suites.
 
 ## Quick quiz
 

@@ -12,7 +12,7 @@ tags:
   - tool-calling
   - function-calling
   - security
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -52,6 +52,36 @@ Executing unparsed arguments; trusting a model-supplied order ID; exposing arbit
 ## Further reading
 
 - \* Essential — [Primary resource](<https://platform.openai.com/docs/guides/function-calling>)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — What does a function call from the model actually do?
+
+**Why essential:** Model-generated arguments must cross a validated application boundary before execution.
+
+**Answer outline:** It requests an operation with arguments. Your application validates those arguments, checks authorization, executes the tool, and returns its result using the matching call identifier.
+
+Reference: [OpenAI function calling](https://developers.openai.com/api/docs/guides/function-calling).
+
+### 2. Why does a strict tool schema not replace authorization?
+
+**Answer outline:** A schema constrains shape, not user ownership or permitted effects. Check the authenticated actor and target resource beside the tool implementation, before a side effect occurs.
+
+Reference: [MCP security best practices](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices).
+
+### 3. A tool times out after creating an order. Should you retry?
+
+**Answer outline:** First reconcile the operation status. Reuse a durable idempotency key supported by the downstream service; a lost acknowledgement does not prove the order was never created.
+
+Reference: [AWS timeouts, retries, and backoff with jitter](https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter).
+
+### Interview resources
+
+- \* Essential — [OpenAI function calling](https://developers.openai.com/api/docs/guides/function-calling): read first to verify the core concept before the design exercises.
+
+- [OpenAI Agents SDK for JavaScript](https://github.com/openai/openai-agents-js): Upstream and sample repository: study the examples directory for tools, handoffs, and run state.
 
 ## Quick quiz
 

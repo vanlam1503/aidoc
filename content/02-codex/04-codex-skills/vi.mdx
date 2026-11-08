@@ -12,7 +12,7 @@ tags:
   - codex
   - skills
   - automation
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -51,6 +51,38 @@ Description quá rộng khiến skill bị gọi sai; lặp toàn bộ handbook;
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://github.com/openai/codex>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Skill đóng gói gì và nên kích hoạt khi nào?
+
+**Vì sao cần ưu tiên:** Điều kiện kích hoạt rõ giúp workflow dùng lại không chạy nhầm nhiệm vụ.
+
+**Gợi ý trả lời:** SKILL.md định nghĩa tên, mô tả và workflow, có thể kèm script và tài nguyên. Mô tả cần nêu cả tình huống phù hợp lẫn giới hạn sử dụng.
+
+Nguồn kiểm chứng: [Build skills](https://learn.chatgpt.com/docs/build-skills).
+
+### 2. Vì sao skill dùng progressive disclosure?
+
+**Gợi ý trả lời:** Nạp metadata ngắn để nhận diện trước, sau đó đọc workflow được chọn và tài liệu cần thiết. Cách này giảm context không liên quan mà vẫn có hướng dẫn chi tiết khi cần.
+
+Nguồn kiểm chứng: [Build skills](https://learn.chatgpt.com/docs/build-skills).
+
+### 3. Skill có shell script. Bạn kiểm tra gì trước khi dùng?
+
+**Gợi ý trả lời:** Đọc script, đầu vào, thao tác ghi file, truy cập mạng và xử lý bí mật. Hướng dẫn dùng lại không thay thế sandbox hoặc quyền thực hiện nhiệm vụ cụ thể.
+
+Nguồn kiểm chứng: [Agent approvals and security](https://learn.chatgpt.com/docs/agent-approvals-security).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [Build skills](https://learn.chatgpt.com/docs/build-skills): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [Codex](https://github.com/openai/codex): Upstream: tìm hiểu cách coding agent nạp hướng dẫn.
+
+- [OpenAI Plugins](https://github.com/openai/plugins): Repo mẫu cho skill và plugin dùng lại; danh mục openai/skills cũ đã deprecated.
 
 ## Quiz nhanh
 

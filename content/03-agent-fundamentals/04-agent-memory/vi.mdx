@@ -12,7 +12,7 @@ tags:
   - memory
   - state
   - agents
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -51,6 +51,36 @@ Ghi raw reasoning; trộn tenant; lưu PII vô hạn; không version checkpoint.
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://platform.openai.com/docs/guides/agents>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Checkpoint theo thread khác long-term store thế nào?
+
+**Vì sao cần ưu tiên:** Phạm vi memory quyết định cách ly hội thoại và độ đúng khi khôi phục.
+
+**Gợi ý trả lời:** Checkpoint giữ trạng thái thực thi của một thread. Store giữ thông tin ứng dụng qua nhiều thread, như sở thích. Chọn rõ phạm vi và kiểm tra quyền truy cập theo người dùng.
+
+Nguồn kiểm chứng: [LangGraph persistence](https://docs.langchain.com/oss/javascript/langgraph/persistence).
+
+### 2. Agent có nên giữ mọi lượt hội thoại trong prompt không?
+
+**Gợi ý trả lời:** Không nhất thiết. Cắt hoặc tóm tắt lịch sử cũ theo giới hạn context nhưng giữ ý định hiện tại, quyết định quan trọng và quan hệ tool call. Kiểm tra khả năng nhớ sau rút gọn.
+
+Nguồn kiểm chứng: [LangChain short-term memory](https://docs.langchain.com/oss/javascript/langchain/short-term-memory).
+
+### 3. Những gì phải ở ngoài checkpoint?
+
+**Gợi ý trả lời:** Không serialize kết nối database đang mở, runtime client và bí mật. Lưu định danh ổn định cùng dữ liệu có thể khôi phục; tạo lại phụ thuộc tạm thời khi chạy tiếp.
+
+Nguồn kiểm chứng: [LangGraph Graph API](https://docs.langchain.com/oss/javascript/langgraph/graph-api).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [LangGraph persistence](https://docs.langchain.com/oss/javascript/langgraph/persistence): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [LangGraph.js](https://github.com/langchain-ai/langgraphjs): Upstream và repo mẫu: dùng examples để tìm hiểu state, điều hướng và khôi phục.
 
 ## Quiz nhanh
 

@@ -12,7 +12,7 @@ tags:
   - langgraph
   - state-machine
   - routing
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -63,6 +63,36 @@ Tạo graph khó hiểu với node khổng lồ; conditional route không exhaus
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://docs.langchain.com/oss/javascript/langgraph/overview>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — State, node và edge biểu diễn gì?
+
+**Vì sao cần ưu tiên:** State và điều kiện kết thúc rõ ràng giúp tránh thực thi mất kiểm soát.
+
+**Gợi ý trả lời:** State mang dữ liệu workflow; node tính các cập nhật; edge xác định thứ tự thực thi hoặc điều hướng có điều kiện. Định nghĩa chuyển trạng thái hợp lệ và kết quả kết thúc rõ ràng.
+
+Nguồn kiểm chứng: [LangGraph Graph API](https://docs.langchain.com/oss/javascript/langgraph/graph-api).
+
+### 2. Chọn workflow cố định thay cho vòng lặp agent khi nào?
+
+**Gợi ý trả lời:** Dùng đường đi cố định khi quy trình đã biết và cần kiểm toán. Dùng điều hướng theo model khi đầu vào đòi hỏi phán đoán; kiểm tra quyết định và giới hạn số vòng.
+
+Nguồn kiểm chứng: [LangGraph workflows and agents](https://docs.langchain.com/oss/javascript/langgraph/workflows-agents).
+
+### 3. Hai node song song cập nhật cùng trường. Cần định nghĩa gì?
+
+**Gợi ý trả lời:** Chỉ rõ quy tắc gộp bằng reducer phù hợp hoặc tránh ghi xung đột. Kiểm tra giả định về thứ tự; nối thêm dữ liệu khác việc thay thế giá trị.
+
+Nguồn kiểm chứng: [LangGraph Graph API](https://docs.langchain.com/oss/javascript/langgraph/graph-api).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [LangGraph Graph API](https://docs.langchain.com/oss/javascript/langgraph/graph-api): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [LangGraph.js](https://github.com/langchain-ai/langgraphjs): Upstream và repo mẫu: dùng examples để tìm hiểu state, điều hướng và khôi phục.
 
 ## Quiz nhanh
 

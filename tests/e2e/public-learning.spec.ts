@@ -43,14 +43,17 @@ test("the lesson page has no automatically detected WCAG 2 A/AA violations", asy
   expect(scriptWarnings).toEqual([]);
 });
 
-test("protected endpoints require a session and reject cross-origin writes", async ({ page, request }) => {
-  expect((await request.get("/api/progress")).status()).toBe(401);
-  expect((await request.get("/api/bookmarks")).status()).toBe(401);
-  expect((await request.get("/api/chat")).status()).toBe(401);
+test("local endpoints need no session and still reject cross-origin writes", async ({ page, request }) => {
+  expect((await request.get("/api/progress")).status()).toBe(200);
+  expect((await request.get("/api/bookmarks")).status()).toBe(200);
+  expect((await request.get("/api/chat")).status()).toBe(200);
   expect((await request.post("/api/progress", { headers: { origin: "https://untrusted.example" }, data: { lessonId: "codex-cli", progressPercent: 50 } })).status()).toBe(403);
   await page.goto("/");
-  const sameOriginStatus = await page.evaluate(async () => (await fetch("/api/progress", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ lessonId: "codex-cli", progressPercent: 50 }) })).status);
-  expect(sameOriginStatus).toBe(401);
+  const sameOriginStatus = await page.evaluate(async () => (await fetch("/api/progress", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ lessonId: "nonexistent-test-lesson", progressPercent: 50 }) })).status);
+  expect(sameOriginStatus).toBe(404); // Validation reached without an account; no real progress is changed.
+  expect((await request.get("/api/auth/session")).status()).toBe(404);
+  expect((await request.get("/auth/signin")).status()).toBe(404);
+  await expect(page.getByRole("link", { name: "Sign in", exact: true })).toHaveCount(0);
 });
 
 test("assistant dialog moves focus inside, traps keyboard navigation, and restores focus", async ({ page }) => {
@@ -59,8 +62,7 @@ test("assistant dialog moves focus inside, traps keyboard navigation, and restor
   await launcher.click();
   const dialog = page.getByRole("dialog", { name: "Academy AI Assistant" });
   await expect(dialog).toBeVisible();
-  const close = page.getByRole("button", { name: "Close assistant" });
-  await expect(close).toBeFocused();
+  await expect.poll(() => dialog.evaluate((element) => element.contains(document.activeElement))).toBe(true);
   await page.keyboard.press("Escape");
   await expect(dialog).not.toBeVisible();
   await expect(launcher).toBeFocused();
@@ -124,8 +126,11 @@ test.describe("English defaults", () => {
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("OpenAI Codex: coding agents in the development workflow");
     await expect(article).toHaveAttribute("lang", "en");
     await expect(article.getByRole("heading", { name: "Learning objectives", exact: true })).toBeVisible();
+    await expect(article.getByRole("heading", { name: "Interview questions", exact: true })).toBeVisible();
+    await expect(article.getByRole("heading", { name: "1. * Essential — How is a coding agent different from autocomplete?", exact: true })).toBeVisible();
     await expect(article).not.toContainText(/[À-ỹ]/);
     await expect(page.locator(".toc-sidebar")).toContainText("Common mistakes");
+    await expect(page.locator(".toc-sidebar").getByRole("link", { name: "Interview questions", exact: true })).toHaveAttribute("href", "#interview-questions");
     await expect(page.locator(".lesson-pagination")).toContainText("Codex CLI: working safely in the terminal");
     await expect(page.locator(".curriculum-sidebar")).not.toContainText(/[À-ỹ]/);
 
@@ -133,12 +138,17 @@ test.describe("English defaults", () => {
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("OpenAI Codex: coding agent trong quy trình phát triển");
     await expect(article).toHaveAttribute("lang", "vi");
     await expect(article.getByRole("heading", { name: "Mục tiêu học tập", exact: true })).toBeVisible();
+    await expect(article.getByRole("heading", { name: "Câu hỏi phỏng vấn", exact: true })).toBeVisible();
+    await expect(article.getByRole("heading", { name: "1. * Essential — Coding agent khác autocomplete thế nào?", exact: true })).toBeVisible();
     await expect(page.locator(".toc-sidebar")).toContainText("Lỗi thường gặp");
+    await expect(page.locator(".toc-sidebar")).toContainText("Câu hỏi phỏng vấn");
     await expect(page.locator(".lesson-pagination")).toContainText("Codex CLI: làm việc an toàn trong terminal");
     await page.getByRole("button", { name: /Tìm bài học/ }).click();
     const search = page.getByRole("dialog", { name: "Tìm bài học" });
     await search.getByRole("textbox").fill("khôi phục");
     await expect(search).toContainText("Agent memory và state: lưu đúng thứ cần khôi phục");
+    await search.getByRole("textbox").fill("giám khảo");
+    await expect(search.getByRole("link", { name: /Agent evaluations/ })).toBeVisible();
     await search.getByRole("button", { name: "Esc", exact: true }).click();
     await page.reload();
     await expect(article).toHaveAttribute("lang", "vi");
@@ -184,13 +194,13 @@ test.describe("English defaults", () => {
     });
   }
 
-  test("account, setup, and reference copy is in English", async ({ page }) => {
-    await page.goto("/auth/signin");
-    await expect(page.getByText("Lessons are open to everyone.", { exact: false })).toBeVisible();
-    await expect(page.getByRole("link", { name: "← Continue reading lessons" })).toBeVisible();
+  test("local dashboard, setup, and reference copy is in English", async ({ page }) => {
+    await page.goto("/dashboard");
+    await expect(page.getByRole("heading", { name: "Your learning dashboard" })).toBeVisible();
+    await expect(page.getByText("Progress and bookmarks are saved on this computer. No account needed.")).toBeVisible();
     await page.goto("/setup");
-    await expect(page.getByText("The assistant needs OpenAI API access configured on the server.", { exact: false })).toBeVisible();
-    await expect(page.getByText("Copy .env.example to .env.local.", { exact: true })).toBeVisible();
+    await expect(page.getByText("The assistant needs Google Gemini API access configured on the server.", { exact: false })).toBeVisible();
+    await expect(page.getByText("Copy .env.example to .env.", { exact: true })).toBeVisible();
     await page.goto("/references");
     await expect(page.getByRole("navigation", { name: "Reference categories" })).toBeVisible();
     await expect(page.getByText("Practical examples of the Responses API, embeddings, prompt design, and OpenAI integrations.")).toBeVisible();
@@ -205,7 +215,7 @@ test.describe("English defaults", () => {
         return;
       }
       submitted = route.request().postDataJSON();
-      await route.fulfill({ contentType: "text/event-stream", body: 'data: {"type":"delta","text":"Start with the foundations."}\n\n' });
+      await route.fulfill({ contentType: "text/event-stream", body: 'data: {"type":"delta","text":"Start with the foundations."}\n\ndata: {"type":"done"}\n\n' });
     });
     await page.goto("/");
     await page.getByRole("button", { name: "Ask assistant", exact: true }).click();
@@ -215,4 +225,44 @@ test.describe("English defaults", () => {
     await expect.poll(() => submitted).toMatchObject({ locale: "en", message: "Tôi nên bắt đầu học từ đâu?" });
     await expect(dialog.getByText("Start with the foundations.")).toBeVisible();
   });
+});
+
+
+test("assistant configuration points to the server-side Gemini key", async ({ page }) => {
+  await page.route("**/api/chat", (route) => route.fulfill({ json: { configured: false, conversations: [] } }));
+  await page.goto("/");
+  await page.getByRole("button", { name: "Ask assistant", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: "Academy AI Assistant" });
+  await expect(dialog.getByText("Google Gemini API configuration needed")).toBeVisible();
+  await expect(dialog).toContainText("GEMINI_API_KEY");
+  await dialog.getByRole("link", { name: "Setup guide" }).click();
+  await expect(page).toHaveURL(/\/setup$/);
+  await expect(page.getByText("GEMINI_API_KEY", { exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Google AI Studio" })).toHaveAttribute("href", "https://aistudio.google.com/apikey");
+});
+
+
+test("lesson completion and bookmarks work without login and survive reload", async ({ page }) => {
+  let completed = false;
+  let bookmarked = false;
+  await page.route("**/api/progress**", async (route) => {
+    if (route.request().method() === "POST" && route.request().postDataJSON().completed) completed = true;
+    const progress = { lessonId: "llm-fundamentals", progressPercent: completed ? 100 : 0, completed };
+    await route.fulfill({ json: { progress: new URL(route.request().url()).searchParams.has("lessonId") || route.request().method() === "POST" ? progress : [progress] } });
+  });
+  await page.route("**/api/bookmarks**", async (route) => {
+    if (route.request().method() === "POST") bookmarked = true;
+    if (route.request().method() === "DELETE") bookmarked = false;
+    const bookmark = { id: "local-bookmark", kind: "lesson", lessonId: "llm-fundamentals", createdAt: "2026-11-08T00:00:00Z" };
+    await route.fulfill({ json: route.request().method() === "POST" ? { bookmark } : { bookmarks: bookmarked ? [bookmark] : [] } });
+  });
+  await page.goto("/learn/llm-fundamentals");
+  await page.getByRole("button", { name: "Bookmark lesson", exact: true }).click();
+  await page.getByRole("button", { name: "Mark complete", exact: true }).click();
+  await expect(page.locator(".lesson-actions")).toContainText("Lesson completed");
+  await page.reload();
+  await expect(page.getByRole("button", { name: "Remove bookmark", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(".lesson-actions")).toContainText("Lesson completed");
+  await expect(page.locator(".sidebar-progress strong")).toContainText("1");
+  await expect(page.getByRole("link", { name: /Sign in/ })).toHaveCount(0);
 });

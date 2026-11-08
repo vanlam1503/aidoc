@@ -5,10 +5,11 @@
 - Next.js App Router pages and reusable interface components live under `src/`.
 - Lessons are local Markdown-compatible MDX files under `content/`; keep one `index.mdx` per lesson.
 - `src/lib/content/` validates and loads metadata/content. `src/lib/search/` owns local lexical indexing and ranking.
-- `src/lib/database/` owns the Prisma client; `src/auth.ts` configures Auth.js. Server routes must authenticate and validate ownership before writes.
-- `prisma/schema.prisma` and checked-in migrations define user, learning, conversation, and usage records.
+- `src/lib/local/store.ts` owns single-user local progress, bookmarks, conversations, and usage in the ignored `.data/academy.json` file. No login or database service is required.
+- `src/lib/bookmarks/schema.ts` defines backward-compatible lesson/link bookmarks. Shared client bookmark state belongs in `BookmarkProvider`; `/bookmarks` provides local search and link management.
+- Validate API inputs and enforce same-origin checks before local writes; keep atomic serialized file updates in the store.
 - External service access belongs in server-only feature modules or route handlers, never in UI components.
-- Keep public documentation readable without authentication. Enforce ownership on every future progress, bookmark, and chat write.
+- Keep the local learning flow free of account requirements. Gemini API keys stay on the server in `.env`.
 
 ## Standards
 
@@ -35,9 +36,6 @@
 - `npm run test:e2e` — run Playwright journeys and axe accessibility checks
 - `npx playwright install chromium` — install the browser used by E2E tests
 - `npm run test:all` — run unit/integration and E2E suites
-- `npm run db:migrate` — apply/create a local PostgreSQL migration
-- `npm run db:generate` — regenerate Prisma Client
-- `docker compose up -d` — start the local database
 - `npm run build` — production build
 
 ## Definition of done

@@ -12,7 +12,7 @@ tags:
   - checkpointing
   - recovery
   - resilience
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -51,6 +51,36 @@ Retry lỗi validation; tăng retry không giới hạn; checkpoint state thiế
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://docs.langchain.com/oss/javascript/langgraph/persistence>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Checkpoint là gì và hỗ trợ những gì?
+
+**Vì sao cần ưu tiên:** Phải phân biệt trạng thái đã lưu với tác động bên ngoài đã hoàn tất.
+
+**Gợi ý trả lời:** Đó là ảnh chụp state của graph được lưu theo thread và bước thực thi. Nó hỗ trợ chạy tiếp và kiểm tra; không phải transaction bao phủ mọi dịch vụ bên ngoài.
+
+Nguồn kiểm chứng: [LangGraph checkpointers](https://docs.langchain.com/oss/javascript/langgraph/checkpointers).
+
+### 2. Vì sao replay có thể lặp lại tác động bên ngoài?
+
+**Gợi ý trả lời:** Tác động có thể thành công trước khi kết quả node được checkpoint. Lưu hoặc suy ra idempotency key ổn định trước thực thi, đối soát khi kết quả downstream chưa rõ.
+
+Nguồn kiểm chứng: [LangGraph fault tolerance](https://docs.langchain.com/oss/javascript/langgraph/fault-tolerance).
+
+### 3. Những lỗi nào nên retry?
+
+**Gợi ý trả lời:** Retry lỗi tạm thời với số lần giới hạn, backoff và jitter. Không lặp lại đầu vào không hợp lệ hoặc truy cập bị từ chối; đặt deadline và trả lỗi kết thúc có hướng xử lý.
+
+Nguồn kiểm chứng: [AWS timeouts, retries, and backoff with jitter](https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [LangGraph checkpointers](https://docs.langchain.com/oss/javascript/langgraph/checkpointers): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [LangGraph.js](https://github.com/langchain-ai/langgraphjs): Upstream và repo mẫu: dùng examples để tìm hiểu state, điều hướng và khôi phục.
 
 ## Quiz nhanh
 

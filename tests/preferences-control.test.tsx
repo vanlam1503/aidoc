@@ -2,6 +2,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { BookmarkProvider } from "@/components/bookmarks/bookmark-provider";
 import { LanguageProvider } from "@/components/language-provider";
 import { PreferencesControl } from "@/components/preferences-control";
 import { SearchBox } from "@/components/search-box";
@@ -17,7 +18,7 @@ const lessons: SearchResult[] = [{
 }];
 
 function Curriculum() {
-  return <LanguageProvider><PreferencesControl /><SearchBox lessons={lessons} /></LanguageProvider>;
+  return <LanguageProvider><BookmarkProvider><PreferencesControl /><SearchBox lessons={lessons} /></BookmarkProvider></LanguageProvider>;
 }
 
 describe("curriculum language selection", () => {

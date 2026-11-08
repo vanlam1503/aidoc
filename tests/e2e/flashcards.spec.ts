@@ -1,0 +1,60 @@
+import AxeBuilder from "@axe-core/playwright";
+import { expect, test } from "@playwright/test";
+
+test("flashcards support lesson filtering, feedback, completion and missed review", async ({ page }, testInfo) => {
+  await page.goto("/flashcards");
+  await expect(page).toHaveTitle("Flashcards — AI Engineering Academy");
+  await expect(page.getByText("99 questions ready")).toBeVisible();
+  await page.getByLabel("Lesson", { exact: true }).selectOption("llm-fundamentals");
+  await expect(page.getByText("3 questions ready")).toBeVisible();
+  await page.getByLabel("* Essential questions only", { exact: true }).check();
+  await expect(page.getByText("1 question ready")).toBeVisible();
+  await page.getByRole("button", { name: "Start practice" }).click();
+  const options = page.locator(".flashcard-option");
+  await expect(options).toHaveCount(4);
+  await expect(page.getByRole("heading", { name: "What does a causal language model predict?" })).toBeFocused();
+  const correct = options.filter({ hasText: "A distribution over the next token" });
+  await options.filter({ hasNotText: "A distribution over the next token" }).first().click();
+  await expect(page.getByRole("status")).toContainText("Incorrect");
+  await expect(correct).toBeDisabled();
+  await correct.click({ force: true });
+  await expect(page.getByRole("status")).toContainText("Incorrect");
+  await expect(page.locator(".flashcard-option.is-correct")).toHaveCount(1);
+  await expect(page.locator(".flashcard-sources a")).toHaveCount(2);
+  const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze();
+  expect(scan.violations).toEqual([]);
+  await page.screenshot({ path: testInfo.outputPath("flashcards-desktop.png"), fullPage: true });
+  await page.getByRole("button", { name: "Toggle light and dark theme" }).click();
+  await expect(page.locator("html")).toHaveClass(/dark/);
+  await page.waitForTimeout(250); // Let the existing theme color transition finish before measuring contrast.
+  const darkScan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze();
+  expect(darkScan.violations).toEqual([]);
+  await page.getByRole("button", { name: /See results/ }).click();
+  await expect(page.getByText("0 / 1", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: /Review missed questions/ }).click();
+  await correct.click();
+  await page.getByRole("button", { name: /See results/ }).click();
+  await expect(page.getByText("1 / 1", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Shuffle and restart" }).click();
+  await expect(options).toHaveCount(4);
+});
+
+test("the reusable lesson deck follows language and fits mobile", async ({ page }, testInfo) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/learn/llm-fundamentals");
+  const practice = page.getByRole("region", { name: "Interview flashcards" });
+  await expect(practice.getByText("3 questions ready")).toBeVisible();
+  await practice.getByRole("button", { name: "Start practice" }).click();
+  await expect(practice.locator(".flashcard-option")).toHaveCount(4);
+  await page.getByRole("combobox", { name: "Display language", exact: true }).selectOption("vi");
+  const translated = page.getByRole("region", { name: "Flashcard phỏng vấn" });
+  await expect(translated).toHaveAttribute("lang", "vi");
+  await translated.getByRole("button", { name: "Bắt đầu ôn tập" }).click();
+  await expect(translated.locator(".flashcard-option")).toHaveCount(4);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await page.goto("/flashcards");
+  await expect(page.getByText("99 câu hỏi sẵn sàng")).toBeVisible();
+  await page.getByRole("button", { name: "Bắt đầu ôn tập" }).click();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await page.screenshot({ path: testInfo.outputPath("flashcards-mobile.png"), fullPage: true });
+});

@@ -12,7 +12,7 @@ tags:
   - prompt-engineering
   - zero-shot
   - few-shot
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -79,6 +79,38 @@ In a real application, serialize data safely, impose length limits, and use Stru
 
 - \* Essential — [OpenAI prompting guide](https://platform.openai.com/docs/guides/prompt-engineering)
 - [Prompt Engineering Guide](https://github.com/dair-ai/Prompt-Engineering-Guide)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — What belongs in a reliable task prompt?
+
+**Why essential:** A testable task specification is the prerequisite for prompt iteration.
+
+**Answer outline:** State the goal, relevant input, constraints, output contract, and success criteria. Separate instructions from supplied documents and keep examples relevant to the task.
+
+Reference: [OpenAI prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering).
+
+### 2. When would you add few-shot examples?
+
+**Answer outline:** Use examples to demonstrate a difficult format or decision boundary. Compare against a simpler prompt on held-out cases; examples can consume context or introduce bias.
+
+Reference: [OpenAI prompting](https://developers.openai.com/api/docs/guides/prompting).
+
+### 3. A prompt fixes one case and breaks another. How do you proceed?
+
+**Answer outline:** Version the prompt, retain both cases, define assertions, and compare the candidate with a baseline. Approve the change using measured results rather than one convincing response.
+
+Reference: [Promptfoo configuration](https://www.promptfoo.dev/docs/configuration/guide/).
+
+### Interview resources
+
+- \* Essential — [OpenAI prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering): read first to verify the core concept before the design exercises.
+
+- [OpenAI Node SDK](https://github.com/openai/openai-node): Upstream: check request types and lifecycle handling in the official TypeScript SDK.
+
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook): Sample repository: adapt the prompting and API examples; most examples use Python.
 
 ## Quick quiz
 

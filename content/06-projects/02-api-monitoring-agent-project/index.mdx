@@ -12,7 +12,7 @@ tags:
   - project
   - monitoring
   - incident-response
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -51,6 +51,40 @@ Expecting a model to detect every outage; logging secret headers; allowing alert
 ## Further reading
 
 - \* Essential — [Primary resource](<https://github.com/humanlayer/12-factor-agents>)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — What should the agent receive when an API alert fires?
+
+**Why essential:** Deterministic telemetry should establish an incident before an agent proposes remediation.
+
+**Answer outline:** Provide the affected service, time window, symptoms, latency/error metrics, and relevant trace identifiers. Keep observations separate from hypotheses about the root cause.
+
+Reference: [Google SRE monitoring](https://sre.google/sre-book/monitoring-distributed-systems/).
+
+### 2. Should the agent automatically restart a production service?
+
+**Answer outline:** Only within an explicitly authorized remediation policy. Start with read-only diagnosis, bound tool capabilities, and require review for disruptive actions; an alert alone does not grant write access.
+
+Reference: [OWASP excessive agency (2025 edition)](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/).
+
+### 3. How would you demonstrate the monitoring agent works?
+
+**Answer outline:** Inject controlled latency and failure scenarios, follow traces, and compare diagnosis with known causes. Check alert deduplication, escalation timing, and whether recovery claims match observed metrics.
+
+Reference: [OpenTelemetry traces and spans](https://opentelemetry.io/docs/concepts/signals/traces/).
+
+### Interview resources
+
+- \* Essential — [Google SRE monitoring](https://sre.google/sre-book/monitoring-distributed-systems/): read first to verify the core concept before the design exercises.
+
+- [OpenTelemetry JavaScript](https://github.com/open-telemetry/opentelemetry-js): Upstream: inspect JavaScript tracing and context propagation.
+
+- [OpenTelemetry demo](https://github.com/open-telemetry/opentelemetry-demo): Sample repository maintained by OpenTelemetry: study service traces and failure diagnosis; it is not a complete AI agent project.
+
+These repositories provide reference building blocks, not a finished implementation of this project.
 
 ## Quick quiz
 

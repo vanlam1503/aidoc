@@ -12,7 +12,7 @@ tags:
   - mcp
   - protocol
   - tools
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -51,6 +51,38 @@ Trusting every MCP server by default; enabling write tools when read access suff
 ## Further reading
 
 - \* Essential — [Primary resource](<https://modelcontextprotocol.io/introduction>)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — How do the host, client, and server relate in MCP?
+
+**Why essential:** Protocol roles and authorization boundaries come before tool integration.
+
+**Answer outline:** The host application manages model interaction and permissions; its clients communicate with servers exposing capabilities. MCP standardizes that integration, rather than supplying the model itself.
+
+Reference: [MCP architecture overview](https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture).
+
+### 2. How do tools, resources, and prompts differ?
+
+**Answer outline:** Tools expose callable operations, resources expose readable context, and prompts expose reusable message templates. Describe the data and side effects of each capability explicitly.
+
+Reference: [MCP architecture overview](https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture).
+
+### 3. What security checks belong on a remote MCP server?
+
+**Answer outline:** Validate identity, token audience, scopes, and resource ownership. Restrict downstream access and network destinations; do not assume the host already authorized every requested operation.
+
+Reference: [MCP security best practices](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices).
+
+### Interview resources
+
+- \* Essential — [MCP architecture overview](https://modelcontextprotocol.io/docs/2026-07-28/learn/architecture): read first to verify the core concept before the design exercises.
+
+- [MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk): Upstream and sample repository: inspect the client/server examples and match the protocol version to the SDK release.
+
+- [MCP reference servers](https://github.com/modelcontextprotocol/servers): Sample repository: compare tool boundaries in reference servers; examples are not production security guarantees.
 
 ## Quick quiz
 

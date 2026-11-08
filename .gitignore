@@ -10,7 +10,6 @@ next-env.d.ts
 *.tsbuildinfo
 
 # Generated files (rebuilt by npm install, dev, or build)
-/src/generated/prisma/
 /public/search-index.json
 
 # Test reports and coverage
@@ -26,7 +25,7 @@ next-env.d.ts
 .vercel/
 .npm/
 
-# Local environment and secrets; keep example configuration versioned
+# Server API keys live in .env; ignore local secrets and keep examples versioned
 .env
 .env.*
 !.env.example
@@ -46,3 +45,6 @@ venv/
 Thumbs.db
 *.swp
 *.swo
+
+# Personal local learning data (progress, bookmarks, conversations, usage)
+/.data/

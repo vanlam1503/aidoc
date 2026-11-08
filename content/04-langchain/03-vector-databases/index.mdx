@@ -12,7 +12,7 @@ tags:
   - vector-database
   - search
   - rag
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -51,6 +51,36 @@ Forgetting access filters before retrieval; retaining embeddings for deleted doc
 ## Further reading
 
 - \* Essential — [Primary resource](<https://docs.langchain.com/oss/javascript/integrations/vectorstores/>)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — How do exact search and approximate nearest-neighbor search differ?
+
+**Why essential:** Index tradeoffs must be measured before optimizing retrieval latency.
+
+**Answer outline:** Exact search supplies a recall baseline. Approximate indexes trade recall, memory, and build cost for speed; compare results and latency using your own dataset and filters.
+
+Reference: [pgvector indexing and filtering](https://github.com/pgvector/pgvector).
+
+### 2. When does hybrid search help?
+
+**Answer outline:** Semantic search handles related meaning; lexical search helps preserve exact identifiers and terminology. Combine rankings and evaluate queries containing names, codes, and paraphrases.
+
+Reference: [OpenAI retrieval](https://developers.openai.com/api/docs/guides/retrieval).
+
+### 3. Why can a filtered ANN query return fewer than k results?
+
+**Answer outline:** Filtering may occur after approximate candidate selection. Examine selectivity, scan limits, and index settings; benchmark iterative scans or partitioning while preserving tenant authorization.
+
+Reference: [pgvector indexing and filtering](https://github.com/pgvector/pgvector).
+
+### Interview resources
+
+- \* Essential — [pgvector indexing and filtering](https://github.com/pgvector/pgvector): read first to verify the core concept before the design exercises.
+
+- [pgvector](https://github.com/pgvector/pgvector): Upstream and SQL examples: benchmark exact search, approximate indexes, and filters. No separate project repository is required for this exercise.
 
 ## Quick quiz
 

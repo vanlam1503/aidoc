@@ -12,7 +12,7 @@ tags:
   - orchestration
   - human-in-the-loop
   - recovery
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -51,6 +51,36 @@ Using a single global approval boolean; omitting expiry; failing to recheck the 
 ## Further reading
 
 - \* Essential — [Primary resource](<https://docs.langchain.com/oss/javascript/langgraph/interrupts>)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — What must a human approval step persist?
+
+**Why essential:** Human review must pause execution before the action creates a side effect.
+
+**Answer outline:** Persist the proposed action, relevant arguments, run identity, and resumable state. Bind approval to the reviewed action; a material change should require a new decision.
+
+Reference: [LangGraph interrupts](https://docs.langchain.com/oss/javascript/langgraph/interrupts).
+
+### 2. Which steps belong in deterministic orchestration?
+
+**Answer outline:** Put authorization, budgets, state transitions, and required checks in code. Let models handle bounded judgments, then validate their output before selecting an allowed transition.
+
+Reference: [LangGraph workflows and agents](https://docs.langchain.com/oss/javascript/langgraph/workflows-agents).
+
+### 3. What happens if approval expires or the reviewer is unavailable?
+
+**Answer outline:** Keep the action pending or reject it according to policy. Record the outcome and resume only through the authenticated review flow; lack of a response is not approval.
+
+Reference: [Guardrails and human review](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals).
+
+### Interview resources
+
+- \* Essential — [LangGraph interrupts](https://docs.langchain.com/oss/javascript/langgraph/interrupts): read first to verify the core concept before the design exercises.
+
+- [LangGraph.js](https://github.com/langchain-ai/langgraphjs): Upstream and sample repository: use the examples to explore state, routing, and recovery.
 
 ## Quick quiz
 

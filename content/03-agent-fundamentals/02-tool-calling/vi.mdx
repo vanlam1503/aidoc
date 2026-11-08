@@ -12,7 +12,7 @@ tags:
   - tool-calling
   - function-calling
   - security
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -52,6 +52,36 @@ Thực thi arguments chưa parse; tin orderId do model đưa; cung cấp shell/S
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://platform.openai.com/docs/guides/function-calling>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Function call từ model thực sự làm gì?
+
+**Vì sao cần ưu tiên:** Tham số model sinh phải đi qua kiểm tra của ứng dụng trước khi thực thi.
+
+**Gợi ý trả lời:** Nó yêu cầu thao tác kèm tham số. Ứng dụng kiểm tra tham số, quyền thực hiện, chạy tool và trả kết quả gắn với đúng định danh của lời gọi.
+
+Nguồn kiểm chứng: [OpenAI function calling](https://developers.openai.com/api/docs/guides/function-calling).
+
+### 2. Vì sao strict schema của tool không thay thế authorization?
+
+**Gợi ý trả lời:** Schema ràng buộc cấu trúc, không xác nhận quyền sở hữu hoặc tác động được phép. Kiểm tra người dùng đã xác thực và tài nguyên đích ngay tại tool trước khi tạo tác động.
+
+Nguồn kiểm chứng: [MCP security best practices](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices).
+
+### 3. Tool timeout sau khi tạo đơn. Có nên retry ngay không?
+
+**Gợi ý trả lời:** Trước hết đối soát trạng thái thao tác. Dùng lại idempotency key đã lưu bền vững nếu dịch vụ đích hỗ trợ; mất phản hồi không chứng minh đơn chưa được tạo.
+
+Nguồn kiểm chứng: [AWS timeouts, retries, and backoff with jitter](https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [OpenAI function calling](https://developers.openai.com/api/docs/guides/function-calling): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [OpenAI Agents SDK for JavaScript](https://github.com/openai/openai-agents-js): Upstream và repo mẫu: đọc thư mục examples về tool, handoff và trạng thái lượt chạy.
 
 ## Quiz nhanh
 

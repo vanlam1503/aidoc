@@ -12,7 +12,7 @@ tags:
   - memory
   - state
   - agents
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -51,6 +51,36 @@ Storing private model reasoning; mixing tenants; retaining personal data indefin
 ## Further reading
 
 - \* Essential — [Primary resource](<https://platform.openai.com/docs/guides/agents>)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — How do thread checkpoints and long-term stores differ?
+
+**Why essential:** Memory scope determines conversation isolation and recovery correctness.
+
+**Answer outline:** Checkpoints retain a thread's execution state. Stores retain application-defined information across threads, such as preferences. Choose scope explicitly and authorize access for the current user.
+
+Reference: [LangGraph persistence](https://docs.langchain.com/oss/javascript/langgraph/persistence).
+
+### 2. Should an agent keep every conversation turn in the prompt?
+
+**Answer outline:** Not necessarily. Trim or summarize stale history within the context budget while preserving current intent, important decisions, and tool-call relationships. Test recall after compaction.
+
+Reference: [LangChain short-term memory](https://docs.langchain.com/oss/javascript/langchain/short-term-memory).
+
+### 3. What must remain outside a checkpoint?
+
+**Answer outline:** Keep live database connections, runtime clients, and secrets out of serialized state. Persist stable identifiers and recoverable data; recreate transient dependencies when execution resumes.
+
+Reference: [LangGraph Graph API](https://docs.langchain.com/oss/javascript/langgraph/graph-api).
+
+### Interview resources
+
+- \* Essential — [LangGraph persistence](https://docs.langchain.com/oss/javascript/langgraph/persistence): read first to verify the core concept before the design exercises.
+
+- [LangGraph.js](https://github.com/langchain-ai/langgraphjs): Upstream and sample repository: use the examples to explore state, routing, and recovery.
 
 ## Quick quiz
 

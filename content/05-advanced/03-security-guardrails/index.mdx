@@ -12,7 +12,7 @@ tags:
   - security
   - guardrails
   - privacy
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -55,6 +55,38 @@ Treating a system prompt as a sandbox; trusting model-supplied user IDs; filteri
 ## Further reading
 
 - \* Essential — [Primary resource](<https://owasp.org/www-project-top-10-for-large-language-model-applications/>)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — Why are model instructions insufficient as an access-control system?
+
+**Why essential:** Authorization at the side-effect boundary limits the impact of model mistakes.
+
+**Answer outline:** The model can misunderstand or follow malicious content. Enforce identity, ownership, allowed operations, and least privilege in server-side tools before accessing or changing data.
+
+Reference: [OWASP excessive agency (2025 edition)](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/).
+
+### 2. What does a guardrail do, and where should it run?
+
+**Answer outline:** It checks a defined condition, such as disallowed input or a risky tool request. Place effect-specific validation next to execution; agent-level checks do not cover every intermediate action.
+
+Reference: [Guardrails and human review](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals).
+
+### 3. How would you protect an agent running on a pull request from a fork?
+
+**Answer outline:** Treat code and event fields as untrusted. Use restricted credentials and isolated execution, avoid exposing secrets to untrusted jobs, and separate verification from privileged publishing.
+
+Reference: [GitHub Actions secure use](https://docs.github.com/en/actions/reference/security/secure-use).
+
+### Interview resources
+
+- \* Essential — [OWASP excessive agency (2025 edition)](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/): read first to verify the core concept before the design exercises.
+
+- [MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk): Upstream and sample repository: inspect the client/server examples and match the protocol version to the SDK release.
+
+- [MCP reference servers](https://github.com/modelcontextprotocol/servers): Sample repository: compare tool boundaries in reference servers; examples are not production security guarantees.
 
 ## Quick quiz
 

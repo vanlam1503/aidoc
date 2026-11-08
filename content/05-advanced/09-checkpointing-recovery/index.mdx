@@ -12,7 +12,7 @@ tags:
   - checkpointing
   - recovery
   - resilience
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -51,6 +51,36 @@ Retrying validation failures; unbounded retry counts; unversioned checkpoints or
 ## Further reading
 
 - \* Essential — [Primary resource](<https://docs.langchain.com/oss/javascript/langgraph/persistence>)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — What is a checkpoint, and what does it enable?
+
+**Why essential:** Persisted state must be distinguished from completed external side effects.
+
+**Answer outline:** It is a persisted snapshot of graph state associated with a thread and execution step. It supports continuation and inspection; it is not a transaction over every external service.
+
+Reference: [LangGraph checkpointers](https://docs.langchain.com/oss/javascript/langgraph/checkpointers).
+
+### 2. Why can replay repeat an external side effect?
+
+**Answer outline:** The side effect may succeed before the node result is checkpointed. Persist or derive a stable idempotency key before execution and reconcile unknown downstream outcomes.
+
+Reference: [LangGraph fault tolerance](https://docs.langchain.com/oss/javascript/langgraph/fault-tolerance).
+
+### 3. Which failures should be retried?
+
+**Answer outline:** Retry transient failures with bounded attempts, backoff, and jitter. Do not repeatedly retry invalid input or denied access; apply deadlines and surface an actionable terminal failure.
+
+Reference: [AWS timeouts, retries, and backoff with jitter](https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter).
+
+### Interview resources
+
+- \* Essential — [LangGraph checkpointers](https://docs.langchain.com/oss/javascript/langgraph/checkpointers): read first to verify the core concept before the design exercises.
+
+- [LangGraph.js](https://github.com/langchain-ai/langgraphjs): Upstream and sample repository: use the examples to explore state, routing, and recovery.
 
 ## Quick quiz
 

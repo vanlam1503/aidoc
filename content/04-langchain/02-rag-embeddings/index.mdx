@@ -12,7 +12,7 @@ tags:
   - rag
   - embeddings
   - retrieval
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -51,6 +51,38 @@ Confusing vector similarity with verification; using oversized chunks or losing 
 ## Further reading
 
 - \* Essential — [Primary resource](<https://platform.openai.com/docs/guides/embeddings>)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — What changes when you use RAG instead of relying on model weights?
+
+**Why essential:** Separating retrieval from generation makes failures diagnosable.
+
+**Answer outline:** Relevant external evidence is retrieved at query time and supplied to generation. Updating the index changes available evidence without retraining the generator; citations still need verification.
+
+Reference: [Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks](https://arxiv.org/abs/2005.11401).
+
+### 2. What do embeddings contribute, and what do they not prove?
+
+**Answer outline:** They represent relatedness for similarity search. Nearby vectors do not establish factual truth, authorization, or a complete answer; preserve document metadata and evaluate retrieved passages.
+
+Reference: [OpenAI vector embeddings](https://developers.openai.com/api/docs/guides/embeddings).
+
+### 3. The answer is wrong. How do you separate retrieval and generation failures?
+
+**Answer outline:** Check whether the required passage was retrieved and actually included. Then assess whether the answer used that passage correctly. Track evidence recall and answer grounding separately.
+
+Reference: [LangChain retrieval](https://docs.langchain.com/oss/javascript/deepagents/retrieval).
+
+### Interview resources
+
+- \* Essential — [Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks](https://arxiv.org/abs/2005.11401): read first to verify the core concept before the design exercises.
+
+- [OpenAI Node SDK](https://github.com/openai/openai-node): Upstream: check request types and lifecycle handling in the official TypeScript SDK.
+
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook): Sample repository: adapt the prompting and API examples; most examples use Python.
 
 ## Quick quiz
 

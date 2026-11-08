@@ -1,24 +1,36 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { GlobalSearch } from "@/components/global-search";
 import { PreferencesControl } from "@/components/preferences-control";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useLanguage } from "@/components/language-provider";
 import type { SearchResult } from "@/lib/search/search";
-import { SessionIndicator } from "@/components/auth/session-indicator";
 
 type ReaderLesson = { id: string; title: string; order: number; level: string; durationMinutes: number; updatedAt: string };
 type Group = { title: string; items: ReaderLesson[] };
 
 export function ReaderTopActions({ lessons }: { lessons: SearchResult[] }) {
   const { t } = useLanguage();
-  return <div className="reader-top-actions"><GlobalSearch lessons={lessons} /><Link href="/references" className="back-link">{t("nav_references")}</Link><Link href="/dashboard" className="back-link">{t("nav_dashboard")}</Link><SessionIndicator /><PreferencesControl /><ThemeToggle /></div>;
+  return <div className="reader-top-actions"><GlobalSearch lessons={lessons} /><Link href="/bookmarks" className="back-link">{t("nav_bookmarks")}</Link><Link href="/flashcards" className="back-link">{t("nav_flashcards")}</Link><Link href="/references" className="back-link">{t("nav_references")}</Link><Link href="/dashboard" className="back-link">{t("nav_dashboard")}</Link><PreferencesControl /><ThemeToggle /></div>;
 }
 
 export function CurriculumSidebar({ groups, lessonId, lessonCount }: { groups: Group[]; lessonId: string; lessonCount: number }) {
   const { t } = useLanguage();
-  return <aside className="curriculum-sidebar"><div className="sidebar-label">{t("reader_learning_path")}</div><Link href="/" className="sidebar-home">⌂ <span>{t("reader_overview")}</span></Link>{groups.map((group, groupIndex) => <details className="sidebar-section" key={group.title} open={group.items.some((item) => item.id === lessonId)}><summary className="sidebar-section-title"><span>{String(groupIndex + 1).padStart(2, "0")}</span> {group.title.toLocaleUpperCase()} <span className="nav-chevron">⌄</span></summary><div className="sidebar-links">{group.items.map((item) => <Link key={item.id} href={`/learn/${item.id}`} aria-current={item.id === lessonId ? "page" : undefined} className={`sidebar-lesson ${item.id === lessonId ? "active" : ""}`}><span className="sidebar-index">{String(item.order).padStart(2, "0")}</span>{item.title}</Link>)}</div></details>)}<div className="sidebar-progress"><span>{t("reader_progress")}</span><strong>0 <small>{t("reader_of", { count: lessonCount })}</small></strong><div className="progress-line"><i style={{ width: "0%" }} /></div><small>{t("reader_sync")}</small></div></aside>;
+  const [completed, setCompleted] = useState(0);
+  useEffect(() => {
+    let active = true;
+    const refresh = () => { void fetch("/api/progress").then(async (response) => {
+      if (!response.ok) return;
+      const data = await response.json() as { progress: { lessonId: string; completed: boolean }[] };
+      if (active) setCompleted(data.progress.filter((item) => item.completed && groups.some((group) => group.items.some((lesson) => lesson.id === item.lessonId))).length);
+    }).catch(() => undefined); };
+    refresh();
+    window.addEventListener("academy:progress-updated", refresh);
+    return () => { active = false; window.removeEventListener("academy:progress-updated", refresh); };
+  }, [lessonId, lessonCount]);
+  return <aside className="curriculum-sidebar"><div className="sidebar-label">{t("reader_learning_path")}</div><Link href="/" className="sidebar-home">⌂ <span>{t("reader_overview")}</span></Link>{groups.map((group, groupIndex) => <details className="sidebar-section" key={group.title} open={group.items.some((item) => item.id === lessonId)}><summary className="sidebar-section-title"><span>{String(groupIndex + 1).padStart(2, "0")}</span> {group.title.toLocaleUpperCase()} <span className="nav-chevron">⌄</span></summary><div className="sidebar-links">{group.items.map((item) => <Link key={item.id} href={`/learn/${item.id}`} aria-current={item.id === lessonId ? "page" : undefined} className={`sidebar-lesson ${item.id === lessonId ? "active" : ""}`}><span className="sidebar-index">{String(item.order).padStart(2, "0")}</span>{item.title}</Link>)}</div></details>)}<div className="sidebar-progress"><span>{t("reader_progress")}</span><strong>{completed} <small>{t("reader_of", { count: lessonCount })}</small></strong><div className="progress-line"><i style={{ width: `${lessonCount ? completed / lessonCount * 100 : 0}%` }} /></div><small>{t("reader_sync")}</small></div></aside>;
 }
 
 export function LessonMeta({ level, duration, updatedAt }: { level: string; duration: number; updatedAt: string }) {

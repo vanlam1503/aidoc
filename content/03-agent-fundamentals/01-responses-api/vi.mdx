@@ -12,7 +12,7 @@ tags:
   - openai
   - responses-api
   - typescript
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -53,6 +53,38 @@ Tạo SDK ở client component; tin rằng mọi output chỉ có text; log requ
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://platform.openai.com/docs/guides/text>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Vì sao chỉ đọc output[0].content[0].text không an toàn?
+
+**Vì sao cần ưu tiên:** Phải đọc đúng đầu ra trước khi xử lý tool call hoặc streaming.
+
+**Gợi ý trả lời:** Đầu ra Responses có thể gồm message, tool call và loại item khác. Kiểm tra type của từng item; dùng helper text của SDK khi chỉ cần văn bản tổng hợp.
+
+Nguồn kiểm chứng: [OpenAI text generation](https://developers.openai.com/api/docs/guides/text).
+
+### 2. Bên nhận streaming xác định thành công thế nào?
+
+**Gợi ý trả lời:** Xử lý sự kiện vòng đời có type riêng với text delta. Hoàn thành, lỗi và mất kết nối cần trạng thái khác nhau; văn bản xuất hiện một phần chưa chứng minh lượt chạy thành công.
+
+Nguồn kiểm chứng: [Streaming API responses](https://developers.openai.com/api/docs/guides/streaming-responses).
+
+### 3. previous_response_id có làm lịch sử hội thoại miễn phí không?
+
+**Gợi ý trả lời:** Không. Nó nối trạng thái response, còn đầu vào trước trong chuỗi vẫn có thể tính phí. Theo dõi usage và độ dài context; trạng thái được lưu không đồng nghĩa token miễn phí.
+
+Nguồn kiểm chứng: [OpenAI conversation state](https://developers.openai.com/api/docs/guides/conversation-state).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [OpenAI text generation](https://developers.openai.com/api/docs/guides/text): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [OpenAI Node SDK](https://github.com/openai/openai-node): Upstream: kiểm tra kiểu request và vòng đời xử lý trong SDK TypeScript chính thức.
+
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook): Repo ví dụ: áp dụng các mẫu prompt và API; phần lớn ví dụ dùng Python.
 
 ## Quiz nhanh
 

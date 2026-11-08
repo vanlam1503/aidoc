@@ -12,7 +12,7 @@ tags:
   - project
   - monitoring
   - incident-response
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -51,6 +51,40 @@ Dựng tabletop cho tăng latency và 5xx. Viết deterministic trigger, thông 
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://github.com/humanlayer/12-factor-agents>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Khi cảnh báo API phát, agent nên nhận gì?
+
+**Vì sao cần ưu tiên:** Telemetry xác định cần xác lập sự cố trước khi agent đề xuất khắc phục.
+
+**Gợi ý trả lời:** Cung cấp dịch vụ bị ảnh hưởng, khoảng thời gian, triệu chứng, số đo độ trễ và lỗi cùng định danh trace. Tách quan sát thực tế khỏi giả thuyết nguyên nhân.
+
+Nguồn kiểm chứng: [Google SRE monitoring](https://sre.google/sre-book/monitoring-distributed-systems/).
+
+### 2. Agent có nên tự restart dịch vụ production không?
+
+**Gợi ý trả lời:** Chỉ trong policy khắc phục được cấp quyền rõ ràng. Bắt đầu bằng chẩn đoán chỉ đọc, giới hạn tool và xét duyệt hành động gây gián đoạn; cảnh báo không tự cấp quyền ghi.
+
+Nguồn kiểm chứng: [OWASP excessive agency (2025 edition)](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/).
+
+### 3. Bạn chứng minh monitoring agent hoạt động thế nào?
+
+**Gợi ý trả lời:** Tạo tình huống chậm và lỗi có kiểm soát, lần theo trace rồi so chẩn đoán với nguyên nhân đã biết. Kiểm tra gộp cảnh báo, thời điểm chuyển cấp và dữ liệu xác nhận khôi phục.
+
+Nguồn kiểm chứng: [OpenTelemetry traces and spans](https://opentelemetry.io/docs/concepts/signals/traces/).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [Google SRE monitoring](https://sre.google/sre-book/monitoring-distributed-systems/): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [OpenTelemetry JavaScript](https://github.com/open-telemetry/opentelemetry-js): Upstream: đọc cách tracing và truyền context trong JavaScript.
+
+- [OpenTelemetry demo](https://github.com/open-telemetry/opentelemetry-demo): Repo mẫu do OpenTelemetry duy trì: học truy vết dịch vụ và chẩn đoán lỗi; đây không phải dự án AI agent hoàn chỉnh.
+
+Các repo cung cấp thành phần tham khảo, không phải bản triển khai hoàn chỉnh của dự án này.
 
 ## Quiz nhanh
 

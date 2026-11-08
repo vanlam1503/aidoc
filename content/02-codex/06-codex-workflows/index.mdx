@@ -12,7 +12,7 @@ tags:
   - codex
   - code-review
   - workflow
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -51,6 +51,38 @@ Requesting a whole-repository review without defining scope; accepting findings 
 ## Further reading
 
 - \* Essential — [Primary resource](<https://github.com/openai/codex>)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — How would you structure a repository bug-fix workflow?
+
+**Why essential:** A reproducible failure is the starting point for a verifiable fix.
+
+**Answer outline:** Reproduce the failure, inspect guidance and relevant code, implement a focused fix, run appropriate checks, and review the final diff against acceptance criteria.
+
+Reference: [Codex testing and review practices](https://learn.chatgpt.com/docs/learn/best-practices).
+
+### 2. How do you preserve unrelated developer changes?
+
+**Answer outline:** Inspect repository status before editing, keep the patch narrow, and review changed hunks. Use a separate worktree when needed; never assume a dirty tree is disposable.
+
+Reference: [Codex CLI](https://learn.chatgpt.com/docs/codex/cli).
+
+### 3. What belongs in an agent handoff?
+
+**Answer outline:** State the resulting behavior, changed areas, evidence from checks, and remaining limitations. Make pending decisions and recovery steps explicit so the next reviewer can continue.
+
+Reference: [Iterating development workflows with Codex](https://developers.openai.com/cookbook/examples/codex/iterating-development-workflows-with-codex).
+
+### Interview resources
+
+- \* Essential — [Codex testing and review practices](https://learn.chatgpt.com/docs/learn/best-practices): read first to verify the core concept before the design exercises.
+
+- [Codex](https://github.com/openai/codex): Upstream: inspect the CLI implementation and repository guidance.
+
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook): Sample repository: compare the Codex workflow recipes with your own task.
 
 ## Quick quiz
 

@@ -12,7 +12,7 @@ tags:
   - security
   - guardrails
   - privacy
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -55,6 +55,38 @@ Dựa vào system prompt như sandbox; cho tool tin vào user ID từ model; l�
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://owasp.org/www-project-top-10-for-large-language-model-applications/>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Vì sao chỉ dẫn cho model không đủ làm hệ thống kiểm soát truy cập?
+
+**Vì sao cần ưu tiên:** Kiểm tra quyền tại nơi tạo tác động giúp giới hạn hậu quả khi model sai.
+
+**Gợi ý trả lời:** Model có thể hiểu sai hoặc làm theo nội dung độc hại. Thực thi danh tính, quyền sở hữu, thao tác cho phép và quyền tối thiểu tại tool phía server trước khi đọc hoặc sửa dữ liệu.
+
+Nguồn kiểm chứng: [OWASP excessive agency (2025 edition)](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/).
+
+### 2. Guardrail làm gì và nên chạy ở đâu?
+
+**Gợi ý trả lời:** Nó kiểm tra điều kiện xác định, như đầu vào cấm hoặc yêu cầu tool rủi ro. Đặt kiểm tra tác động sát nơi thực thi; guardrail cấp agent không bao phủ mọi hành động trung gian.
+
+Nguồn kiểm chứng: [Guardrails and human review](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals).
+
+### 3. Bảo vệ agent chạy trên pull request từ fork thế nào?
+
+**Gợi ý trả lời:** Xem mã và trường sự kiện là không tin cậy. Dùng thông tin xác thực hạn chế và môi trường cách ly, tránh lộ bí mật cho job không tin cậy; tách kiểm chứng khỏi xuất bản có đặc quyền.
+
+Nguồn kiểm chứng: [GitHub Actions secure use](https://docs.github.com/en/actions/reference/security/secure-use).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [OWASP excessive agency (2025 edition)](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk): Upstream và repo mẫu: đọc ví dụ client/server, đối chiếu phiên bản giao thức với SDK.
+
+- [MCP reference servers](https://github.com/modelcontextprotocol/servers): Repo mẫu: đối chiếu ranh giới tool; ví dụ không bảo đảm an toàn cho production.
 
 ## Quiz nhanh
 

@@ -12,7 +12,7 @@ tags:
   - project
   - code-review
   - agent
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Mục tiêu học tập
@@ -51,6 +51,40 @@ Gửi toàn bộ repo; để finding trích dẫn line không tồn tại; cho a
 ## Đọc thêm
 
 - [Tài liệu gốc](<https://github.com/openai/openai-cookbook>)
+
+## Câu hỏi phỏng vấn
+
+Câu hỏi luyện tập tự biên soạn từ các nguồn gốc bên dưới, kiểm chứng ngày 2026-11-07. Đây là bài tập ôn phỏng vấn, không phải câu hỏi được xác nhận từ một nhà tuyển dụng cụ thể. Đáp án thiết kế gợi ý một cách tiếp cận có cơ sở. Dấu \* Essential thể hiện mức ưu tiên biên tập; ôn câu này trước các câu tiếp theo.
+
+### 1. \* Essential — Điều gì khiến nhận xét review tự động có thể hành động?
+
+**Vì sao cần ưu tiên:** Nhận xét review cần bằng chứng trước khi có thể dùng để quyết định sửa mã.
+
+**Gợi ý trả lời:** Chỉ rõ mã bị ảnh hưởng, điều kiện gây lỗi, hành vi sai và tác động. Đưa cách tái hiện hoặc lập luận bám diff; phân biệt bằng chứng với điều chưa chắc chắn.
+
+Nguồn kiểm chứng: [Code review and evidence](https://learn.chatgpt.com/docs/code-review).
+
+### 2. Vì sao review pull request cũng là vấn đề bảo mật thực thi?
+
+**Gợi ý trả lời:** Mã, script và nội dung PR có thể do kẻ tấn công kiểm soát. Kiểm tra mà không cấp bí mật đặc quyền, cách ly việc chạy test; không để nội dung lạ cấp quyền xuất bản hay dữ liệu.
+
+Nguồn kiểm chứng: [GitHub Actions secure use](https://docs.github.com/en/actions/reference/security/secure-use).
+
+### 3. Đánh giá nhận xét review sai dương tính thế nào?
+
+**Gợi ý trả lời:** Tạo diff có nhãn với bug thật và thay đổi vô hại. Đo độ chính xác nhận xét, lỗi quan trọng bị bỏ sót và chất lượng bằng chứng; không thưởng theo số bình luận.
+
+Nguồn kiểm chứng: [LangSmith Evaluation](https://docs.langchain.com/langsmith/evaluation).
+
+### Tài nguyên ôn phỏng vấn
+
+- \* Essential — [Code review and evidence](https://learn.chatgpt.com/docs/code-review): đọc trước để kiểm chứng khái niệm cốt lõi trước câu hỏi thiết kế.
+
+- [Codex](https://github.com/openai/codex): Upstream: đọc cách CLI hoạt động và hướng dẫn trong repository.
+
+- [OpenAI Cookbook](https://github.com/openai/openai-cookbook): Repo ví dụ: đối chiếu các quy trình Codex với bài thực hành của bạn.
+
+Các repo cung cấp thành phần tham khảo, không phải bản triển khai hoàn chỉnh của dự án này.
 
 ## Quiz nhanh
 

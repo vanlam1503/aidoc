@@ -11,7 +11,7 @@ tags:
   - llm
   - tokens
   - foundations
-updatedAt: 2026-10-31
+updatedAt: 2026-11-07
 ---
 
 ## Learning objectives
@@ -93,6 +93,36 @@ This calculation uses measured or estimated token counts; the actual tokenizer m
 
 - \* Essential — [OpenAI: Tokenizer](https://platform.openai.com/tokenizer)
 - [OpenAI: Context windows](https://help.openai.com/en/articles/8554397-creating-a-gpt)
+
+## Interview questions
+
+Original practice questions based on the primary references below, checked on 2026-11-07. These are preparation exercises, not verified questions from a particular employer. Design answers suggest one defensible approach. The literal \* Essential marker indicates editorial priority; start there before the follow-up questions.
+
+### 1. \* Essential — What does a causal language model predict?
+
+**Why essential:** Token prediction explains both useful generation and plausible errors.
+
+**Answer outline:** A distribution over the next token conditioned on earlier tokens. A token may represent only part of a word; fluent continuation does not establish factual correctness.
+
+Reference: [Causal language modeling](https://huggingface.co/docs/transformers/tasks/language_modeling).
+
+### 2. Why does self-attention matter?
+
+**Answer outline:** It combines information across positions to form contextual representations. Explain the roles of queries, keys, and values, and distinguish the original Transformer from modern decoder-only variants.
+
+Reference: [Attention Is All You Need](https://arxiv.org/abs/1706.03762).
+
+### 3. A model invents an internal policy. What would you change?
+
+**Answer outline:** Retrieve the authoritative policy, provide its relevant passage, and require evidence or an explicit unknown. Changing the prompt does not update model weights.
+
+Reference: [OpenAI prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering).
+
+### Interview resources
+
+- \* Essential — [Causal language modeling](https://huggingface.co/docs/transformers/tasks/language_modeling): read first to verify the core concept before the design exercises.
+
+- [Transformers](https://github.com/huggingface/transformers): Upstream and sample repository: inspect model definitions and language-modeling examples; training examples use Python.
 
 ## Quick quiz
 
