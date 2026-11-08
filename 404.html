@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Opening AI Engineering Academy</title>
+    <script>
+      const appOrigin = "https://aidoc-learning-vanlam1503.onrender.com";
+      const pagesPrefix = "/aidoc";
+      const path = window.location.pathname.startsWith(pagesPrefix)
+        ? window.location.pathname.slice(pagesPrefix.length)
+        : window.location.pathname;
+      const destination = appOrigin + (path || "/") + window.location.search + window.location.hash;
+      window.location.replace(destination);
+    </script>
+  </head>
+  <body>
+    <p>This page is moving to AI Engineering Academy…</p>
+    <p><a href="https://aidoc-learning-vanlam1503.onrender.com/">Open the learning app</a></p>
+  </body>
+</html>
