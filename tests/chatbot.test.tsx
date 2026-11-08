@@ -44,6 +44,22 @@ describe("assistant terminal and cancellation states", () => {
     expect(screen.getByRole("textbox", { name: "Your question" })).toHaveValue("");
   });
 
+  it("renders Markdown from streamed assistant replies", async () => {
+    const markdown = "---\n### 💡 Gợi ý bước tiếp theo\nTìm hiểu **Tokenization** hoặc `tokens`.\n\n- Ví dụ thực tế\n";
+    fetchMock.mockImplementation(async (_url, init) => init?.method === "POST"
+      ? openStream(`data: ${JSON.stringify({ type: "delta", text: markdown.slice(0, 20) })}\n\ndata: ${JSON.stringify({ type: "delta", text: markdown.slice(20) })}\n\ndata: {"type":"done"}\n\n`)
+      : history());
+    await startQuestion();
+    const heading = await screen.findByRole("heading", { name: "💡 Gợi ý bước tiếp theo", level: 3 });
+    const reply = heading.closest("article")!;
+    expect(reply.querySelector("strong")).toHaveTextContent("Tokenization");
+    expect(reply.querySelector("hr")).toBeInTheDocument();
+    expect(reply.querySelector("code")).toHaveTextContent("tokens");
+    expect(reply.querySelector("li")).toHaveTextContent("Ví dụ thực tế");
+    expect(reply).not.toHaveTextContent("###");
+    expect(reply).not.toHaveTextContent("**Tokenization**");
+  });
+
   it("preserves draft-only events without sending an automatic request", async () => {
     fetchMock.mockImplementation(async () => history());
     render(<LanguageProvider><Chatbot /></LanguageProvider>);

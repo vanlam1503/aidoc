@@ -42,6 +42,8 @@ The app is a personal local workspace: every browser using this local server sha
 
 Open `/bookmarks` from navigation to search your saved collection, filter lessons/links, add a URL with an optional title, or remove an item. Bookmark controls appear on curriculum cards and at the top of each lesson. Lesson bookmarks keep stable IDs and resolve matching-language titles and descriptions; saved links keep their URL and title. Existing local lesson bookmarks remain available. All bookmark data stays in `.data/academy.json` across reloads and app restarts.
 
+Assistant replies render Markdown, including headings, emphasis, lists, links, code blocks, tables, and horizontal rules, while streaming and when reopening saved conversations. Raw HTML is not rendered.
+
 The Assistant header includes **Expand assistant / Collapse assistant**. Expanding keeps the conversation and unsent draft, provides a larger reading area, and supports a full-screen mobile layout. Close or Escape restores the normal page. Selecting text in a lesson and choosing **Ask assistant** or **Translate** opens the chat and sends the selected-text question immediately once the assistant is ready; no second Send click is needed. The request includes the lesson context and selected interface language.
 
 ## Tests and checks

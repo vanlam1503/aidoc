@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { AssistantMarkdown } from "@/components/chatbot/assistant-markdown";
 import { FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useLanguage } from "@/components/language-provider";
 import { searchLessons, type SearchResult } from "@/lib/search/search";
@@ -227,7 +228,7 @@ export function Chatbot({ lessonId }: { lessonId?: string }) {
       {!loading && access === "config" && <div className="chat-state"><span className="chat-state-icon">⚙</span><strong>{t("chat_config_title")}</strong><p>{t("chat_config_body")}</p><Link href="/setup">{t("chat_setup")}</Link>{conversations.length > 0 && <span className="history-note">{t("chat_history_saved")}</span>}</div>}
       {!loading && access === "unavailable" && <div className="chat-state"><strong>{t("chat_unavailable")}</strong><p>{t("chat_database")}</p><button type="button" onClick={() => void loadHistory()}>{t("retry")}</button></div>}
       {(access === "ready" || access === "config") && <div className="chat-messages" aria-live="polite">{messages.length === 0 && access === "ready" && <div className="chat-welcome"><span className="eyebrow">{t("chat_welcome_kicker")}</span><h3>{t("chat_welcome_title")}</h3><p>{t("chat_welcome_body")}</p><div className="chat-suggestions"><button onClick={() => setDraft(lessonId ? "Explain the key idea in this lesson and give me a short example." : "How should I start learning AI engineering?")}>{t("chat_suggestion_explain")}</button><button onClick={() => setDraft("Give me a practical exercise about context engineering.")}>{t("chat_suggestion_exercise")}</button><button onClick={() => setMode("search")}>{t("chat_suggestion_search")}</button></div></div>}
-        {messages.map((message) => <article className={`chat-message ${message.role}`} key={message.id}><span>{message.role === "user" ? (locale === "vi" ? "BẠN" : "YOU") : "ACADEMY ASSISTANT"}</span><p>{message.content}</p></article>)}
+        {messages.map((message) => <article className={`chat-message ${message.role}`} key={message.id}><span>{message.role === "user" ? (locale === "vi" ? "BẠN" : "YOU") : "ACADEMY ASSISTANT"}</span>{message.role === "assistant" ? <AssistantMarkdown content={message.content} /> : <p>{message.content}</p>}</article>)}
         {streaming && messages.at(-1)?.role === "user" && <div className="chat-typing" role="status">{elapsedSeconds < 8 ? t("chat_thinking") : t("chat_waiting", { count: elapsedSeconds })}</div>}
         {sources.length > 0 && <div className="chat-sources"><span>{t("chat_sources")}</span>{sources.map((source) => <Link key={source.sourcePath} href={`/learn/${source.lessonId}`}>↗ {source.title} <small>{source.sourcePath}</small></Link>)}</div>}
         {error && <div className="chat-error" role="alert">{error}</div>}<div ref={bottom} /></div>}
