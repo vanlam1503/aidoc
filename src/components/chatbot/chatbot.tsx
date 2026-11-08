@@ -19,6 +19,8 @@ export function Chatbot({ lessonId }: { lessonId?: string }) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [draft, setDraft] = useState("");
+  const [pendingSelection, setPendingSelection] = useState<string | null>(null);
+  const pendingSelectionRef = useRef<string | null>(null);
   const [streaming, setStreaming] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const requestAbort = useRef<AbortController | null>(null);
@@ -67,9 +69,12 @@ export function Chatbot({ lessonId }: { lessonId?: string }) {
   }, [open, mode, searchIndex.length]);
   useEffect(() => {
     const handleAsk = (event: Event) => {
-      const detail = (event as CustomEvent<{ prompt?: string }>).detail;
-      if (!detail?.prompt) return;
-      setDraft(detail.prompt);
+      const detail = (event as CustomEvent<{ prompt?: unknown; autoSubmit?: boolean }>).detail;
+      if (typeof detail?.prompt !== "string" || !detail.prompt.trim() || detail.prompt.length > 4000) return;
+      const prompt = detail.prompt.trim();
+      pendingSelectionRef.current = detail.autoSubmit ? prompt : null;
+      setPendingSelection(detail.autoSubmit ? prompt : null);
+      setDraft(prompt);
       setMode("chat");
       setOpen(true);
     };
@@ -77,14 +82,24 @@ export function Chatbot({ lessonId }: { lessonId?: string }) {
     return () => window.removeEventListener("academy:ask-assistant", handleAsk);
   }, []);
   useEffect(() => {
+    if (!open) { pendingSelectionRef.current = null; setPendingSelection(null); return; }
+    if (access !== "ready" || loading || streaming || !pendingSelection || pendingSelectionRef.current !== pendingSelection) return;
+    // Consume before sending: React effect replays must not send the same selection twice.
+    pendingSelectionRef.current = null;
+    setPendingSelection(null);
+    void submit(undefined, pendingSelection);
+  }, [open, access, loading, streaming, pendingSelection]);
+  useEffect(() => {
     if (open) {
       wasOpen.current = true;
-      const target = access === "ready" ? input.current : panel.current?.querySelector<HTMLElement>(".chat-close");
+      const target = streaming
+        ? panel.current?.querySelector<HTMLElement>(".chat-composer button[type='button']")
+        : access === "ready" ? input.current : panel.current?.querySelector<HTMLElement>(".chat-close");
       const timer = window.setTimeout(() => target?.focus(), 0);
       return () => window.clearTimeout(timer);
     }
     if (wasOpen.current) { launcher.current?.focus(); wasOpen.current = false; }
-  }, [open, access]);
+  }, [open, access, streaming]);
   useEffect(() => { bottom.current?.scrollIntoView({ behavior: "smooth", block: "end" }); }, [messages, streaming]);
   useEffect(() => {
     const onKeyDown = (event: globalThis.KeyboardEvent) => {
@@ -114,6 +129,8 @@ export function Chatbot({ lessonId }: { lessonId?: string }) {
   }
 
   async function selectConversation(id: string) {
+    pendingSelectionRef.current = null;
+    setPendingSelection(null);
     setLoading(true);
     try {
       const response = await fetch(`/api/chat?conversationId=${encodeURIComponent(id)}`);
@@ -127,10 +144,12 @@ export function Chatbot({ lessonId }: { lessonId?: string }) {
     finally { setLoading(false); }
   }
 
-  async function submit(event?: FormEvent) {
+  async function submit(event?: FormEvent, selectedPrompt?: string) {
     event?.preventDefault();
-    const message = draft.trim();
-    if (!message || streaming || access !== "ready") return;
+    const message = (selectedPrompt ?? draft).trim();
+    if (!message || streaming || requestAbort.current || access !== "ready") return;
+    pendingSelectionRef.current = null;
+    setPendingSelection(null);
     setDraft("");
     setError("");
     setSources([]);
@@ -202,7 +221,7 @@ export function Chatbot({ lessonId }: { lessonId?: string }) {
       <header className="chat-header"><div className="chat-mark">✳</div><div><strong>{t("chat_title")}</strong><span>{lessonId ? t("chat_context_lesson") : t("chat_context_general")}</span></div><button type="button" className="chat-expand" aria-label={t(expanded ? "chat_collapse" : "chat_expand")} title={t(expanded ? "chat_collapse" : "chat_expand")} aria-pressed={expanded} onClick={() => setExpanded((value) => !value)}><span aria-hidden="true">{expanded ? "↙" : "↗"}</span></button><button type="button" className="chat-close" onClick={() => { setOpen(false); setExpanded(false); }} aria-label={t("chat_close")}>×</button></header>
       <nav className="chat-mode-tabs" aria-label={t("chat_title")}><button type="button" aria-pressed={mode === "chat"} onClick={() => setMode("chat")}>{t("chat_tab_ask")}</button><button type="button" aria-pressed={mode === "search"} onClick={() => setMode("search")}>{t("chat_tab_search")}</button></nav>
       {mode === "search" ? <div className="chat-search-view"><label className="chat-search-input"><span aria-hidden="true">⌕</span><input value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder={t("chat_search_placeholder")} /></label><div className="chat-search-results" aria-live="polite">{searchResults.length ? searchResults.map((result) => <Link key={result.id} href={`/learn/${result.id}`} onClick={() => setOpen(false)}><span className={`level level-${result.level}`}>{result.level}</span><strong>{result.title}</strong><small>{result.sectionTitle} · {result.description}</small></Link>) : <p>{t("chat_search_empty")}</p>}</div></div> : <>
-      {(access === "ready" || access === "config") && <div className="chat-history-bar">{access === "ready" && <button type="button" disabled={streaming} onClick={() => { setActiveId(null); setMessages([]); setSources([]); setError(""); }}>{t("chat_new")}</button>}{conversations.length > 0 && <label>{t("chat_recent")} <select value={activeId ?? ""} disabled={streaming} onChange={(event) => event.target.value && void selectConversation(event.target.value)}><option value="">{t("chat_choose")}</option>{conversations.map((conversation) => <option key={conversation.id} value={conversation.id}>{conversation.title}</option>)}</select></label>}</div>}
+      {(access === "ready" || access === "config") && <div className="chat-history-bar">{access === "ready" && <button type="button" disabled={streaming} onClick={() => { pendingSelectionRef.current = null; setPendingSelection(null); setActiveId(null); setMessages([]); setSources([]); setError(""); }}>{t("chat_new")}</button>}{conversations.length > 0 && <label>{t("chat_recent")} <select value={activeId ?? ""} disabled={streaming} onChange={(event) => event.target.value && void selectConversation(event.target.value)}><option value="">{t("chat_choose")}</option>{conversations.map((conversation) => <option key={conversation.id} value={conversation.id}>{conversation.title}</option>)}</select></label>}</div>}
       {loading && <div className="chat-loading" role="status">{t("chat_loading")}</div>}
       {!loading && access === "unknown" && <div className="chat-loading">{t("chat_connecting")}</div>}
       {!loading && access === "config" && <div className="chat-state"><span className="chat-state-icon">⚙</span><strong>{t("chat_config_title")}</strong><p>{t("chat_config_body")}</p><Link href="/setup">{t("chat_setup")}</Link>{conversations.length > 0 && <span className="history-note">{t("chat_history_saved")}</span>}</div>}

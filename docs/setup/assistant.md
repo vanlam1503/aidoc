@@ -26,6 +26,8 @@ The local store validates its schema and serializes writes through an atomic tem
 
 Use the expand control beside the close button to enlarge the Assistant. The same dialog remains mounted, so conversation text, streaming state, and the draft survive expanding/collapsing. The expanded mode locks page scrolling and supports keyboard navigation and mobile screens. Closing the dialog or pressing Escape restores page scrolling.
 
+Selection toolbar actions open chat mode and automatically submit one context-aware question once configuration/history loading finishes. The selected phrase is sent with the current lesson and language. Ordinary draft-only events and manual composer input still wait for Send; closing the dialog or starting a new chat cancels a queued selection request.
+
 ## Behavior and verification
 
 The migration keeps local lesson retrieval, selected-language instructions, citations, local conversation validation, hourly/daily workspace request limits, and the browser SSE event contract. Stored assistant history maps to Gemini's `model` role; adjacent turns with the same role are merged. System instructions stay separate from user text and retrieved excerpts.

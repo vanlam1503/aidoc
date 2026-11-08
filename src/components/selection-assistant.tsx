@@ -32,12 +32,13 @@ export function SelectionAssistant({ lessonTitle }: { lessonTitle: string }) {
     if (!selection) return;
     const prompt = kind === "translate"
       ? locale === "vi"
-        ? `Hãy dịch từ hoặc cụm từ được chọn sang tiếng Việt và giải thích nghĩa trong ngữ cảnh bài học “${lessonTitle}”. Nếu có nhiều nghĩa, hãy nêu nghĩa phù hợp nhất và một ví dụ ngắn. Từ/cụm từ: “${selection.text}”`
-        : `Translate the selected word or phrase into English and explain its meaning in the context of the lesson “${lessonTitle}”. If it has multiple meanings, give the most relevant one and a short example. Selected text: “${selection.text}”`
+        ? `Dịch “${selection.text}” sang tiếng Việt và giải thích nghĩa trong bài “${lessonTitle}”, kèm một ví dụ ngắn.`
+        : `Translate “${selection.text}” into English and explain its meaning in “${lessonTitle}”, with a short example.`
       : locale === "vi"
-        ? `Giải thích từ hoặc cụm từ được chọn trong ngữ cảnh bài học “${lessonTitle}”, đưa ra ví dụ thực tế và liên hệ với khái niệm AI Engineering liên quan. Từ/cụm từ: “${selection.text}”`
-        : `Explain the selected word or phrase in the context of “${lessonTitle}”, give a practical example, and connect it to a related AI Engineering concept. Selected text: “${selection.text}”`;
-    window.dispatchEvent(new CustomEvent("academy:ask-assistant", { detail: { prompt } }));
+        ? `Giải thích “${selection.text}” trong bài “${lessonTitle}”, kèm ví dụ thực tế và liên hệ với một khái niệm AI Engineering liên quan.`
+        : `Explain “${selection.text}” in “${lessonTitle}”, with a practical example and a related AI engineering concept.`;
+    window.dispatchEvent(new CustomEvent("academy:ask-assistant", { detail: { prompt, autoSubmit: true } }));
+    window.getSelection()?.removeAllRanges();
     setSelection(null);
   }
 
